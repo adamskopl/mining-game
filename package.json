@@ -23,7 +23,13 @@
     "eslint": "^4.10.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
-    "jspm": "^0.16.53"
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.1",
+    "jspm": "^0.16.53",
+    "require-dir": "^0.3.2"
   },
   "jspm": {
     "devDependencies": {
