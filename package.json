@@ -4,7 +4,8 @@
   "description": "small game for JS training",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "babel-watch": "babel --watch src --out-dir dist/src --source-maps",
+    "bundle-imports": "jspm bundle src-bundle/main.js imports-bundle.js --minify"
   },
   "repository": {
     "type": "git",
