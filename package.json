@@ -1,0 +1,29 @@
+{
+  "name": "mining-game",
+  "version": "1.0.0",
+  "description": "small game for JS training",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamskopl/mining-game.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adamskopl/mining-game/issues"
+  },
+  "homepage": "https://github.com/adamskopl/mining-game#readme",
+  "devDependencies": {
+    "jspm": "^0.16.53"
+  },
+  "jspm": {
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  }
+}
