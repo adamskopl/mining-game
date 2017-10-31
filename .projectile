@@ -1,5 +1,8 @@
 -/node_modules
 -/jspm_packages
-.jsbeautifyrc
-.eslintrc.js
-.gitignore
+-/dist
+-/.jsbeautifyrc
+-/.eslintrc.js
+-/.gitignore
+-/imports-bundle.js
+-/imports-bundle.js.map
