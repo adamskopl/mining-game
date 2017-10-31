@@ -3,24 +3,26 @@
 
 <head>
   <title>Phaser: The ES2015 Way</title>
+  <style type="text/css">
+	 body{
+		 background: #000000;
+		 padding:0px;
+		 margin:0px;
+	 }
+	</style>
+
+  <script src="jspm_packages/system.js"></script>
+  <script src="config.js"></script>
+  <script src="imports-bundle.js"></script>
+
+  <script>
+   System.import('src-bundle/main.js')
+         .then(() => {
+           System.import('./dist/src/main.js');
+         });
+  </script>
+
 </head>
-
 <body>
-  <main>
-    <div id="game-canvas"></div>
-  </main>
 </body>
-
-<script src="jspm_packages/system.js"></script>
-<script src="config.js"></script>
-<script src="imports-bundle.js"></script>
-
-<script>
-  System.import('src-bundle/main.js')
-        .then(() => {
-          System.import('./dist/src/main.js');
-        });
-
-</script>
-
 </html>
