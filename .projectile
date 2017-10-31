@@ -2,7 +2,6 @@
 -/jspm_packages
 -/dist
 -/.jsbeautifyrc
--/.eslintrc.js
 -/.gitignore
 -/imports-bundle.js
 -/imports-bundle.js.map
