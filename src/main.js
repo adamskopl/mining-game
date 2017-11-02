@@ -16,11 +16,11 @@ function onPreload(game) {
     game.load.spritesheet('tiles', 'tiles.png', 40, 40);
 }
 
-function onCreate() {
+function onCreate(game) {
   // waiting for a key pressed
   game.input.keyboard.addCallbacks(this, onDown);
   // going full screen with the function defined at line 32
-  goFullScreen();
+  goFullScreen(game);
   // adding the two groups to the game
   fixedGroup = game.add.group();
   movingGroup = game.add.group();
@@ -44,6 +44,18 @@ function onCreate() {
   // normall, onResize is called each time the browser is resized, anyway I am calling it the first time
   // to place all responsive elements in their right positions.
   onResize();
+}
+
+function onResize() {
+    // this function is called each time the browser is resized, and re-positions
+    // game elements to keep them in their right position according to game size
+    levelText.x = Math.round((game.width - levelText.width) / 2);
+    levelText.y = game.height;
+    titleText.x = Math.round((game.width - titleText.width) / 2);
+    fixedGroup.x = Math.round((game.width - 320) / 2);
+    fixedGroup.y = Math.round((game.height - 320) / 2);
+    movingGroup.x = Math.round((game.width - 320) / 2);
+    movingGroup.y = Math.round((game.height - 320) / 2);
 }
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, '', {
@@ -82,11 +94,8 @@ var titleText;
 var fixedGroup;
 var movingGroup;
 
-// first function to be called, when the game preloads I am loading the sprite sheet with all game tiles
-
-
 // function to scale up the game to full screen
-function goFullScreen() {
+function goFullScreen(game) {
   // setting a background color
   game.stage.backgroundColor = "#555555";
   game.scale.pageAlignHorizontally = true;
@@ -97,21 +106,6 @@ function goFullScreen() {
   game.scale.startFullScreen(false);
   // not working:
   // game.scale.setScreenSize(true);
-}
-
-// function to be called when the game has been created
-
-
-function onResize() {
-  // this function is called each time the browser is resized, and re-positions
-  // game elements to keep them in their right position according to game size
-  levelText.x = Math.round((game.width - levelText.width) / 2);
-  levelText.y = game.height;
-  titleText.x = Math.round((game.width - titleText.width) / 2);
-  fixedGroup.x = Math.round((game.width - 320) / 2);
-  fixedGroup.y = Math.round((game.height - 320) / 2);
-  movingGroup.x = Math.round((game.width - 320) / 2);
-  movingGroup.y = Math.round((game.height - 320) / 2);
 }
 
 function drawLevel() {
