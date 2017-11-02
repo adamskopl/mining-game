@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { EMPTY, SPOT, CRATE, PLAYER } from './consts';
+import copyArray from './utils';
 
 let level = [
   [1, 1, 1, 1, 1, 1, 1, 1],
@@ -11,6 +12,36 @@ let level = [
   [1, 0, 0, 0, 1, 1, 1, 1],
   [1, 1, 1, 1, 1, 1, 1, 1],
 ];
+
+// array which will keep track of undos
+const undoArray = [];
+
+// array which will contain all crates
+const crates = [];
+
+// size of a tile, in pixels
+const tileSize = 40;
+
+let player;
+
+// is the player moving?
+let playerMoving = false;
+
+// variables used to detect and manage swipes
+let startX;
+let startY;
+let endX;
+let endY;
+
+// texts to display game name and level
+let levelText;
+let titleText;
+
+// Variables used to create groups. The fist group is called fixedGroup, it will contain
+// all non-moveable elements (everything but crates and player).
+// Then we add movingGroup which will contain moveable elements (crates and player)
+let fixedGroup;
+let movingGroup;
 
 function onPreload(game) {
     game.load.spritesheet('tiles', 'tiles.png', 40, 40);
@@ -24,7 +55,7 @@ function onCreate(game) {
   // adding the two groups to the game
   fixedGroup = game.add.group();
   movingGroup = game.add.group();
-  // drawing the level 
+  // drawing the level
   drawLevel();
   // once the level has been created, we wait for the player to touch or click, then we call
   // beginSwipe function
@@ -61,38 +92,11 @@ function onResize() {
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, '', {
   preload: onPreload,
   create: onCreate,
-  resize: onResize // <- this will be called each time the game is resized
+    resize: onResize, // <- this will be called each time the game is resized
+    render(g) {
+        g.debug.inputInfo(100, 100);
+    },
 });
-
-// array which will keep track of undos
-const undoArray = [];
-
-// array which will contain all crates
-const crates = [];
-
-// size of a tile, in pixels
-const tileSize = 40;
-
-let player;
-
-// is the player moving?
-let playerMoving = false;
-
-// variables used to detect and manage swipes
-let startX;
-let startY;
-let endX;
-let endY;
-
-// texts to display game name and level
-var levelText;
-var titleText;
-
-// Variables used to create groups. The fist group is called fixedGroup, it will contain
-// all non-moveable elements (everything but crates and player).
-// Then we add movingGroup which will contain moveable elements (crates and player)
-var fixedGroup;
-var movingGroup;
 
 // function to scale up the game to full screen
 function goFullScreen(game) {
@@ -102,8 +106,9 @@ function goFullScreen(game) {
   game.scale.pageAlignVertically = true;
   // using RESIZE scale mode
   game.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-  console.warn(game.scale.isFullScreen);
   game.scale.startFullScreen(false);
+
+    console.warn(game.width);
   // not working:
   // game.scale.setScreenSize(true);
 }
@@ -112,13 +117,13 @@ function drawLevel() {
   // empty crates array. Don't use crates = [] or it could mess with pointers
   crates.length = 0;
   // variable used for tile creation
-  var tile
+    let tile;
     // looping trough all level rows
-  for (var i = 0; i < level.length; i++) {
+  for (let i = 0; i < level.length; i++) {
     // creation of 2nd dimension of crates array
     crates[i] = [];
     // looping through all level columns
-    for (var j = 0; j < level[i].length; j++) {
+    for (let j = 0; j < level[i].length; j++) {
       // by default, there are no crates at current level position, so we set to null its
       // array entry
       crates[i][j] = null;
@@ -191,7 +196,7 @@ function onDown(e) {
         // if there's something to undo...
         if (undoArray.length > 0) {
           // then undo! and remove the latest move from undoArray
-          var undoLevel = undoArray.pop();
+          let undoLevel = undoArray.pop();
           fixedGroup.destroy();
           movingGroup.destroy();
           level = [];
@@ -220,8 +225,8 @@ function endSwipe() {
   endY = game.input.worldY;
   // determining x and y distance travelled by mouse/finger from the start
   // of the swipe until the end
-  var distX = startX - endX;
-  var distY = startY - endY;
+  let distX = startX - endX;
+  let distY = startY - endY;
   // in order to have an horizontal swipe, we need that x distance is at least twice the y distance
   // and the amount of horizontal distance is at least 10 pixels
   if (Math.abs(distX) > Math.abs(distY) * 2 && Math.abs(distX) > 10) {
@@ -269,7 +274,7 @@ function move(deltaX, deltaY) {
       undoArray.push(copyArray(level));
       // move the crate
       moveCrate(deltaX, deltaY);
-      // move the player	
+      // move the player
       movePlayer(deltaX, deltaY);
     }
   }
@@ -290,7 +295,7 @@ function movePlayer(deltaX, deltaY) {
   // now the player is moving
   playerMoving = true;
   // moving with a 1/10s tween
-  var playerTween = game.add.tween(player);
+  let playerTween = game.add.tween(player);
   playerTween.to({
     x: player.x + deltaX * tileSize,
     y: player.y + deltaY * tileSize
@@ -314,30 +319,18 @@ function movePlayer(deltaX, deltaY) {
 // function to move the crate
 function moveCrate(deltaX, deltaY) {
   // moving with a 1/10s tween
-  var crateTween = game.add.tween(crates[player.posY + deltaY][player.posX + deltaX]);
+  let crateTween = game.add.tween(crates[player.posY + deltaY][player.posX + deltaX]);
   crateTween.to({
     x: crates[player.posY + deltaY][player.posX + deltaX].x + deltaX * tileSize,
     y: crates[player.posY + deltaY][player.posX + deltaX].y + deltaY * tileSize,
   }, 100, Phaser.Easing.Linear.None, true);
-  // updating crates array   
+  // updating crates array
   crates[player.posY + 2 * deltaY][player.posX + 2 * deltaX] = crates[player.posY + deltaY][player.posX + deltaX];
   crates[player.posY + deltaY][player.posX + deltaX] = null;
-  // updating crate old position in level array  
+  // updating crate old position in level array
   level[player.posY + deltaY][player.posX + deltaX] -= CRATE;
-  // updating crate new position in level array  
+  // updating crate new position in level array
   level[player.posY + 2 * deltaY][player.posX + 2 * deltaX] += CRATE;
-  // changing crate frame accordingly  
+  // changing crate frame accordingly
   crates[player.posY + 2 * deltaY][player.posX + 2 * deltaX].frame = level[player.posY + 2 * deltaY][player.posX + 2 * deltaX];
-}
-
-// need a recursive function to copy arrays, no need to reinvent the wheel so I got it here
-// http://stackoverflow.com/questions/10941695/copy-an-arbitrary-n-dimensional-array-in-javascript 
-function copyArray(a) {
-  var newArray = a.slice(0);
-  for (var i = newArray.length; i > 0; i--) {
-    if (newArray[i] instanceof Array) {
-      newArray[i] = copyArray(newArray[i]);
-    }
-  }
-  return newArray;
 }
