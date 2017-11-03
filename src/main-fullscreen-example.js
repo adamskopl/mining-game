@@ -44,7 +44,6 @@ function gofull() {
     {
         game.scale.startFullScreen(false);
     }
-
 }
 
 function update() {
