@@ -36,7 +36,8 @@
   "jspm": {
     "dependencies": {
       "phaser": "github:photonstorm/phaser@^2.6.2",
-      "ramda": "npm:ramda@^0.25.0"
+      "ramda": "npm:ramda@^0.25.0",
+      "tape": "npm:tape@^4.8.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
