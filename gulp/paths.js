@@ -1,7 +1,7 @@
-const appRoot = 'src';
-const appDst = 'dist';
-
 module.exports = {
-  src: `${appRoot}/**/*.js`,
-  dist: `${appDst}/**/*.js`,
+  src: 'src/**/*.js',
+  test: 'test/**/*.js',
+  dist: 'dist/**/*.js',
+  distSrc: 'dist/src',
+  distTest: 'dist/test',
 };
