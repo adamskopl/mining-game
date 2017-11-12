@@ -1,6 +1,8 @@
 import R from 'ramda';
 import Phaser from 'phaser';
 import displayManager from './display-manager';
+import bitmapsManager from './bitmaps-manager';
+import levelManager from './level-manager';
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
   preload: preload,
@@ -13,7 +15,6 @@ function preload() {
 }
 
 function create(g) {
-
   g.input.keyboard.addCallbacks(this, R.partial(onDown, [game]));
 
   g.stage.backgroundColor = '#555555';
@@ -21,10 +22,16 @@ function create(g) {
   g.scale.pageAlignVertically = true;
   g.scale.scaleMode = Phaser.ScaleManager.RESIZE;
   game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+  displayManager.init(g);
+  bitmapsManager.init(g);
+  levelManager.init(g, displayManager.getSize());
 }
 
-function onResize() {
-
+function onResize(w, h) {
+  const size = [w, h];
+  levelManager.onResize(size);
+  bitmapsManager.onResize(size);
 }
 
 function render(g) {
@@ -32,10 +39,11 @@ function render(g) {
 }
 
 function onDown(g, e) {
-  // console.warn(e.keyCode);
   switch (e.keyCode) {
   case 70: // f
     displayManager.goFullScreen(g);
+    break;
+  default:
     break;
   }
 }

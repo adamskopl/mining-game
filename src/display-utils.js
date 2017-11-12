@@ -2,7 +2,7 @@
 
 // terms.
 // app area: where the whole application is rendered
-// game area: where the gameplay is rendered
+// game: where the gameplay is rendered
 
 /**
  * @param {number} appW  app's width
@@ -26,11 +26,11 @@ export function getGameAreaSize([appW, appH] = [0, 0], [marginX, marginY] = [0, 
  * @param {number} gameAreaW game's area width
  * @return {number[]} x, y of the centered game area. null for wrong args.
  */
-export function getGameAreaPos([appW, appH] = [0, 0], [gameAreaW, gameAreaH] = [0, 0]) {
+export function getGamePos([appW, appH] = [0, 0], [gameW, gameH] = [0, 0]) {
   const wrongArg = a => a < 0;
-  if ([appW, appH, gameAreaW, gameAreaH].find(wrongArg) ||
-      appW < gameAreaW || appH < gameAreaH) {
+  if ([appW, appH, gameW, gameH].find(wrongArg) ||
+      appW < gameW || appH < gameH) {
     return null;
   }
-  return [(appW - gameAreaW) / 2, (appH - gameAreaH) / 2];
+  return [Math.floor((appW - gameW) / 2), Math.floor((appH - gameH) / 2)];
 }
