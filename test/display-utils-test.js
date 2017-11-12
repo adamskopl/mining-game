@@ -1,5 +1,8 @@
 import test from 'tape';
-import { getGameAreaSize, getGameAreaPos } from '../src/display-utils';
+import {
+  getGameAreaSize,
+  getGamePos,
+} from '../src/display-utils';
 
 test('getGameAreaSize', (t) => {
   [ // [appW, appH], [marginX, maringY], [gameAreaW, gameAreaH]
@@ -14,16 +17,16 @@ test('getGameAreaSize', (t) => {
   t.end();
 });
 
-test('getGameAreaPos', (t) => {
-  // [appW, appH], [gameAreaW, gameAreaH], [gameAreaX], [gameAreaY]
+test('getGamePos', (t) => {
+  // [appW, appH], [gameAreaW, gameAreaH], [gameAreaX, [gameAreaY]
   [
     [[800, 600], [200, 200], [300, 200]],
     [[0, 0], [0, 0], [0, 0]],
     [[200, 200], [-100, -100], null],
-    [[100, 10], [80, 5], [10, 2.5]],
+    [[100, 10], [80, 5], [10, 2.0]], // Math.floor
     [[20, 20], [100, 100], null],
   ].forEach((p) => {
-    t.deepEqual(getGameAreaPos(p[0], p[1]), p[2]);
+    t.deepEqual(getGamePos(p[0], p[1]), p[2]);
   });
   t.end();
 });
