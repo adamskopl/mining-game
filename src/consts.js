@@ -1,3 +1,3 @@
 export default {
-  FIELDS: [3, 3],
+  FIELDS: [4, 4],
 };

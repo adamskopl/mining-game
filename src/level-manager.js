@@ -1,36 +1,44 @@
 import R from 'ramda';
-import CONSTS from './consts';
 import bitmapsManager from './bitmaps-manager';
-import displayManager from './display-manager';
 import { getGamePos } from './display-utils';
-import { getFieldSize } from './level-utils';
+import { getFieldSize, getLevelDim } from './level-utils';
+import l from './levels';
 
-let game = null;
-let groupFields = null;
+// dictionary
+// size, width, height: for px (like in Phaser)
+// dim: for other units. E.g. levelDim is for dimensions in fields
 
-function getGroupFieldPos(gameSize, fieldSize) {
-  return getGamePos(displayManager.getSize(), CONSTS.FIELDS.map(f => f * fieldSize));
+function getGroupFieldPos(gameSize, levelSize) {
+  return getGamePos(gameSize, levelSize);
 }
 
-function reloadSprites(fieldSize) {
+// TODO: split to function returning sprites (quasi-pure) and function adding sprite to a group
+function reloadSprites(gameSize, fieldSize, level, groupFields) {
   groupFields.removeAll();
-  R.range(0, CONSTS.FIELDS[0]).forEach((x) => {
-    R.range(0, CONSTS.FIELDS[1]).forEach((y) => {
-      groupFields.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap());
+  const ranges = [R.range(0, level[0].length), R.range(0, level.length)];
+  ranges[0].forEach((x) => {
+    ranges[1].forEach((y) => {
+      if (level[y][x]) {
+        groupFields.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap());
+      }
     });
   });
 }
 
+function getLevelSize(level, fieldSize) {
+  return [level[0].length * fieldSize, level.length * fieldSize];
+}
+
 export default {
   init(g) {
-    game = g;
-    groupFields = game.add.group();
+    this.game = g;
+    this.groupFields = this.game.add.group();
+    this.level = l;
   },
-
   onResize(gameSize) {
-    const fieldSize = getFieldSize(gameSize, CONSTS.FIELDS);
-    reloadSprites(fieldSize);
-    const tmp = getGroupFieldPos(gameSize, fieldSize);
-    [groupFields.x, groupFields.y] = getGroupFieldPos(gameSize, fieldSize);
+    const fieldSize = getFieldSize(gameSize, getLevelDim(this.level));
+    reloadSprites(gameSize, fieldSize, this.level, this.groupFields);
+    [this.groupFields.x, this.groupFields.y] =
+      getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
   },
 };
