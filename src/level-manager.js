@@ -18,9 +18,7 @@ function reloadSprites(gameSize, fieldSize, level, groupFields) {
   const ranges = [R.range(0, level[0].length), R.range(0, level.length)];
   ranges[0].forEach((x) => {
     ranges[1].forEach((y) => {
-      if (level[y][x]) {
-        groupFields.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap());
-      }
+      groupFields.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(level[y][x]));
     });
   });
 }
