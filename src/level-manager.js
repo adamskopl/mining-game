@@ -1,5 +1,5 @@
 import R from 'ramda';
-import bitmapsManager from './bitmaps-manager';
+import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import { getGamePos } from './display-utils';
 import { getFieldSize, getLevelDim } from './level-utils';
 import l from './levels';
@@ -32,13 +32,19 @@ function getLevelSize(level, fieldSize) {
 export default {
   init(g) {
     this.game = g;
+    this.gameSize = null;
     this.groupFields = this.game.add.group();
     this.level = l;
   },
   onResize(gameSize) {
-    const fieldSize = getFieldSize(gameSize, getLevelDim(this.level));
+    this.gameSize = gameSize;
+
+    const fieldSize = this.getFieldSize();
     reloadSprites(gameSize, fieldSize, this.level, this.groupFields);
     [this.groupFields.x, this.groupFields.y] =
       getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
+  },
+  getFieldSize() {
+    return getFieldSize(this.gameSize, getLevelDim(this.level));
   },
 };

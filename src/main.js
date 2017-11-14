@@ -1,7 +1,7 @@
 import R from 'ramda';
 import Phaser from 'phaser';
 import displayManager from './display-manager';
-import bitmapsManager from './bitmaps-manager';
+import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager';
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {

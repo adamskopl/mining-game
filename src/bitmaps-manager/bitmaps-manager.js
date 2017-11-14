@@ -1,6 +1,4 @@
-import CONSTS from './consts';
-import displayManager from './display-manager';
-import { getFieldSize } from './level-utils';
+import levelManager from '../level-manager';
 
 const DOT_SIZE = 3;
 let bmd = null;
@@ -27,8 +25,7 @@ export default {
     game.cache.addBitmapData('testBitmap', bmd);
   },
   onResize() {
-    const fieldSize = getFieldSize(displayManager.getSize(), CONSTS.FIELDS);
-    reloadBitmap(fieldSize);
+    reloadBitmap(levelManager.getFieldSize());
   },
   getBitmap() {
     return game.cache.getBitmapData('testBitmap');
