@@ -31,7 +31,7 @@ function create(g) {
 function onResize(w, h) {
   const size = [w, h];
   levelManager.onResize(size);
-  bitmapsManager.onResize(size);
+  bitmapsManager.onFieldResize(levelManager.getFieldSize());
 }
 
 function render(g) {

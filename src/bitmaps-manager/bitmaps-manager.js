@@ -1,5 +1,3 @@
-import levelManager from '../level-manager';
-
 const DOT_SIZE = 3;
 let bmd = null;
 let game = null;
@@ -24,8 +22,8 @@ export default {
     bmd = g.add.bitmapData(1, 1);
     game.cache.addBitmapData('testBitmap', bmd);
   },
-  onResize() {
-    reloadBitmap(levelManager.getFieldSize());
+  onFieldResize(fieldSize) {
+    reloadBitmap(fieldSize);
   },
   getBitmap() {
     return game.cache.getBitmapData('testBitmap');
