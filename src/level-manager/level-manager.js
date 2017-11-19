@@ -1,7 +1,7 @@
 import R from 'ramda';
-import bitmapsManager from './bitmaps-manager/bitmaps-manager';
-import { getGamePos } from './display-utils';
-import { getFieldSize, getLevelDim } from './level-utils';
+import bitmapsManager from '../bitmaps-manager/bitmaps-manager';
+import { getGamePos } from '../display-utils';
+import { getFieldSize, getLevelDim } from '../level-utils';
 import l from './levels';
 
 // dictionary
@@ -26,6 +26,8 @@ function reloadSprites(gameSize, fieldSize, level, groupFields) {
 function getLevelSize(level, fieldSize) {
   return [level[0].length * fieldSize, level.length * fieldSize];
 }
+
+function createField() {}
 
 export default {
   init(g) {

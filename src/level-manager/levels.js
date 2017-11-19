@@ -1,4 +1,4 @@
-import CONSTS from './consts';
+import CONSTS from '../consts';
 
 // temporary sort solution: in the end Tiled will be used
 const oKeys = Object.keys(CONSTS.OBJECT_TYPE).sort();
