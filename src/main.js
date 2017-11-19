@@ -2,7 +2,7 @@ import R from 'ramda';
 import Phaser from 'phaser';
 import displayManager from './display-manager';
 import bitmapsManager from './bitmaps-manager/bitmaps-manager';
-import levelManager from './level-manager';
+import levelManager from './level-manager/level-manager';
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
   preload: preload,
@@ -39,11 +39,19 @@ function render(g) {
 }
 
 function onDown(g, e) {
-  switch (e.keyCode) {
-  case 70: // f
-    displayManager.goFullScreen(g);
-    break;
-  default:
-    break;
+  switch (e.keyCode) { // W 87, A 65, S 83, D 68
+    case 65: // a
+      break;
+    case 68: // d
+      break;
+    case 70: // f
+      displayManager.goFullScreen(g);
+      break;
+    case 83:
+      break;
+    case 87: // w
+      break;
+    default:
+      break;
   }
 }
