@@ -30,12 +30,13 @@ function create(g) {
   gameplayManager.init(g);
 
   levelManager.signalGroupReloaded.add(gameplayManager.onMainGroupReloaded, gameplayManager);
+  levelManager.signalFieldResized.add(bitmapsManager.onFieldResized, bitmapsManager);
+  levelManager.signalFieldResized.add(gameplayManager.onFieldResized, gameplayManager);
 }
 
 function onResize(w, h) {
   const size = [w, h];
   levelManager.onResize(size);
-  bitmapsManager.onFieldResize(levelManager.getFieldSize());
 }
 
 function render(g) {

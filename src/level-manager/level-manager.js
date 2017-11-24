@@ -38,6 +38,7 @@ export default {
     this.groupFields = this.g.add.group();
     this.level = l;
     this.signalGroupReloaded = new Phaser.Signal();
+    this.signalFieldResized = new Phaser.Signal();
   },
   onResize(gameSize) {
     this.gameSize = gameSize;
@@ -47,7 +48,9 @@ export default {
     this.groupFields = getSprites(this.g, gameSize, fieldSize, this.level, this.groupFields);
     [this.groupFields.x, this.groupFields.y] =
       getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
+
     this.signalGroupReloaded.dispatch(this.groupFields);
+    this.signalFieldResized.dispatch(fieldSize);
   },
   getFieldSize() {
     return getFieldSize(this.gameSize, getLevelDim(this.level));

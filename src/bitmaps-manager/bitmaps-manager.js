@@ -35,7 +35,7 @@ export default {
       game.cache.addBitmapData(name, bitmap);
     });
   },
-  onFieldResize(fieldSize) {
+  onFieldResized(fieldSize) {
     reloadBitmaps(this.bitmaps, fieldSize);
   },
   getBitmap(name) {
