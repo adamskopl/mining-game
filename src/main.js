@@ -29,9 +29,21 @@ function create(g) {
   levelManager.init(g, displayManager.getSize());
   gameplayManager.init(g);
 
-  levelManager.signalGroupReloaded.add(gameplayManager.onMainGroupReloaded, gameplayManager);
-  levelManager.signalFieldResized.add(bitmapsManager.onFieldResized, bitmapsManager);
-  levelManager.signalFieldResized.add(gameplayManager.onFieldResized, gameplayManager);
+  [
+    [levelManager.signalGroupReloaded, 'onMainGroupReloaded', [
+      gameplayManager,
+    ],
+    ],
+    [levelManager.signalFieldResized, 'onFieldResized', [
+      bitmapsManager,
+      gameplayManager,
+    ],
+    ],
+  ].forEach((signalGroup) => {
+    signalGroup[2].forEach((listener) => {
+      signalGroup[0].add(listener[signalGroup[1]], listener);
+    });
+  });
 }
 
 function onResize(w, h) {
