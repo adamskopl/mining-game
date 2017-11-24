@@ -43,21 +43,25 @@ function render(g) {
 }
 
 function onDown(g, e) {
-  switch (e.keyCode) { // w 87, a 65, s 83, d 68
-    case 65: // a
-      gameplayManager.onKeyDirection(DIRECTION.LEFT);
+  switch (e.keyCode) {
+    case 38: // up
+    case 87: // w
+      gameplayManager.onKeyDirection(DIRECTION.UP);
       break;
+    case 39: // right
     case 68: // d
       gameplayManager.onKeyDirection(DIRECTION.RIGHT);
       break;
-    case 70: // f
-      displayManager.goFullScreen(g);
-      break;
+    case 40: // down
     case 83: // s
       gameplayManager.onKeyDirection(DIRECTION.DOWN);
       break;
-    case 87: // w
-      gameplayManager.onKeyDirection(DIRECTION.UP);
+    case 37: // left
+    case 65: // a
+      gameplayManager.onKeyDirection(DIRECTION.LEFT);
+      break;
+    case 70: // f
+      displayManager.goFullScreen(g);
       break;
     default:
   }
