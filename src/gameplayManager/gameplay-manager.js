@@ -1,3 +1,5 @@
+import { OBJECT_TYPE } from '../consts';
+
 export const DIRECTION = {
   UP: 'DIR_UP',
   RIGHT: 'DIR_RIGHT',
@@ -12,7 +14,8 @@ export default {
   },
   // when the main sprites group is reloaded
   onMainGroupReloaded(group) {
-    this.mainGroup = group;
+      this.mainGroup = group;
+      const hero = group.children.find(c => c.type === OBJECT_TYPE.HERO);
   },
   onKeyDirection(direction) {
     switch (direction) {

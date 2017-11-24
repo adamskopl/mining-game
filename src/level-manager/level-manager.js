@@ -4,6 +4,7 @@ import bitmapsManager from '../bitmaps-manager/bitmaps-manager';
 import { getGamePos } from '../display-utils';
 import { getFieldSize, getLevelDim } from '../level-utils';
 import l from './levels';
+import gameObject from '../factories/gameObject';
 
 // dictionary
 // size, width, height: for px (like in Phaser)
@@ -14,12 +15,13 @@ function getGroupFieldPos(gameSize, levelSize) {
 }
 
 // TODO: split to function returning sprites (quasi-pure) and function adding sprite to a group
-function getSprites(g, gameSize, fieldSize, level, groupFields) {
+function getSprites(g, gameSize, fieldSize, level) {
   const group = g.add.group();
   const ranges = [R.range(0, level[0].length), R.range(0, level.length)];
   ranges[0].forEach((x) => {
     ranges[1].forEach((y) => {
-      group.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(level[y][x]));
+      const child = group.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(level[y][x]));
+      group.replace(child, gameObject(child, { type: level[y][x] }));
     });
   });
   return group;
