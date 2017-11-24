@@ -3,13 +3,13 @@ import Phaser from 'phaser';
 import displayManager from './display-manager';
 import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
-import gameplayManager from './gameplayManager/gameplay-manager.js';
+import gameplayManager, { DIRECTION } from './gameplayManager/gameplay-manager';
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
-  preload: preload,
-  create: create,
+  preload,
+  create,
   resize: onResize,
-  render: render
+  render,
 });
 
 function preload() {
@@ -45,17 +45,20 @@ function render(g) {
 function onDown(g, e) {
   switch (e.keyCode) { // w 87, a 65, s 83, d 68
     case 65: // a
+      gameplayManager.onKeyDirection(DIRECTION.LEFT);
       break;
     case 68: // d
+      gameplayManager.onKeyDirection(DIRECTION.RIGHT);
       break;
     case 70: // f
       displayManager.goFullScreen(g);
       break;
-    case 83:
+    case 83: // s
+      gameplayManager.onKeyDirection(DIRECTION.DOWN);
       break;
     case 87: // w
+      gameplayManager.onKeyDirection(DIRECTION.UP);
       break;
     default:
-      break;
   }
 }
