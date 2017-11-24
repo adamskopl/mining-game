@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import displayManager from './display-manager';
 import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
+import gameplayManager from './gameplayManager/gameplay-manager.js';
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
   preload: preload,
@@ -26,6 +27,9 @@ function create(g) {
   displayManager.init(g);
   bitmapsManager.init(g);
   levelManager.init(g, displayManager.getSize());
+  gameplayManager.init(g);
+
+  levelManager.signalGroupReloaded.add(gameplayManager.onMainGroupReloaded, gameplayManager);
 }
 
 function onResize(w, h) {
@@ -39,7 +43,7 @@ function render(g) {
 }
 
 function onDown(g, e) {
-  switch (e.keyCode) { // W 87, A 65, S 83, D 68
+  switch (e.keyCode) { // w 87, a 65, s 83, d 68
     case 65: // a
       break;
     case 68: // d

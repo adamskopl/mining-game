@@ -1,4 +1,5 @@
 import R from 'ramda';
+import Phaser from 'phaser';
 import bitmapsManager from '../bitmaps-manager/bitmaps-manager';
 import { getGamePos } from '../display-utils';
 import { getFieldSize, getLevelDim } from '../level-utils';
@@ -13,36 +14,38 @@ function getGroupFieldPos(gameSize, levelSize) {
 }
 
 // TODO: split to function returning sprites (quasi-pure) and function adding sprite to a group
-function reloadSprites(gameSize, fieldSize, level, groupFields) {
-  groupFields.removeAll();
+function getSprites(g, gameSize, fieldSize, level, groupFields) {
+  const group = g.add.group();
   const ranges = [R.range(0, level[0].length), R.range(0, level.length)];
   ranges[0].forEach((x) => {
     ranges[1].forEach((y) => {
-      groupFields.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(level[y][x]));
+      group.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(level[y][x]));
     });
   });
+  return group;
 }
 
 function getLevelSize(level, fieldSize) {
   return [level[0].length * fieldSize, level.length * fieldSize];
 }
 
-function createField() {}
-
 export default {
   init(g) {
-    this.game = g;
+    this.g = g;
     this.gameSize = null;
-    this.groupFields = this.game.add.group();
+    this.groupFields = this.g.add.group();
     this.level = l;
+    this.signalGroupReloaded = new Phaser.Signal();
   },
   onResize(gameSize) {
     this.gameSize = gameSize;
 
     const fieldSize = this.getFieldSize();
-    reloadSprites(gameSize, fieldSize, this.level, this.groupFields);
+    this.groupFields.removeAll();
+    this.groupFields = getSprites(this.g, gameSize, fieldSize, this.level, this.groupFields);
     [this.groupFields.x, this.groupFields.y] =
       getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
+    this.signalGroupReloaded.dispatch(this.groupFields);
   },
   getFieldSize() {
     return getFieldSize(this.gameSize, getLevelDim(this.level));
