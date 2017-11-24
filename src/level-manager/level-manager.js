@@ -20,8 +20,11 @@ function getSprites(g, gameSize, fieldSize, level) {
   const ranges = [R.range(0, level[0].length), R.range(0, level.length)];
   ranges[0].forEach((x) => {
     ranges[1].forEach((y) => {
-      const child = group.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(level[y][x]));
-      group.replace(child, gameObject(child, { type: level[y][x] }));
+      const field = level[y][x];
+      field.forEach((f) => {
+          const child = group.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(f));
+          group.replace(child, gameObject(child, { type: f }));
+      });
     });
   });
   return group;
