@@ -24,6 +24,7 @@ export default {
   },
   onKeyDirection(direction) {
     const hero = get(this.mainGroup, OBJECT_TYPE.HERO);
+    hero.bringToTop();
     switch (direction) {
       case DIRECTION.UP:
         hero.y -= this.fieldSize;
