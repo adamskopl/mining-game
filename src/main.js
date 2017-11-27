@@ -5,7 +5,7 @@ import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
 import gameplayManager, { DIRECTION } from './gameplayManager/gameplay-manager';
 
-const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
+const game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'gameArea', {
   preload,
   create,
   resize: onResize,
