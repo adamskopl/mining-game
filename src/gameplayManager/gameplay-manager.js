@@ -1,4 +1,5 @@
 import { OBJECT_TYPE } from '../consts';
+import { getNeighbour } from '../group-utils';
 
 export const DIRECTION = {
   UP: 'DIR_UP',
@@ -28,22 +29,24 @@ export default {
     let vec = null;
     switch (direction) {
       case DIRECTION.UP:
-        vec = [0, -this.fieldSize];
+        vec = [0, -1];
         break;
       case DIRECTION.RIGHT:
-        vec = [this.fieldSize, 0];
+        vec = [1, 0];
         break;
       case DIRECTION.DOWN:
-        vec = [0, this.fieldSize];
+        vec = [0, 1];
         break;
       case DIRECTION.LEFT:
-        vec = [-this.fieldSize, 0];
+        vec = [-1, 0];
         break;
       default:
     }
     heroes.forEach((h) => {
+      const neighbor = getNeighbour(this.mainGroup, h, vec);
+      if (neighbor) { neighbor.destroy(); }
       h.bringToTop();
-      h.move(vec);
+      h.move([vec[0] * this.fieldSize, vec[1] * this.fieldSize]);
     });
   },
 };
