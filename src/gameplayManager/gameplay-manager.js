@@ -8,6 +8,7 @@ export const DIRECTION = {
 };
 
 const get = (group, type) => group.children.find(c => c.type === type);
+const getAll = (group, type) => group.children.filter(c => c.type === type);
 
 export default {
   init(g) {
@@ -23,22 +24,26 @@ export default {
     this.fieldSize = fieldSize;
   },
   onKeyDirection(direction) {
-    const hero = get(this.mainGroup, OBJECT_TYPE.HERO);
-    hero.bringToTop();
+    const heroes = getAll(this.mainGroup, OBJECT_TYPE.HERO);
+    let vec = null;
     switch (direction) {
       case DIRECTION.UP:
-        hero.y -= this.fieldSize;
+        vec = [0, -this.fieldSize];
         break;
       case DIRECTION.RIGHT:
-        hero.x += this.fieldSize;
+        vec = [this.fieldSize, 0];
         break;
       case DIRECTION.DOWN:
-        hero.y += this.fieldSize;
+        vec = [0, this.fieldSize];
         break;
       case DIRECTION.LEFT:
-        hero.x -= this.fieldSize;
+        vec = [-this.fieldSize, 0];
         break;
       default:
     }
+    heroes.forEach((h) => {
+      h.bringToTop();
+      h.move(vec);
+    });
   },
 };
