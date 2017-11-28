@@ -1,3 +1,4 @@
+import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import { getNeighbour } from '../group-utils';
 
@@ -10,6 +11,13 @@ export const DIRECTION = {
 
 const get = (group, type) => group.children.find(c => c.type === type);
 const getAll = (group, type) => group.children.filter(c => c.type === type);
+
+function move(vec, group, fieldSize, object) {
+  const neighbor = getNeighbour(group, object, vec);
+  if (neighbor && neighbor.type === OBJECT_TYPE.FILLED) { neighbor.destroy(); }
+  object.bringToTop();
+  object.move([vec[0] * fieldSize, vec[1] * fieldSize]);
+}
 
 export default {
   init(g) {
@@ -42,11 +50,7 @@ export default {
         break;
       default:
     }
-    heroes.forEach((h) => {
-      const neighbor = getNeighbour(this.mainGroup, h, vec);
-      if (neighbor) { neighbor.destroy(); }
-      h.bringToTop();
-      h.move([vec[0] * this.fieldSize, vec[1] * this.fieldSize]);
-    });
+
+    heroes.forEach(R.partial(move, [vec, this.mainGroup, this.fieldSize]));
   },
 };
