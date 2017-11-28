@@ -1,6 +1,6 @@
 import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
-import { getNeighbour } from '../group-utils';
+import { move } from './movement';
 
 export const DIRECTION = {
   UP: 'DIR_UP',
@@ -11,13 +11,6 @@ export const DIRECTION = {
 
 const get = (group, type) => group.children.find(c => c.type === type);
 const getAll = (group, type) => group.children.filter(c => c.type === type);
-
-function move(vec, group, fieldSize, object) {
-  const neighbor = getNeighbour(group, object, vec);
-  if (neighbor && neighbor.type === OBJECT_TYPE.FILLED) { neighbor.destroy(); }
-  object.bringToTop();
-  object.move([vec[0] * fieldSize, vec[1] * fieldSize]);
-}
 
 export default {
   init(g) {
