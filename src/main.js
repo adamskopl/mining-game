@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import displayManager from './display-manager';
 import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
-import gameplayManager, { DIRECTION } from './gameplayManager/gameplay-manager';
+import gameplay, { DIRECTION } from './gameplay/gameplay';
 
 const game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'gameArea', {
   preload,
@@ -27,16 +27,16 @@ function create(g) {
   displayManager.init(g);
   bitmapsManager.init(g);
   levelManager.init(g, displayManager.getSize());
-  gameplayManager.init(g);
+  gameplay.init(g);
 
   [
     [levelManager.signalGroupReloaded, 'onMainGroupReloaded', [
-      gameplayManager,
+      gameplay,
     ],
     ],
     [levelManager.signalFieldResized, 'onFieldResized', [
       bitmapsManager,
-      gameplayManager,
+      gameplay,
     ],
     ],
   ].forEach((signalGroup) => {
@@ -59,19 +59,19 @@ function onDown(g, e) {
   switch (e.keyCode) {
     case 38: // up
     case 87: // w
-      gameplayManager.onKeyDirection(DIRECTION.UP);
+      gameplay.onKeyDirection(DIRECTION.UP);
       break;
     case 39: // right
     case 68: // d
-      gameplayManager.onKeyDirection(DIRECTION.RIGHT);
+      gameplay.onKeyDirection(DIRECTION.RIGHT);
       break;
     case 40: // down
     case 83: // s
-      gameplayManager.onKeyDirection(DIRECTION.DOWN);
+      gameplay.onKeyDirection(DIRECTION.DOWN);
       break;
     case 37: // left
     case 65: // a
-      gameplayManager.onKeyDirection(DIRECTION.LEFT);
+      gameplay.onKeyDirection(DIRECTION.LEFT);
       break;
     case 70: // f
       displayManager.goFullScreen(g);
