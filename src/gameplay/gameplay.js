@@ -1,6 +1,8 @@
 import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
+import { getNeighbor } from '../group-utils';
 import { move } from './movement';
+import { handleCollision } from './collisions';
 
 export const DIRECTION = {
   UP: 'DIR_UP',
@@ -44,6 +46,11 @@ export default {
       default:
     }
 
-    heroes.forEach(R.partial(move, [vec, this.mainGroup, this.fieldSize]));
+    heroes.forEach((h) => {
+      if (h.moving) { return; }
+      const neighbor = getNeighbor(this.mainGroup, h, vec);
+      if (neighbor) { handleCollision([neighbor, h]); }
+      move(vec, this.fieldSize, h);
+    });
   },
 };
