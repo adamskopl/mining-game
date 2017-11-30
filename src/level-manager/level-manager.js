@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { getGamePos } from '../display-utils';
-import { getFieldSize, getLevelDim } from '../level-utils';
-import l from './levels';
+import { getFieldSize } from '../level-utils';
+import level from './levels';
 import getSprites from './sprites';
 
 // dictionary
@@ -13,7 +13,8 @@ function getGroupFieldPos(gameSize, levelSize) {
 }
 
 function getLevelSize(level, fieldSize) {
-  return [level[0].length * fieldSize, level.length * fieldSize];
+  const dim = level.getDim();
+  return [dim[0] * fieldSize, dim[1] * fieldSize];
 }
 
 export default {
@@ -21,7 +22,7 @@ export default {
     this.g = g;
     this.gameSize = null;
     this.groupFields = this.g.add.group();
-    this.level = l;
+    this.level = level;
     this.signalGroupReloaded = new Phaser.Signal();
     this.signalFieldResized = new Phaser.Signal();
   },
@@ -38,6 +39,6 @@ export default {
     this.signalFieldResized.dispatch(fieldSize);
   },
   getFieldSize() {
-    return getFieldSize(this.gameSize, getLevelDim(this.level));
+    return getFieldSize(this.gameSize, this.level.getDim());
   },
 };
