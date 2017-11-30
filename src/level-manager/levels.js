@@ -20,6 +20,9 @@ const fields = [
 
 function callFieldCb(cb, x, y) {
   const field = fields[y][x];
+  if (field.length === 0) {
+    cb(null, [x, y]);
+  }
   field.forEach((objectType) => {
     cb(objectType, [x, y]);
   });
