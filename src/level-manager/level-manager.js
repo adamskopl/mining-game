@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { getGamePos } from '../display-utils';
 import { getFieldSize } from '../level-utils';
 import level from './levels';
-import getSprites from './sprites';
+import { createGroupGameObjects, createGroupBackgroundObjects } from './sprites';
 
 // dictionary
 // size, width, height: for px (like in Phaser)
@@ -12,8 +12,8 @@ function getGroupFieldPos(gameSize, levelSize) {
   return getGamePos(gameSize, levelSize);
 }
 
-function getLevelSize(level, fieldSize) {
-  const dim = level.getDim();
+function getLevelSize(l, fieldSize) {
+  const dim = l.getDim();
   return [dim[0] * fieldSize, dim[1] * fieldSize];
 }
 
@@ -21,7 +21,8 @@ export default {
   init(g) {
     this.g = g;
     this.gameSize = null;
-    this.groupFields = this.g.add.group();
+    this.groupGameObjects = this.g.add.group();
+    this.groupBackgroundObjects = this.g.add.group();
     this.level = level;
     this.signalGroupReloaded = new Phaser.Signal();
     this.signalFieldResized = new Phaser.Signal();
@@ -30,12 +31,18 @@ export default {
     this.gameSize = gameSize;
 
     const fieldSize = this.getFieldSize();
-    this.groupFields.removeAll();
-    this.groupFields = getSprites(this.g, fieldSize, this.level);
-    [this.groupFields.x, this.groupFields.y] =
+
+    this.groupBackgroundObjects.removeAll();
+    this.groupBackgroundObjects = createGroupBackgroundObjects(this.g, fieldSize, this.level);
+    [this.groupBackgroundObjects.x, this.groupBackgroundObjects.y] =
       getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
 
-    this.signalGroupReloaded.dispatch(this.groupFields);
+    this.groupGameObjects.removeAll();
+    this.groupGameObjects = createGroupGameObjects(this.g, fieldSize, this.level);
+    [this.groupGameObjects.x, this.groupGameObjects.y] =
+      getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
+
+    this.signalGroupReloaded.dispatch(this.groupGameObjects);
     this.signalFieldResized.dispatch(fieldSize);
   },
   getFieldSize() {
