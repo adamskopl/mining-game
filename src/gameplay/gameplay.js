@@ -32,7 +32,7 @@ export default {
     let vec = null;
     switch (direction) {
       case DIRECTION.UP:
-        vec = [0, -1];
+        vec = null;
         break;
       case DIRECTION.RIGHT:
         vec = [1, 0];
@@ -46,11 +46,12 @@ export default {
       default:
     }
 
-    heroes.forEach((h) => {
-      if (h.moving) { return; }
-      const neighbor = getNeighbor(this.mainGroup, h, vec);
-      if (neighbor) { handleCollision([neighbor, h]); }
-      move(vec, this.fieldSize, h);
-    });
+    if (vec) {
+      heroes.filter(h => !h.moving).forEach((h) => {
+        const neighbor = getNeighbor(this.mainGroup, h, vec);
+        if (neighbor) { handleCollision([neighbor, h]); }
+        move(vec, this.fieldSize, h);
+      });
+    }
   },
 };

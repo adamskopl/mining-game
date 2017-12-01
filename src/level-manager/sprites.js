@@ -1,4 +1,3 @@
-import R from 'ramda';
 import bitmapsManager from '../bitmaps-manager/bitmaps-manager';
 import gameObject from '../factories/gameObject';
 import { OBJECT_TYPE } from '../consts';
