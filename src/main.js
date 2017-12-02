@@ -52,6 +52,7 @@ function onResize(w, h) {
 }
 
 function render(g) {
+  gameplay.onTick();
   g.debug.inputInfo(100, 100);
 }
 

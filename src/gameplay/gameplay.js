@@ -1,4 +1,3 @@
-import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import { getNeighbor } from '../group-utils';
 import { move } from './movement';
@@ -12,7 +11,7 @@ export const DIRECTION = {
 };
 
 const get = (group, type) => group.children.find(c => c.type === type);
-const getAll = (group, type) => group.children.filter(c => c.type === type);
+const getAll = (group, types) => group.children.filter(c => types.includes(c.type));
 
 export default {
   init(g) {
@@ -28,7 +27,7 @@ export default {
     this.fieldSize = fieldSize;
   },
   onKeyDirection(direction) {
-    const heroes = getAll(this.mainGroup, OBJECT_TYPE.HERO);
+    const heroes = getAll(this.mainGroup, [OBJECT_TYPE.HERO]);
     let vec = null;
     switch (direction) {
       case DIRECTION.UP:
@@ -54,4 +53,10 @@ export default {
       });
     }
   },
+  onTick() {
+    if (this.singleTest) { return; }
+    this.singleTest = true;
+    // perform gravity check...
+    console.warn('tick');
+  }
 };
