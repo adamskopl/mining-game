@@ -1,3 +1,4 @@
+import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import { getNeighbor } from '../group-utils';
 import { move } from './movement';
@@ -10,8 +11,11 @@ export const DIRECTION = {
   LEFT: 'DIR_LEFT',
 };
 
-const get = (group, type) => group.children.find(c => c.type === type);
-const getAll = (group, types) => group.children.filter(c => types.includes(c.type));
+const GRAVITY_VEC = [1, 0];
+
+// TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
+const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
+const groupFilter = (group, test) => group.children.filter(test);
 
 export default {
   init(g) {
@@ -27,11 +31,11 @@ export default {
     this.fieldSize = fieldSize;
   },
   onKeyDirection(direction) {
-    const heroes = getAll(this.mainGroup, [OBJECT_TYPE.HERO]);
+    const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
     let vec = null;
     switch (direction) {
       case DIRECTION.UP:
-        vec = null;
+        vec = [0, -1];
         break;
       case DIRECTION.RIGHT:
         vec = [1, 0];
@@ -54,9 +58,15 @@ export default {
     }
   },
   onTick() {
-    if (this.singleTest) { return; }
-    this.singleTest = true;
-    // perform gravity check...
-    console.warn('tick');
-  }
+    if (!this.mainGroup) { return; }
+
+    const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
+    const movable = groupFilter(this.mainGroup, testMovable);
+    movable.forEach((m) => {
+      const neighbor = getNeighbor(this.mainGroup, m, GRAVITY_VEC);
+      if (!neighbor) {
+        move(GRAVITY_VEC, this.fieldSize, m);
+      }
+    });
+  },
 };
