@@ -3,9 +3,10 @@ import Phaser from 'phaser';
 import displayManager from './display-manager';
 import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
-import gameplay, { DIRECTION } from './gameplay/gameplay';
+import gameplay, { DIRECTION, DIRECTIONS } from './gameplay/gameplay';
 
-const game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'gameArea', {
+let inputPolygons = null;
+const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
   preload,
   create,
   resize: onResize,
@@ -18,11 +19,13 @@ function preload() {
 function create(g) {
   g.input.keyboard.addCallbacks(this, R.partial(onDown, [game]));
 
+  g.input.onDown.add(onMouseDown, this);
+
   g.stage.backgroundColor = '#555555';
   g.scale.pageAlignHorizontally = true;
   g.scale.pageAlignVertically = true;
   g.scale.scaleMode = Phaser.ScaleManager.RESIZE;
-  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+  g.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
   displayManager.init(g);
   bitmapsManager.init(g);
@@ -49,11 +52,31 @@ function create(g) {
 function onResize(w, h) {
   const size = [w, h];
   levelManager.onResize(size);
+
+  // TODO: implement swipe.
+  const p = [
+    new Phaser.Point(0, 0), // 0
+    new Phaser.Point(w, 0), // 1
+    new Phaser.Point(w, h), // 2
+    new Phaser.Point(0, h), // 3
+    new Phaser.Point(w/2, h/2), // 4
+  ];
+  inputPolygons = [
+    new Phaser.Polygon(p[4], p[0], p[1], p[4]),
+    new Phaser.Polygon(p[4], p[1], p[2], p[4]),
+    new Phaser.Polygon(p[4], p[2], p[3], p[4]),
+    new Phaser.Polygon(p[4], p[3], p[0], p[4]),
+  ];
 }
 
 function render(g) {
   gameplay.onTick();
   g.debug.inputInfo(100, 100);
+}
+
+function onMouseDown(pointer) {
+  const polyIndex = inputPolygons.findIndex(p => p.contains(Math.floor(pointer.positionDown.x), Math.floor(pointer.positionDown.y)));
+  gameplay.onKeyDirection(DIRECTIONS[polyIndex]);
 }
 
 function onDown(g, e) {

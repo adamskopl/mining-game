@@ -11,6 +11,8 @@ export const DIRECTION = {
   LEFT: 'DIR_LEFT',
 };
 
+export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
+
 const GRAVITY_VEC = [1, 0];
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
