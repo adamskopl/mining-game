@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import { getNeighbor } from '../group-utils';
@@ -13,7 +14,7 @@ export const DIRECTION = {
 
 export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
 
-const GRAVITY_VEC = [1, 0];
+const GRAVITY_VEC = new Phaser.Point(1, 0);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
 const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
@@ -53,9 +54,9 @@ export default {
 
     if (vec) {
       heroes.filter(h => !h.moving).forEach((h) => {
-        const neighbor = getNeighbor(this.mainGroup, h, vec);
+        const neighbor = getNeighbor(this.mainGroup, h, { x: vec[0], y: vec[1] });
         if (neighbor) { handleCollision([neighbor, h]); }
-        move(vec, this.fieldSize, h);
+        move({ x: vec[0], y: vec[1] }, this.fieldSize, h);
       });
     }
   },
