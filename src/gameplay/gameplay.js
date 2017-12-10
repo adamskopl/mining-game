@@ -35,30 +35,27 @@ export default {
   },
   onKeyDirection(direction) {
     const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
-    let vec = null;
+    const vec = new Phaser.Point();
     switch (direction) {
       case DIRECTION.UP:
-        vec = [0, -1];
+        vec.set(0, -1);
         break;
       case DIRECTION.RIGHT:
-        vec = [1, 0];
+        vec.set(1, 0);
         break;
       case DIRECTION.DOWN:
-        vec = [0, 1];
+        vec.set(0, 1);
         break;
       case DIRECTION.LEFT:
-        vec = [-1, 0];
+        vec.set(-1, 0);
         break;
       default:
     }
-
-    if (vec) {
-      heroes.filter(h => !h.moving).forEach((h) => {
-        const neighbor = getNeighbor(this.mainGroup, h, { x: vec[0], y: vec[1] });
-        if (neighbor) { handleCollision([neighbor, h]); }
-        move({ x: vec[0], y: vec[1] }, this.fieldSize, h);
-      });
-    }
+    heroes.filter(h => !h.moving).forEach((h) => {
+      const neighbor = getNeighbor(this.mainGroup, h, { x: vec[0], y: vec[1] });
+      if (neighbor) { handleCollision([neighbor, h]); }
+      move({ x: vec[0], y: vec[1] }, this.fieldSize, h);
+    });
   },
   onTick() {
     if (!this.mainGroup) { return; }
