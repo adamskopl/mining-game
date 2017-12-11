@@ -14,7 +14,7 @@ export const DIRECTION = {
 
 export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
 
-const GRAVITY_VEC = new Phaser.Point(1, 0);
+const GRAVITY_VEC = new Phaser.Point(0, 1);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
 const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
@@ -51,11 +51,13 @@ export default {
         break;
       default:
     }
-    heroes.filter(h => !h.moving).forEach((h) => {
-      const neighbor = getNeighbor(this.mainGroup, h, vec);
-      if (neighbor) { handleCollision([neighbor, h]); }
-      move(vec, this.fieldSize, h);
-    });
+    if (!vec.equals(Phaser.Point.negative(GRAVITY_VEC))) {
+      heroes.filter(h => !h.moving).forEach((h) => {
+        const neighbor = getNeighbor(this.mainGroup, h, vec);
+        if (neighbor) { handleCollision([neighbor, h]); }
+        move(vec, this.fieldSize, h);
+      });
+    }
   },
   onTick() {
     if (!this.mainGroup) { return; }
