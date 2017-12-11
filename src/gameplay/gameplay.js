@@ -52,9 +52,9 @@ export default {
       default:
     }
     heroes.filter(h => !h.moving).forEach((h) => {
-      const neighbor = getNeighbor(this.mainGroup, h, { x: vec[0], y: vec[1] });
+      const neighbor = getNeighbor(this.mainGroup, h, vec);
       if (neighbor) { handleCollision([neighbor, h]); }
-      move({ x: vec[0], y: vec[1] }, this.fieldSize, h);
+      move(vec, this.fieldSize, h);
     });
   },
   onTick() {
