@@ -75,7 +75,9 @@ function render(g) {
 }
 
 function onMouseDown(pointer) {
-  const polyIndex = inputPolygons.findIndex(p => p.contains(Math.floor(pointer.positionDown.x), Math.floor(pointer.positionDown.y)));
+  const getFloor = (pntr, prop) => Math.floor(pntr.positionDown[prop]);
+  const findFun = p => p.contains(getFloor(pointer, 'x'), getFloor(pointer, 'y'));
+  const polyIndex = inputPolygons.findIndex(findFun);
   gameplay.onKeyDirection(DIRECTIONS[polyIndex]);
 }
 
