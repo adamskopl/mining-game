@@ -7,23 +7,33 @@ const MOVABLE = [
   OBJECT_TYPE.HERO,
 ];
 
+function addTween(game, obj, vec) {
+  return game.add.tween(obj).to({ x: obj.x + vec.x, y: obj.y + vec.y },
+    movDur,
+    Phaser.Easing.Bounce.Linear,
+    true,
+  );
+}
+
 function gameObject(type) {
   return {
     type,
     moving: false,
     movable: MOVABLE.includes(type),
+    tweenMove: null,
     isMoving() { return this.moving; },
     move(vec) {
       if (this.isMoving()) { return; }
-      this.game.add.tween(this).to(
-        { x: this.x + vec[0], y: this.y + vec[1] },
-        movDur,
-        Phaser.Easing.Bounce.Linear,
-        true,
-      ).onComplete.add(() => {
+      this.tweenMove = addTween(this.game, this, vec);
+      this.tweenMove.onComplete.add(() => {
         this.moving = false;
       });
       this.moving = true;
+    },
+    moveStop() {
+      if (this.tweenMove) {
+        this.tweenMove.stop();
+      }
     },
   };
 }

@@ -14,7 +14,7 @@ export const DIRECTION = {
 
 export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
 
-const GRAVITY_VEC = new Phaser.Point(0, 1);
+const VEC_GRAVITY = new Phaser.Point(0, 1);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
 const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
@@ -33,10 +33,9 @@ export default {
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
     const enemies = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.ENEMY]);
-    enemies[1].x += this.fieldSize/2;
+    enemies[1].x += this.fieldSize / 2;
   },
   onKeyDirection(direction) {
-    const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
     const vec = new Phaser.Point();
     switch (direction) {
       case DIRECTION.UP:
@@ -53,8 +52,12 @@ export default {
         break;
       default:
     }
+    this.move(vec, VEC_GRAVITY);
+  },
+  move(vec, vecGravity) {
+    const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
     // block movement negative to the gravity vec
-    if (!Phaser.Point.negative(vec).equals(GRAVITY_VEC)) {
+    if (!Phaser.Point.negative(vec).equals(vecGravity)) {
       heroes.filter(h => !h.moving).forEach((h) => {
         const neighbor = getNeighbor(this.mainGroup, h, vec);
         if (neighbor) { handleCollision([neighbor, h]); }
@@ -68,7 +71,7 @@ export default {
     const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
     const movable = groupFilter(this.mainGroup, testMovable);
     movable.forEach((m) => {
-      const neighbor = getNeighbor(this.mainGroup, m, GRAVITY_VEC);
+      const neighbor = getNeighbor(this.mainGroup, m, VEC_GRAVITY);
       if (!neighbor) {
         // move(GRAVITY_VEC, this.fieldSize, m);
       }
