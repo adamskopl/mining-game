@@ -18,7 +18,7 @@ function gameObject(type) {
       this.game.add.tween(this).to(
         { x: this.x + vec[0], y: this.y + vec[1] },
         movDur,
-        Phaser.Easing.Bounce.Out,
+        Phaser.Easing.Bounce.Linear,
         true,
       ).onComplete.add(() => {
         this.moving = false;

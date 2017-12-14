@@ -32,11 +32,13 @@ export default {
 
     const fieldSize = this.getFieldSize();
 
+    // reload background objects
     this.groupBackgroundObjects.removeAll();
     this.groupBackgroundObjects = createGroupBackgroundObjects(this.g, fieldSize, this.level);
     [this.groupBackgroundObjects.x, this.groupBackgroundObjects.y] =
       getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
 
+    // reload game objects
     this.groupGameObjects.removeAll();
     this.groupGameObjects = createGroupGameObjects(this.g, fieldSize, this.level);
     [this.groupGameObjects.x, this.groupGameObjects.y] =

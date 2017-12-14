@@ -14,7 +14,7 @@ export const DIRECTION = {
 
 export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
 
-const GRAVITY_VEC = new Phaser.Point(1, 0);
+const GRAVITY_VEC = new Phaser.Point(0, 1);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
 const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
@@ -32,6 +32,8 @@ export default {
   },
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
+    const enemies = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.ENEMY]);
+    enemies[1].x += this.fieldSize/2;
   },
   onKeyDirection(direction) {
     const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
@@ -68,7 +70,7 @@ export default {
     movable.forEach((m) => {
       const neighbor = getNeighbor(this.mainGroup, m, GRAVITY_VEC);
       if (!neighbor) {
-        move(GRAVITY_VEC, this.fieldSize, m);
+        // move(GRAVITY_VEC, this.fieldSize, m);
       }
     });
   },
