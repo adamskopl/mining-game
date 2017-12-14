@@ -51,11 +51,14 @@ export default {
         break;
       default:
     }
-    heroes.filter(h => !h.moving).forEach((h) => {
-      const neighbor = getNeighbor(this.mainGroup, h, vec);
-      if (neighbor) { handleCollision([neighbor, h]); }
-      move(vec, this.fieldSize, h);
-    });
+    // block movement negative to the gravity vec
+    if (!Phaser.Point.negative(vec).equals(GRAVITY_VEC)) {
+      heroes.filter(h => !h.moving).forEach((h) => {
+        const neighbor = getNeighbor(this.mainGroup, h, vec);
+        if (neighbor) { handleCollision([neighbor, h]); }
+        move(vec, this.fieldSize, h);
+      });
+    }
   },
   onTick() {
     if (!this.mainGroup) { return; }
