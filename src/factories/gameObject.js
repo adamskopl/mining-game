@@ -18,21 +18,21 @@ function addTween(game, obj, vec) {
 function gameObject(type) {
   return {
     type,
-    moving: false,
+    vecMove: new Phaser.Point(),
     movable: MOVABLE.includes(type),
     tweenMove: null,
-    isMoving() { return this.moving; },
+    isMoving() { return !this.vecMove.isZero(); },
     move(vec) {
       if (this.isMoving()) { return; }
-      this.tweenMove = addTween(this.game, this, vec);
+      this.vecMove.copyFrom(vec);
+      this.tweenMove = addTween(this.game, this, this.vecMove);
       this.tweenMove.onComplete.add(() => {
-        this.moving = false;
+        this.vecMove.set(0, 0);
       });
-      this.moving = true;
     },
     moveStop() {
       if (this.tweenMove) {
-        this.tweenMove.stop();
+        this.tweenMove.stop(true); // call onComplete
       }
     },
   };
