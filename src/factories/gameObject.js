@@ -1,15 +1,15 @@
 import Phaser from 'phaser';
 import { OBJECT_TYPE } from '../consts';
 
-const movDur = 500;
+const MOVE_DUR = 500;
 const MOVABLE = [
   OBJECT_TYPE.ENEMY,
   OBJECT_TYPE.HERO,
 ];
 
-function addTween(game, obj, vec) {
+function addTween(game, obj, vec, moveDur) {
   return game.add.tween(obj).to({ x: obj.x + vec.x, y: obj.y + vec.y },
-    movDur,
+    moveDur,
     Phaser.Easing.Bounce.Linear,
     true,
   );
@@ -22,10 +22,10 @@ function gameObject(type) {
     movable: MOVABLE.includes(type),
     tweenMove: null,
     isMoving() { return !this.vecMove.isZero(); },
-    move(vec) {
+      move(vec) {
       if (this.isMoving()) { return; }
       this.vecMove.copyFrom(vec);
-      this.tweenMove = addTween(this.game, this, this.vecMove);
+      this.tweenMove = addTween(this.game, this, this.vecMove, MOVE_DUR);
       this.tweenMove.onComplete.add(() => {
         this.vecMove.set(0, 0);
       });

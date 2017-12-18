@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
 import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
+import movement from './movement';
 import { getNeighbor } from '../group-utils';
-import { move } from './movement';
-import { handleCollision } from './collisions';
 
 export const DIRECTION = {
   UP: 'DIR_UP',
@@ -56,14 +55,7 @@ export default {
   },
   move(vec, vecGravity) {
     const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
-    // block movement negative to the gravity vec
-    if (!Phaser.Point.negative(vec).equals(vecGravity)) {
-      heroes.filter(h => !h.moving).forEach((h) => {
-        const neighbor = getNeighbor(this.mainGroup, h, vec);
-        if (neighbor) { handleCollision([neighbor, h]); }
-        move(vec, this.fieldSize, h);
-      });
-    }
+    movement.move(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
   },
   onTick() {
     if (!this.mainGroup) { return; }
