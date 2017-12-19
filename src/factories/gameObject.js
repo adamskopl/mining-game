@@ -1,29 +1,39 @@
 import Phaser from 'phaser';
 import { OBJECT_TYPE } from '../consts';
 
-const movDur = 500;
+const MOVE_DUR = 500;
 const MOVABLE = [
   OBJECT_TYPE.ENEMY,
   OBJECT_TYPE.HERO,
 ];
 
+function addTween(game, obj, vec, moveDur) {
+  return game.add.tween(obj).to({ x: obj.x + vec.x, y: obj.y + vec.y },
+    moveDur,
+    Phaser.Easing.Bounce.Linear,
+    true,
+  );
+}
+
 function gameObject(type) {
   return {
     type,
-    moving: false,
+    vecMove: new Phaser.Point(),
     movable: MOVABLE.includes(type),
-    isMoving() { return this.moving; },
-    move(vec) {
+    tweenMove: null,
+    isMoving() { return !this.vecMove.isZero(); },
+      move(vec) {
       if (this.isMoving()) { return; }
-      this.game.add.tween(this).to(
-        { x: this.x + vec[0], y: this.y + vec[1] },
-        movDur,
-        Phaser.Easing.Bounce.Out,
-        true,
-      ).onComplete.add(() => {
-        this.moving = false;
+      this.vecMove.copyFrom(vec);
+      this.tweenMove = addTween(this.game, this, this.vecMove, MOVE_DUR);
+      this.tweenMove.onComplete.add(() => {
+        this.vecMove.set(0, 0);
       });
-      this.moving = true;
+    },
+    moveStop() {
+      if (this.tweenMove) {
+        this.tweenMove.stop(true); // call onComplete
+      }
     },
   };
 }

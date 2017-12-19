@@ -1,9 +1,9 @@
 export const OBJECT_TYPE = {
   // temporary have to be *sorted* (until Tiled is used. check levels.js)
-  EMPTY: 'EMPTY',
-  ENEMY: 'ENEMY',
-  FILLED: 'FILLED',
-  HERO: 'HERO',
+  EMPTY: 'EMPTY', // 0
+  ENEMY: 'ENEMY', // 1
+  FILLED: 'FILLED', // 2
+  HERO: 'HERO', // 3
 };
 
 export const BITMAPS = {

@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
 import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
+import movement from './movement';
 import { getNeighbor } from '../group-utils';
-import { move } from './movement';
-import { handleCollision } from './collisions';
 
 export const DIRECTION = {
   UP: 'DIR_UP',
@@ -14,7 +13,7 @@ export const DIRECTION = {
 
 export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
 
-const GRAVITY_VEC = new Phaser.Point(0, 1);
+const VEC_GRAVITY = new Phaser.Point(0, 1);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
 const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
@@ -32,9 +31,10 @@ export default {
   },
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
+    const enemies = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.ENEMY]);
+    enemies[1].x += this.fieldSize / 2;
   },
   onKeyDirection(direction) {
-    const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
     const vec = new Phaser.Point();
     switch (direction) {
       case DIRECTION.UP:
@@ -51,13 +51,11 @@ export default {
         break;
       default:
     }
-    if (!vec.equals(Phaser.Point.negative(GRAVITY_VEC))) {
-      heroes.filter(h => !h.moving).forEach((h) => {
-        const neighbor = getNeighbor(this.mainGroup, h, vec);
-        if (neighbor) { handleCollision([neighbor, h]); }
-        move(vec, this.fieldSize, h);
-      });
-    }
+    this.move(vec, VEC_GRAVITY);
+  },
+  move(vec, vecGravity) {
+    const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
+    movement.move(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
   },
   onTick() {
     if (!this.mainGroup) { return; }
@@ -65,9 +63,9 @@ export default {
     const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
     const movable = groupFilter(this.mainGroup, testMovable);
     movable.forEach((m) => {
-      const neighbor = getNeighbor(this.mainGroup, m, GRAVITY_VEC);
+      const neighbor = getNeighbor(this.mainGroup, m, VEC_GRAVITY);
       if (!neighbor) {
-        move(GRAVITY_VEC, this.fieldSize, m);
+        // move(GRAVITY_VEC, this.fieldSize, m);
       }
     });
   },
