@@ -1,4 +1,5 @@
-const TYPES = ['null', 'array', 'string', 'number', 'function', 'object'];
+// TODO: introduce 'point' type (check for x, y)
+const TYPES = ['null', 'array', 'point', 'string', 'number', 'function', 'object'];
 
 /**
  * @param [String] toCheck
@@ -17,6 +18,9 @@ function isTypeOf(toCheck, type, types) {
       break;
     case 'array':
       ret = Array.isArray(toCheck);
+      break;
+    case 'point':
+      ret = toCheck instanceof Phaser.Point;
       break;
     default:
       ret = typeof toCheck === type;
