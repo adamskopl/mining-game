@@ -3,7 +3,9 @@ import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import movement from './movement';
 import { getNeighbor } from '../group-utils';
+import { checkArgs } from '../utils';
 
+// TODO: change to Phaser.Point. will allow to make calculations, etc...
 export const DIRECTION = {
   UP: 'DIR_UP',
   RIGHT: 'DIR_RIGHT',
@@ -54,8 +56,9 @@ export default {
     this.move(vec, VEC_GRAVITY);
   },
   move(vec, vecGravity) {
+    checkArgs('move', arguments, ['object', 'object']);
     const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
-    movement.move(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
+    movement.moveObjects(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
   },
   onTick() {
     if (!this.mainGroup) { return; }

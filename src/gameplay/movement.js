@@ -4,14 +4,14 @@ import { handleCollision } from './collisions';
 import { checkArgs } from '../utils';
 
 function moveObject(vec, fieldSize, object) {
-  checkArgs('moveObject', arguments, ['object', 'number', 'object']); // eslint-disable-line prefer-rest-params
+  checkArgs('moveObject', arguments, ['object', 'number', 'object']);
   object.bringToTop();
   object.move(new Phaser.Point(vec.x * fieldSize, vec.y * fieldSize));
-  // PUB: object started movement
+  // TODO: pub movement?
 }
 
 export default {
-  move(vec, vecGravity, fieldSize, objects, group) {
+  moveObjects(vec, vecGravity, fieldSize, objects, group) {
     checkArgs('move', arguments, ['object', 'object', 'number', 'array', 'object']);
     // block movement negative to the gravity vec
     if (Phaser.Point.negative(vec).equals(vecGravity)) { return; }
