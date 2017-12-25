@@ -19,7 +19,7 @@ function preload() {
 function create(g) {
   g.input.keyboard.addCallbacks(this, R.partial(onDown, [game]));
 
-  g.input.onDown.add(onMouseDown, this);
+  // g.input.onDown.add(onMouseDown, this);
 
   g.stage.backgroundColor = '#555555';
   g.scale.pageAlignHorizontally = true;
