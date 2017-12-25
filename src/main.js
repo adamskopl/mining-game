@@ -70,7 +70,7 @@ function onResize(w, h) {
 }
 
 function render(g) {
-  gameplay.onTick();
+  gameplay.update();
   g.debug.inputInfo(100, 100);
 }
 

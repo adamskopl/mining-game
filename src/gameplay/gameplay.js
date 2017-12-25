@@ -60,7 +60,7 @@ export default {
     const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
     movement.moveObjects(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
   },
-  onTick() {
+  update() {
     if (!this.mainGroup) { return; }
 
     const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
@@ -68,6 +68,7 @@ export default {
     movable.forEach((m) => {
       const neighbor = getNeighbor(this.mainGroup, m, VEC_GRAVITY);
       if (!neighbor) {
+        // TODO: implement gravity: move when no floor
         // move(GRAVITY_VEC, this.fieldSize, m);
       }
     });
