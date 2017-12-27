@@ -18,7 +18,9 @@ let player;
 let groupFields;
 let groupPlayers;
 let groupAll;
-let groupBlockers;
+
+let tween = null;
+let tweenTest = false;
 
 const OBJECTS_SIZE = 22;
 
@@ -31,45 +33,70 @@ function create() {
   groupAll = game.add.group();
   groupFields = game.add.group(groupAll);
   groupPlayers = game.add.group(groupAll);
-  groupBlockers = game.add.group(groupAll);
 
   const startingPos = new Phaser.Point(100, 200);
-  player = groupPlayers.create(startingPos.x, startingPos.y - OBJECTS_SIZE, 'orbRed');
+  player = groupPlayers.create(startingPos.x, startingPos.y, 'orbRed');
 
-  const exclude = [3];
-  for (let i = 0; i < 10; i += 1) {
-    if (!exclude.includes(i)) {
-      groupFields.create(startingPos.x + (i * OBJECTS_SIZE), startingPos.y, 'orbBlue');
-    }
-  }
-  // extra fields
-  groupFields.create(startingPos.x + (2 * OBJECTS_SIZE), startingPos.y - OBJECTS_SIZE, 'orbBlue');
+  groupFields.create(
+    startingPos.x + OBJECTS_SIZE * 1.5,
+    startingPos.y - OBJECTS_SIZE / 2,
+    'orbBlue');
+  groupFields.create(
+    startingPos.x + OBJECTS_SIZE / 2,
+    startingPos.y + OBJECTS_SIZE * 1.5,
+    'orbBlue');
+
+  // const exclude = [3];
+  // const fieldsNumber = 1;
+  // for (let i = 0; i < fieldsNumber; i += 1) {
+  //   if (!exclude.includes(i)) {
+  //     const posX = startingPos.x + (i * OBJECTS_SIZE);
+  //     groupFields.create(posX, startingPos.y, 'orbBlue');
+  //     console.warn(posX);
+  //   }
+  // }
 
   game.physics.arcade.enable(groupFields.children);
   game.physics.arcade.enable(groupPlayers.children);
-  groupFields.children.forEach((o) => {
-    o.body.allowGravity = false;
-    o.body.immovable = true;
-  });
-
-  game.physics.arcade.gravity.y = 200;
 }
 
-function addBlocker(object, dir) {
-  groupBlockers.create(object.x - dir.x * OBJECTS_SIZE, object.y, 'orbGreen');
+const getRectPoints = r => [
+  r.getBounds().getPoint(Phaser.TOP_LEFT),
+  r.getBounds().getPoint(Phaser.TOP_RIGHT),
+  r.getBounds().getPoint(Phaser.BOTTOM_RIGHT),
+  r.getBounds().getPoint(Phaser.BOTTOM_LEFT),
+];
+
+/**
+ * Move o1 outside the o2
+ */
+function moveObjOutside(oMoving, moveVec, o2) {
+  const intersection = Phaser.Rectangle.intersection(
+    oMoving.getBounds(),
+    o2.getBounds()
+  );
+    console.warn(intersection);
+    const returnVec = Phaser.Point.multiply(new Phaser.Point);
+
+
+    // PRZESUN O NEGATYWNY WEKTOR!
+}
+
+function collCallback(obj1, obj2) {
+  if (!tweenTest) {
+    tweenTest = true;
+    tween.stop();
+    const objMoving = tween.target;
+    const objColl = objMoving === obj1 ? obj2 : obj1;
+    if (objMoving === objColl) {
+      console.error('===');
+    }
+    moveObjOutside(objMoving, objMoving.moveVec, objColl);
+  }
 }
 
 function update() {
-  game.physics.arcade.collide(groupFields, groupPlayers);
-
-  if (player.moving) {
-    if (Math.abs(player.x - player.startX) >= OBJECTS_SIZE) {
-      console.warn('MOVED');
-      player.moving = false;
-      player.body.velocity.x = 0;
-      console.warn(player.x);
-    }
-  }
+  game.physics.arcade.collide(groupFields, groupPlayers, collCallback);
 }
 
 function render() {
@@ -80,11 +107,8 @@ function render() {
 function onKeyDirection(dir) {
   checkArgs('onKeyDirection', arguments, ['point']);
   const vec = new Phaser.Point(dir.x, dir.y).multiply(OBJECTS_SIZE, OBJECTS_SIZE);
-
-  player.moving = true;
-  player.startX = player.x;
-  player.body.velocity.x = dir.x * 50;
-  // addTween(game, player, vec, 300);
+  player.moveVec = vec;
+  tween = addTween(game, player, vec, 300);
 }
 
 function onKeyDirection2(dir) {
