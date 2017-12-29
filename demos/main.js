@@ -18,6 +18,7 @@ let player;
 let groupFields;
 let groupPlayers;
 let groupAll;
+let groupBlockers;
 
 let tween = null;
 let tweenTest = false;
@@ -33,82 +34,78 @@ function create() {
   groupAll = game.add.group();
   groupFields = game.add.group(groupAll);
   groupPlayers = game.add.group(groupAll);
+  groupBlockers = game.add.group(groupAll);
 
-  const startingPos = new Phaser.Point(100, 200);
+  const startingPos = new Phaser.Point(100, 100);
   player = groupPlayers.create(startingPos.x, startingPos.y, 'orbRed');
 
-  groupFields.create(
-    startingPos.x + OBJECTS_SIZE * 1.5,
-    startingPos.y - OBJECTS_SIZE / 2,
-    'orbBlue');
-  groupFields.create(
-    startingPos.x + OBJECTS_SIZE / 2,
-    startingPos.y + OBJECTS_SIZE * 1.5,
-    'orbBlue');
+  const exclude = [5];
+  const fieldsNumber = 10;
+  const fieldsMargin = -3;
+  for (let i = 0; i < fieldsNumber; i += 1) {
+    if (!exclude.includes(i)) {
+      const posX = startingPos.x + (i * OBJECTS_SIZE) + fieldsMargin * OBJECTS_SIZE;
+      groupFields.create(posX, startingPos.y + OBJECTS_SIZE, 'orbBlue');
+    }
+  }
 
-  // const exclude = [3];
-  // const fieldsNumber = 1;
-  // for (let i = 0; i < fieldsNumber; i += 1) {
-  //   if (!exclude.includes(i)) {
-  //     const posX = startingPos.x + (i * OBJECTS_SIZE);
-  //     groupFields.create(posX, startingPos.y, 'orbBlue');
-  //     console.warn(posX);
-  //   }
-  // }
+  groupBlockers.create(startingPos.x + OBJECTS_SIZE * 3, startingPos.y, 'orbGreen');
+  groupBlockers.children.forEach((s) => { s.alpha = 0.1; });
 
   game.physics.arcade.enable(groupFields.children);
   game.physics.arcade.enable(groupPlayers.children);
-}
+  game.physics.arcade.enable(groupBlockers.children);
+  groupFields.children.forEach((f) => { f.body.immovable = true; });
+  groupBlockers.children.forEach((f) => { f.body.immovable = true; });
 
-const getRectPoints = r => [
-  r.getBounds().getPoint(Phaser.TOP_LEFT),
-  r.getBounds().getPoint(Phaser.TOP_RIGHT),
-  r.getBounds().getPoint(Phaser.BOTTOM_RIGHT),
-  r.getBounds().getPoint(Phaser.BOTTOM_LEFT),
-];
+  player.body.gravity.y = 200;
+  player.body.bounce.y = 0.5;
+}
 
 /**
  * Move o1 outside the o2
  */
-function moveObjOutside(oMoving, moveVec, o2) {
-  const intersection = Phaser.Rectangle.intersection(
-    oMoving.getBounds(),
-    o2.getBounds()
-  );
-    console.warn(intersection);
-    const returnVec = Phaser.Point.multiply(new Phaser.Point);
+function moveObjOutside(oMoving, moveVec, oColliding) {
+  const posColliding = new Phaser.Point(oColliding.x, oColliding.y);
+  const vecAlign = new Phaser.Point(oMoving.width, oMoving.height);
+  vecAlign.multiply(moveVec.x, moveVec.y);
 
-
-    // PRZESUN O NEGATYWNY WEKTOR!
-}
-
-function collCallback(obj1, obj2) {
-  if (!tweenTest) {
-    tweenTest = true;
-    tween.stop();
-    const objMoving = tween.target;
-    const objColl = objMoving === obj1 ? obj2 : obj1;
-    if (objMoving === objColl) {
-      console.error('===');
-    }
-    moveObjOutside(objMoving, objMoving.moveVec, objColl);
+  if (vecAlign.x !== 0) {
+    oMoving.x = oColliding.x - vecAlign.x;
+  }
+  if (vecAlign.y !== 0) {
+    oMoving.y = oColliding.y - vecAlign.y;
   }
 }
 
+let collision = false;
+
+function collCallback(obj1, obj2) {
+  collision = true;
+}
+
+function collCallbackBlock(obj1, obj2) {
+}
+
 function update() {
+  if (!collision) {
+    // player.body.velocity.x = 0;
+  }
+  collision = false;
   game.physics.arcade.collide(groupFields, groupPlayers, collCallback);
+  game.physics.arcade.collide(groupBlockers, groupPlayers, collCallbackBlock);
 }
 
 function render() {
   groupFields.children.forEach(f => game.debug.body(f));
   groupPlayers.children.forEach(f => game.debug.body(f));
+  // groupBlockers.children.forEach(f => game.debug.body(f));
 }
 
 function onKeyDirection(dir) {
   checkArgs('onKeyDirection', arguments, ['point']);
-  const vec = new Phaser.Point(dir.x, dir.y).multiply(OBJECTS_SIZE, OBJECTS_SIZE);
-  player.moveVec = vec;
-  tween = addTween(game, player, vec, 300);
+  const speed = 200;
+  [player.body.velocity.x, player.body.velocity.y] = [dir.x * speed, dir.y * speed];
 }
 
 function onKeyDirection2(dir) {
