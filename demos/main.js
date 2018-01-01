@@ -1,5 +1,6 @@
 import R from 'ramda';
 import { checkArgs } from './utils';
+import { findNeighbour, filterCoordDiff, findEdgeField } from './fieldsMethods';
 
 const game = new Phaser.Game(400, 400, Phaser.CANVAS, 'phaser-example', {
   preload,
@@ -25,6 +26,16 @@ let tweenTest = false;
 
 const OBJECTS_SIZE = 22;
 
+const Pnt = Phaser.Point;
+
+function addBlocker(pos, group) {
+  group.removeAll();
+  const b = group.create(pos.x, pos.y, 'orbGreen');
+  b.alpha = 0.1;
+  game.physics.arcade.enable(b);
+  b.body.immovable = true;
+}
+
 function create() {
   game.input.keyboard.addCallbacks(null, onDown);
 
@@ -36,21 +47,23 @@ function create() {
   groupPlayers = game.add.group(groupAll);
   groupBlockers = game.add.group(groupAll);
 
-  const startingPos = new Phaser.Point(100, 100);
-  player = groupPlayers.create(startingPos.x, startingPos.y, 'orbRed');
+  const startingPos = new Pnt(120, 100);
+  player = groupPlayers.create(startingPos.y, startingPos.x, 'orbRed');
 
-  const exclude = [5];
-  const fieldsNumber = 10;
-  const fieldsMargin = -3;
-  for (let i = 0; i < fieldsNumber; i += 1) {
-    if (!exclude.includes(i)) {
-      const posX = startingPos.x + (i * OBJECTS_SIZE) + fieldsMargin * OBJECTS_SIZE;
-      groupFields.create(posX, startingPos.y + OBJECTS_SIZE, 'orbBlue');
+  const fieldsMargin = -5;
+
+  function addFieldsRow(fieldsNumber, shiftY, excludeArr = []) {
+    for (let i = 0; i < fieldsNumber; i += 1) {
+      if (!excludeArr.includes(i)) {
+        const posX = startingPos.x + (i * OBJECTS_SIZE) + fieldsMargin * OBJECTS_SIZE;
+          groupFields.create(startingPos.y + (OBJECTS_SIZE * (shiftY + 1)), posX, 'orbBlue');
+      }
     }
   }
 
-  groupBlockers.create(startingPos.x + OBJECTS_SIZE * 3, startingPos.y, 'orbGreen');
-  groupBlockers.children.forEach((s) => { s.alpha = 0.1; });
+  addFieldsRow(10, 0, [1, 3, 8]);
+  addFieldsRow(10, 2, [1]);
+  addFieldsRow(10, 4, [7]);
 
   game.physics.arcade.enable(groupFields.children);
   game.physics.arcade.enable(groupPlayers.children);
@@ -58,16 +71,21 @@ function create() {
   groupFields.children.forEach((f) => { f.body.immovable = true; });
   groupBlockers.children.forEach((f) => { f.body.immovable = true; });
 
-  player.body.gravity.y = 200;
-  player.body.bounce.y = 0.5;
+  player.body.gravity.x = 800;
+  // player.body.bounce.y = 0.5;
+
+  const f = findEdgeField(player, new Pnt(-1, 0), groupFields);
+  if (f) {
+    // f.alpha = 0.3;
+  }
 }
 
 /**
  * Move o1 outside the o2
  */
 function moveObjOutside(oMoving, moveVec, oColliding) {
-  const posColliding = new Phaser.Point(oColliding.x, oColliding.y);
-  const vecAlign = new Phaser.Point(oMoving.width, oMoving.height);
+  const posColliding = new Pnt(oColliding.x, oColliding.y);
+  const vecAlign = new Pnt(oMoving.width, oMoving.height);
   vecAlign.multiply(moveVec.x, moveVec.y);
 
   if (vecAlign.x !== 0) {
@@ -84,8 +102,7 @@ function collCallback(obj1, obj2) {
   collision = true;
 }
 
-function collCallbackBlock(obj1, obj2) {
-}
+function collCallbackBlock(obj1, obj2) {}
 
 function update() {
   if (!collision) {
@@ -106,6 +123,14 @@ function onKeyDirection(dir) {
   checkArgs('onKeyDirection', arguments, ['point']);
   const speed = 200;
   [player.body.velocity.x, player.body.velocity.y] = [dir.x * speed, dir.y * speed];
+  const e = findEdgeField(player, dir, groupFields);
+
+  if (e) {
+    const posX = e.x + (2 * e.width * dir.x);
+    addBlocker(new Pnt(posX, e.y - e.width), groupBlockers);
+  } else {
+    console.warn('NO EDGE FOUND');
+  }
 }
 
 function onKeyDirection2(dir) {
@@ -116,31 +141,22 @@ function onDown(e) {
   switch (e.keyCode) {
     case 38: // up
     case 87: // w
-      onKeyDirection(new Phaser.Point(0, -1));
+      onKeyDirection(new Pnt(0, -1));
       break;
     case 39: // right
     case 68: // d
-      onKeyDirection(new Phaser.Point(1, 0));
+      onKeyDirection(new Pnt(1, 0));
       break;
     case 40: // down
     case 83: // s
-      onKeyDirection(new Phaser.Point(0, 1));
+      onKeyDirection(new Pnt(0, 1));
       break;
     case 37: // left
     case 65: // a
-      onKeyDirection(new Phaser.Point(-1, 0));
+      onKeyDirection(new Pnt(-1, 0));
       break;
     case 70: // f
       break;
     default:
   }
-}
-
-function addTween(game, obj, vec, moveDur) {
-  checkArgs('addTween', arguments, ['object', 'object', 'point', 'number']);
-  return game.add.tween(obj).to({ x: obj.x + vec.x, y: obj.y + vec.y },
-    moveDur,
-    Phaser.Easing.Bounce.Linear,
-    true,
-  );
 }
