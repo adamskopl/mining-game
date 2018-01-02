@@ -63,14 +63,15 @@ export default {
   update() {
     if (!this.mainGroup) { return; }
 
-    const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
-    const movable = groupFilter(this.mainGroup, testMovable);
-    movable.forEach((m) => {
-      const neighbor = getNeighbor(this.mainGroup, m, VEC_GRAVITY);
-      if (!neighbor) {
-        // TODO: implement gravity: move when no floor
-        // move(GRAVITY_VEC, this.fieldSize, m);
-      }
-    });
+    // old GRAV implementation
+    // const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
+    // const movable = groupFilter(this.mainGroup, testMovable);
+    // movable.forEach((m) => {
+    //   const neighbor = getNeighbor(this.mainGroup, m, VEC_GRAVITY);
+    //   if (!neighbor) {
+    //     // TODO: implement gravity: move when no floor
+    //     // move(GRAVITY_VEC, this.fieldSize, m);
+    //   }
+    // });
   },
 };
