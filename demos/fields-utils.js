@@ -1,3 +1,4 @@
+import Phaser from 'phaser-ce';
 import R from 'ramda';
 import { checkArgs } from './utils';
 
@@ -21,9 +22,9 @@ export function filterCoordDiff(field, direction, gFields) {
   checkArgs('filterCoordDiff', arguments, ['object', 'point', 'object']);
 
   function testFun(f, dir, gF) {
-    const getCond = (f, dir, gF, keyCoord, keyDim) =>
-      dir[keyCoord] === 0 || // 0 disables coord from being considered
-      f[keyCoord] + (dir[keyCoord] * f[keyDim]) === gF[keyCoord];
+    const getCond = (f2, dir2, gF2, keyCoord, keyDim) =>
+      dir2[keyCoord] === 0 || // 0 disables coord from being considered
+      f2[keyCoord] + (dir2[keyCoord] * f2[keyDim]) === gF2[keyCoord];
     return [
       getCond(f, dir, gF, 'x', 'width'),
       getCond(f, dir, gF, 'y', 'height'),
@@ -33,15 +34,20 @@ export function filterCoordDiff(field, direction, gFields) {
 }
 
 // is the oB on the side indicated by the direction
-const isInDirection = (oA, dir, oB) => dir.x < 0 ? oA.x > oB.x : oA.x < oB.x;
+export function isInDirection(oA, dir, oB) {
+  const prop = dir.x !== 0 ? 'x' : 'y';
+  return dir[prop] < 0 ? oA[prop] >= oB[prop] : oA[prop] <= oB[prop];
+}
 
-export function findEdgeField(movingObject, direction, groupFields) {
-  checkArgs('findEdgeField', arguments, ['object', 'point', 'object']);
-  const fieldsNoNeighbour = filterCoordDiff(movingObject, new Pnt(0, 1), groupFields)
-    .filter(f => !findNeighbour(groupFields, direction, f))
-    .filter(isInDirection.bind(null, movingObject, direction));
-  if (fieldsNoNeighbour.length === 0) {
+export function findEdgeField(movingObject, direction, gravity, groupFields) {
+  checkArgs('findEdgeField', arguments, ['object', 'point', 'point', 'object']);
+  const fieldsCoord = filterCoordDiff(movingObject, Pnt.normalize(gravity), groupFields);
+  const fieldsNoN = fieldsCoord.filter(f => !findNeighbour(groupFields, direction, f));
+  const fieldsInDir = fieldsNoN.filter(isInDirection.bind(null, movingObject, direction));
+
+  if (fieldsInDir.length === 0) {
     return null;
   }
-  return fieldsNoNeighbour.reduce((direction.x < 0 ? R.maxBy : R.minBy)(a => a.x));
+  const prop = direction.x !== 0 ? 'x' : 'y';
+  return fieldsInDir.reduce((direction[prop] < 0 ? R.maxBy : R.minBy)(a => a[prop]));
 }
