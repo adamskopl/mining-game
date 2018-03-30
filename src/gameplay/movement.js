@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { getNeighbor } from '../group-utils';
 import { handleCollision } from './collisions';
 import { checkArgs } from '../utils';

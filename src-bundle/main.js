@@ -1,2 +1,2 @@
-import phaser from 'phaser';
-import R from 'ramda';
+import 'phaser';
+import 'ramda';

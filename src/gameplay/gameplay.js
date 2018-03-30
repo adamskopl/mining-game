@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import movement from './movement';

@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 import { EMPTY, SPOT, CRATE, PLAYER } from './consts';
 import copyArray from './utils';
 

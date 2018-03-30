@@ -8,7 +8,6 @@ import { OBJECT_TYPE } from '../consts';
 export function createGroupGameObjects(g, fieldSize, level) {
   const group = g.add.group();
   level.forEach((objectType, [x, y]) => {
-    // TODO: not 'object' but...
     if (objectType) {
       const child = group.create(fieldSize * x, fieldSize * y, bitmapsManager.getBitmap(objectType));
       group.replace(child, gameObject(child, { type: objectType }));

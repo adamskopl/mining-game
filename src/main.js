@@ -1,5 +1,4 @@
 import R from 'ramda';
-import Phaser from 'phaser';
 import displayManager from './display-manager';
 import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';

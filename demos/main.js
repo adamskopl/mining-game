@@ -1,5 +1,4 @@
 import R from 'ramda';
-import Phaser from 'phaser-ce';
 import { checkArgs } from './utils';
 import { findNeighbour, filterCoordDiff, findEdgeField } from './fields-utils';
 

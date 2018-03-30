@@ -6,6 +6,7 @@
   "scripts": {
     "babel-watch": "babel --watch src --out-dir dist/src --source-maps",
     "bundle-imports": "jspm bundle src-bundle/main.js imports-bundle.js --minify",
+    "watch": "node node_modules/gulp/bin/gulp.js watch",
     "test": "node test.js | faucet"
   },
   "repository": {

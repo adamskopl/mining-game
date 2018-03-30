@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { getGamePos } from '../display-utils';
 import { getFieldSize } from '../level-utils';
 import level from './levels';
