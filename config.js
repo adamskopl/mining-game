@@ -17,14 +17,16 @@ System.config({
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
     "core-js": "npm:core-js@1.2.7",
-    "phaser": "github:photonstorm/phaser@2.6.2",
+    "glob": "npm:glob@7.1.2",
+    "phaser": "github:photonstorm/phaser-ce@2.10.3",
+    "photonstorm/phaser-ce": "github:photonstorm/phaser-ce@2.10.3",
     "ramda": "npm:ramda@0.25.0",
-    "tape": "npm:tape@4.8.0",
+    "tape": "npm:tape@4.9.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },
     "github:jspm/nodelibs-buffer@0.1.1": {
-      "buffer": "npm:buffer@5.0.8"
+      "buffer": "npm:buffer@5.1.0"
     },
     "github:jspm/nodelibs-events@0.1.1": {
       "events": "npm:events@1.0.2"
@@ -53,13 +55,13 @@ System.config({
     "npm:babel-runtime@5.8.38": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:brace-expansion@1.1.8": {
+    "npm:brace-expansion@1.1.11": {
       "balanced-match": "npm:balanced-match@1.0.0",
       "concat-map": "npm:concat-map@0.0.1"
     },
-    "npm:buffer@5.0.8": {
-      "base64-js": "npm:base64-js@1.2.1",
-      "ieee754": "npm:ieee754@1.1.8"
+    "npm:buffer@5.1.0": {
+      "base64-js": "npm:base64-js@1.2.3",
+      "ieee754": "npm:ieee754@1.1.11"
     },
     "npm:core-js@1.2.7": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -74,7 +76,7 @@ System.config({
       "foreach": "npm:foreach@2.0.5",
       "object-keys": "npm:object-keys@1.0.11"
     },
-    "npm:es-abstract@1.9.0": {
+    "npm:es-abstract@1.11.0": {
       "es-to-primitive": "npm:es-to-primitive@1.1.1",
       "function-bind": "npm:function-bind@1.1.1",
       "has": "npm:has@1.0.1",
@@ -130,8 +132,11 @@ System.config({
       "has": "npm:has@1.0.1"
     },
     "npm:minimatch@3.0.4": {
-      "brace-expansion": "npm:brace-expansion@1.1.8",
+      "brace-expansion": "npm:brace-expansion@1.1.11",
       "path": "github:jspm/nodelibs-path@0.1.0"
+    },
+    "npm:object-inspect@1.5.0": {
+      "util": "github:jspm/nodelibs-util@0.1.0"
     },
     "npm:once@1.4.0": {
       "wrappy": "npm:wrappy@1.0.2"
@@ -164,7 +169,7 @@ System.config({
       "stream-browserify": "npm:stream-browserify@1.0.0",
       "string_decoder": "npm:string_decoder@0.10.31"
     },
-    "npm:resolve@1.4.0": {
+    "npm:resolve@1.5.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "path-parse": "npm:path-parse@1.0.5",
@@ -182,13 +187,13 @@ System.config({
     },
     "npm:string.prototype.trim@1.1.2": {
       "define-properties": "npm:define-properties@1.1.2",
-      "es-abstract": "npm:es-abstract@1.9.0",
+      "es-abstract": "npm:es-abstract@1.11.0",
       "function-bind": "npm:function-bind@1.1.1"
     },
     "npm:string_decoder@0.10.31": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1"
     },
-    "npm:tape@4.8.0": {
+    "npm:tape@4.9.0": {
       "deep-equal": "npm:deep-equal@1.0.1",
       "defined": "npm:defined@1.0.0",
       "events": "github:jspm/nodelibs-events@0.1.1",
@@ -199,10 +204,10 @@ System.config({
       "has": "npm:has@1.0.1",
       "inherits": "npm:inherits@2.0.3",
       "minimist": "npm:minimist@1.2.0",
-      "object-inspect": "npm:object-inspect@1.3.0",
+      "object-inspect": "npm:object-inspect@1.5.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
-      "resolve": "npm:resolve@1.4.0",
+      "resolve": "npm:resolve@1.5.0",
       "resumer": "npm:resumer@0.0.0",
       "string.prototype.trim": "npm:string.prototype.trim@1.1.2",
       "through": "npm:through@2.3.8"

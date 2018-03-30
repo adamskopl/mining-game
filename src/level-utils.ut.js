@@ -2,8 +2,7 @@ import test from 'tape';
 import {
   getFieldSize,
   levelPosToPos,
-  getLevelSize,
-} from '../src/level-utils';
+} from './level-utils';
 
 test('getFieldSize', (t) => {
   [
@@ -25,16 +24,6 @@ test('levelPosToPos', (t) => {
     [[3, 1], [100, 0], 15, [145, 15]],
   ].forEach((tc) => {
     t.deepEqual(levelPosToPos(tc[0], tc[1], tc[2]), tc[3]);
-  });
-  t.end();
-});
-
-test('getLevelSize', (t) => {
-  const getLevel = ([w, h]) = Array(h).fill(Array(w).fill(0));
-  [
-    [0, 0], [1, 1], [2, 5], [5, 2]
-  ].forEach((tc) => {
-    t.deepEqual(getLevelSize(getLevel(tc)), tc);
   });
   t.end();
 });

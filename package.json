@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "babel-watch": "babel --watch src --out-dir dist/src --source-maps",
-    "bundle-imports": "jspm bundle src-bundle/main.js imports-bundle.js --minify"
+    "bundle-imports": "jspm bundle src-bundle/main.js imports-bundle.js --minify",
+    "test": "node test.js | faucet"
   },
   "repository": {
     "type": "git",
@@ -25,20 +26,19 @@
     "eslint": "^4.10.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
+    "faucet": "0.0.1",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-run": "^1.7.1",
     "gulp-sourcemaps": "^2.6.1",
     "jspm": "^0.16.53",
     "require-dir": "^0.3.2"
   },
   "jspm": {
     "dependencies": {
-      "phaser": "github:photonstorm/phaser@^2.6.2",
+      "glob": "npm:glob@^7.1.2",
+      "photonstorm/phaser-ce": "github:photonstorm/phaser-ce@^2.10.0",
       "ramda": "npm:ramda@^0.25.0",
-      "tape": "npm:tape@^4.8.0"
+      "tape": "npm:tape@^4.9.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",

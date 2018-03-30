@@ -2,7 +2,7 @@ import test from 'tape';
 import {
   getGameAreaSize,
   getGamePos,
-} from '../src/display-utils';
+} from './display-utils';
 
 test('getGameAreaSize', (t) => {
   [ // [appW, appH], [marginX, maringY], [gameAreaW, gameAreaH]
