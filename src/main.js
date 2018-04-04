@@ -4,16 +4,16 @@ import bitmapsManager from './bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
 import gameplay, { DIRECTION, DIRECTIONS } from './gameplay/gameplay';
 
+const Phaser = window.Phaser;
 let inputPolygons = null;
-const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
-  preload,
-  create,
-  resize: onResize,
-  render,
-});
 
-function preload() {
-}
+const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
+  create,
+  preload,
+  render,
+  resize,
+  update,
+});
 
 function create(g) {
   g.input.keyboard.addCallbacks(this, R.partial(onDown, [game]));
@@ -32,33 +32,42 @@ function create(g) {
   gameplay.init(g);
 
   [
-    [levelManager.signalGroupReloaded, 'onMainGroupReloaded', [
-      gameplay,
+    [levelManager.signalGroupReloaded,
+      'onMainGroupReloaded',
+      [
+        gameplay,
+      ],
     ],
-    ],
-    [levelManager.signalFieldResized, 'onFieldResized', [
-      bitmapsManager,
-      gameplay,
-    ],
+    [levelManager.signalFieldResized,
+      'onFieldResized',
+      [
+        bitmapsManager,
+        gameplay,
+      ],
     ],
   ].forEach((signalGroup) => {
     signalGroup[2].forEach((listener) => {
       signalGroup[0].add(listener[signalGroup[1]], listener);
     });
   });
+  resize(game.width, game.height);
 }
 
-function onResize(w, h) {
+function preload() {}
+
+function render(g) {
+  g.debug.inputInfo(100, 100);
+}
+
+function resize(w, h) {
   const size = [w, h];
   levelManager.onResize(size);
-
-  // TODO: implement swipe.
   const p = [
     new Phaser.Point(0, 0), // 0
     new Phaser.Point(w, 0), // 1
     new Phaser.Point(w, h), // 2
     new Phaser.Point(0, h), // 3
-    new Phaser.Point(w/2, h/2), // 4
+    new Phaser.Point(w / 2, h / 2), // 4
   ];
   inputPolygons = [
     new Phaser.Polygon(p[4], p[0], p[1], p[4]),
@@ -68,16 +77,17 @@ function onResize(w, h) {
   ];
 }
 
-function render(g) {
-  gameplay.update();
-  g.debug.inputInfo(100, 100);
-}
 
 function onMouseDown(pointer) {
   const getFloor = (pntr, prop) => Math.floor(pntr.positionDown[prop]);
-  const findFun = p => p.contains(getFloor(pointer, 'x'), getFloor(pointer, 'y'));
+  const findFun = p =>
+    p.contains(getFloor(pointer, 'x'), getFloor(pointer, 'y'));
   const polyIndex = inputPolygons.findIndex(findFun);
   gameplay.onKeyDirection(DIRECTIONS[polyIndex]);
+}
+
+function update(g) {
+  gameplay.update();
 }
 
 function onDown(g, e) {

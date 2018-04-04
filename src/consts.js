@@ -1,3 +1,6 @@
+/*
+ * @typedef OBJECT_TYPE
+ */
 export const OBJECT_TYPE = {
   // temporary have to be *sorted* (until Tiled is used. check levels.js)
   EMPTY: 'EMPTY', // 0

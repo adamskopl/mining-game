@@ -1,11 +1,39 @@
+import createGameObject from 'src/object/object';
+import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
+
 import { getGamePos } from '../display-utils';
 import { getFieldSize } from '../level-utils';
 import level from './levels';
-import { createGroupGameObjects, createGroupBackgroundObjects } from './sprites';
+
+// import { createGroupGameObjects, createGroupBackgroundObjects } from './sprites';
 
 // dictionary
 // size, width, height: for px (like in Phaser)
 // dim: for other units. E.g. levelDim is for dimensions in fields
+
+/**
+ * @param {Phaser.Game} g
+ * @param {Phaser.Point} fieldSize
+ * @param {Level} level
+ */
+function createGroupGameObjects(g, fieldSize, level) {
+    const group = g.add.group();
+    // @param {OBJECT_TYPE}, @param {Phaser.Point}
+    level.forEach((objectType, pos) => {
+      if (objectType) {
+        createGameObject(fieldSize * x, fieldSize * y, );
+      }
+    });
+}
+
+/**
+ * @param {Phaser.Game} g
+ * @param {Phaser.Point} fieldSize
+ * @param {Level} level
+ */
+function createGroupBackgroundObjects(g, fieldSize, level) {
+  const group = g.add.group();
+}
 
 function getGroupFieldPos(gameSize, levelSize) {
   return getGamePos(gameSize, levelSize);
@@ -19,6 +47,7 @@ function getLevelSize(l, fieldSize) {
 export default {
   init(g) {
     this.g = g;
+    // {Array<int>} [w, h]
     this.gameSize = null;
     this.groupGameObjects = this.g.add.group();
     this.groupBackgroundObjects = this.g.add.group();
@@ -29,7 +58,7 @@ export default {
   onResize(gameSize) {
     this.gameSize = gameSize;
 
-    const fieldSize = this.getFieldSize();
+    const fieldSize = this.getFieldSize(this.gameSize, this.level);
 
     // reload background objects
     this.groupBackgroundObjects.removeAll();
@@ -46,7 +75,10 @@ export default {
     this.signalGroupReloaded.dispatch(this.groupGameObjects);
     this.signalFieldResized.dispatch(fieldSize);
   },
-  getFieldSize() {
-    return getFieldSize(this.gameSize, this.level.getDim());
+  /**
+   * @param {Array<int>} gameSize
+   */
+  getFieldSize(gameSize, level) {
+    return getFieldSize(gameSize, level.getDim());
   },
 };

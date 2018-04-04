@@ -38,7 +38,10 @@ export default {
   onFieldResized(fieldSize) {
     reloadBitmaps(this.bitmaps, fieldSize);
   },
+  /**
+   * @param {OBJECT_TYPE} objectType
+   */
   getBitmap(name) {
-    return game.cache.getBitmapData(name);
+    return game.cache.getBitmapData(objectType);
   },
 };

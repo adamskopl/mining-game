@@ -4,16 +4,6 @@ import movement from './movement';
 import { getNeighbor } from '../group-utils';
 import { checkArgs } from '../utils';
 
-// TODO: change to Phaser.Point. will allow to make calculations, etc...
-export const DIRECTION = {
-  UP: 'DIR_UP',
-  RIGHT: 'DIR_RIGHT',
-  DOWN: 'DIR_DOWN',
-  LEFT: 'DIR_LEFT',
-};
-
-export const DIRECTIONS = [DIRECTION.UP, DIRECTION.RIGHT, DIRECTION.DOWN, DIRECTION.LEFT];
-
 const VEC_GRAVITY = new Phaser.Point(0, 1);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
@@ -27,8 +17,8 @@ export default {
     this.fieldSize = 0;
   },
   // when the main sprites group is reloaded
-  onMainGroupReloaded(group) {
-    this.mainGroup = group;
+  onMainGroupReloaded(mainGroup) {
+    this.mainGroup = mainGroup;
   },
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
@@ -36,23 +26,23 @@ export default {
     enemies[1].x += this.fieldSize / 2;
   },
   onKeyDirection(direction) {
-    const vec = new Phaser.Point();
-    switch (direction) {
-      case DIRECTION.UP:
-        vec.set(0, -1);
-        break;
-      case DIRECTION.RIGHT:
-        vec.set(1, 0);
-        break;
-      case DIRECTION.DOWN:
-        vec.set(0, 1);
-        break;
-      case DIRECTION.LEFT:
-        vec.set(-1, 0);
-        break;
-      default:
-    }
-    this.move(vec, VEC_GRAVITY);
+    // const vec = new Phaser.Point();
+    // switch (direction) {
+    //   case DIRECTION.UP:
+    //     vec.set(0, -1);
+    //     break;
+    //   case DIRECTION.RIGHT:
+    //     vec.set(1, 0);
+    //     break;
+    //   case DIRECTION.DOWN:
+    //     vec.set(0, 1);
+    //     break;
+    //   case DIRECTION.LEFT:
+    //     vec.set(-1, 0);
+    //     break;
+    //   default:
+    // },
+    // this.move(vec, VEC_GRAVITY);
   },
   move(vec, vecGravity) {
     checkArgs('move', arguments, ['object', 'object']);
