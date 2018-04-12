@@ -37,7 +37,10 @@ export default {
       });
     });
   },
+  /**
+   * @return {Phaser.Point} fields number
+   */
   getDim() {
-    return [fields[0].length, fields.length];
+    return new Phaser.Point(fields[0].length, fields.length);
   },
 };

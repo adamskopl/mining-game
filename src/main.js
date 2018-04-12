@@ -1,6 +1,6 @@
 import R from 'ramda';
 import displayManager from './display-manager';
-import bitmapsManager from './bitmaps-manager/bitmaps-manager';
+import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
 import gameplay, { DIRECTION, DIRECTIONS } from './gameplay/gameplay';
 
@@ -60,8 +60,7 @@ function render(g) {
 }
 
 function resize(w, h) {
-  const size = [w, h];
-  levelManager.onResize(size);
+  levelManager.onResize(new Phaser.Point(w, h));
   const p = [
     new Phaser.Point(0, 0), // 0
     new Phaser.Point(w, 0), // 1

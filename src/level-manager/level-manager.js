@@ -1,11 +1,10 @@
 import createGameObject from 'src/object/object';
 import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
-
+import { checkArgs } from 'src/utils';
+import { OBJECT_TYPE } from 'src/consts';
 import { getGamePos } from '../display-utils';
 import { getFieldSize } from '../level-utils';
 import level from './levels';
-
-// import { createGroupGameObjects, createGroupBackgroundObjects } from './sprites';
 
 // dictionary
 // size, width, height: for px (like in Phaser)
@@ -15,33 +14,49 @@ import level from './levels';
  * @param {Phaser.Game} g
  * @param {Phaser.Point} fieldSize
  * @param {Level} level
+ * @return {Phaser.Group}
  */
-function createGroupGameObjects(g, fieldSize, level) {
-    const group = g.add.group();
-    // @param {OBJECT_TYPE}, @param {Phaser.Point}
-    level.forEach((objectType, pos) => {
-      if (objectType) {
-        createGameObject(fieldSize * x, fieldSize * y, );
-      }
-    });
+function createGroupGameObjects(g, fieldSize, lvl) {
+  checkArgs('createGroupGameObjects', arguments, [
+    'game', 'number', 'object',
+  ]);
+  const group = g.add.group();
+  // @param {OBJECT_TYPE}, @param {Phaser.Point}
+  lvl.forEach((objectType, pos) => {
+    if (objectType) {
+      createGameObject(
+        new Phaser.Point(fieldSize * pos.x, fieldSize * pos.y),
+        group,
+        bitmapsManager.getBitmapData(objectType),
+      );
+    }
+  });
+  return group;
 }
 
 /**
  * @param {Phaser.Game} g
- * @param {Phaser.Point} fieldSize
+ * @param {number} fieldSize
  * @param {Level} level
+ * @return {Phaser.Group}
  */
-function createGroupBackgroundObjects(g, fieldSize, level) {
+function createGroupBackgroundObjects(g, fieldSize, lvl) {
+  checkArgs('createGroupBackgroundObjects', arguments, [
+    'game', 'number', 'object',
+  ]);
   const group = g.add.group();
-}
-
-function getGroupFieldPos(gameSize, levelSize) {
-  return getGamePos(gameSize, levelSize);
+  lvl.forEach((objectType, pos) => {
+    group.create(
+      fieldSize * pos.x, fieldSize * pos.y,
+      bitmapsManager.getBitmapData(OBJECT_TYPE.EMPTY),
+    );
+  });
+  return group;
 }
 
 function getLevelSize(l, fieldSize) {
   const dim = l.getDim();
-  return [dim[0] * fieldSize, dim[1] * fieldSize];
+  return new Phaser.Point(dim[0] * fieldSize, dim[1] * fieldSize);
 }
 
 export default {
@@ -55,6 +70,9 @@ export default {
     this.signalGroupReloaded = new Phaser.Signal();
     this.signalFieldResized = new Phaser.Signal();
   },
+  /**
+   * @param {Phaser.Point} gameSize
+   */
   onResize(gameSize) {
     this.gameSize = gameSize;
 
@@ -62,23 +80,33 @@ export default {
 
     // reload background objects
     this.groupBackgroundObjects.removeAll();
-    this.groupBackgroundObjects = createGroupBackgroundObjects(this.g, fieldSize, this.level);
+    this.groupBackgroundObjects = createGroupBackgroundObjects(
+      this.g,
+      fieldSize,
+      this.level,
+    );
+    const gamePos = getGamePos(gameSize, getLevelSize(this.level, fieldSize));
     [this.groupBackgroundObjects.x, this.groupBackgroundObjects.y] =
-      getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
+      [gamePos.x, gamePos.y];
 
-    // reload game objects
-    this.groupGameObjects.removeAll();
-    this.groupGameObjects = createGroupGameObjects(this.g, fieldSize, this.level);
-    [this.groupGameObjects.x, this.groupGameObjects.y] =
-      getGroupFieldPos(gameSize, getLevelSize(this.level, fieldSize));
+    // // reload game objects
+    // this.groupGameObjects.removeAll();
+    // this.groupGameObjects = createGroupGameObjects(
+    //   this.g,
+    //   fieldSize,
+    //   this.level,
+    // );
+    // [this.groupGameObjects.x, this.groupGameObjects.y] =
+    //   [gamePos.x, gamePos.y];
 
     this.signalGroupReloaded.dispatch(this.groupGameObjects);
     this.signalFieldResized.dispatch(fieldSize);
   },
   /**
    * @param {Array<int>} gameSize
+   * @return
    */
-  getFieldSize(gameSize, level) {
-    return getFieldSize(gameSize, level.getDim());
+  getFieldSize(gameSize, lvl) {
+    return getFieldSize(gameSize, lvl.getDim());
   },
 };

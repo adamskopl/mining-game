@@ -15,8 +15,3 @@ export const BITMAPS = {
   [OBJECT_TYPE.FILLED]: '#dd6801',
   [OBJECT_TYPE.HERO]: '#dfdeec',
 };
-
-export default {
-  OBJECT_TYPE,
-  BITMAPS,
-};

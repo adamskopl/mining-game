@@ -1,12 +1,6 @@
-import draw from 'src/utils-draw';
 import { checkArgs } from 'src/utils';
 import * as updateUtils from './object-update';
 import * as utils from './utils';
-
-const Phaser = window.Phaser;
-const Pnt = Phaser.Point;
-const Rec = Phaser.Rectangle;
-const Line = Phaser.Line;
 
 function $move(dir) {
   checkArgs('$move', arguments, ['point']);
@@ -19,7 +13,7 @@ function $move(dir) {
 const extraFuns = {
   $init() {
     this.$zeroTweenObj();
-    this.rec = new Rec(this.x, this.y, this.width, this.height);
+    this.rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
     this.gravity = false;
   },
   $enableGravity() {
@@ -67,9 +61,16 @@ const extraFuns = {
 
 Phaser.Sprite.prototype = Object.assign(Phaser.Sprite.prototype, extraFuns);
 
-export default function createGameObject(x, y, name, group) {
-  checkArgs('createGameObject', arguments, ['number', 'number', 'string', 'object']);
-  const sprite = group.create(x, y, name);
+/**
+ * @param {Phaser.Point} pos
+ * @param {Phaser.Group} group
+ * @param {Phaser.BitmapData} bitmap
+ */
+export default function createGameObject(pos, group, bitmapData) {
+  checkArgs('createGameObject', arguments, [
+    'point', 'group', 'object',
+  ]);
+  const sprite = group.create(pos.x, pos.y, bitmapData);
   sprite.$init();
 
   return sprite;

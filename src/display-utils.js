@@ -1,36 +1,43 @@
-// import R from 'ramda';
+import { checkArgs } from 'src/utils';
 
 // terms.
 // app area: where the whole application is rendered
 // game: where the gameplay is rendered
 
 /**
- * @param {number} appW  app's width
- * @param {number} appH
- * @param {float} marginH  (0.0f..1.0f) marginH horizontal margin from one side
+ * @param {Phaser.Point} appRes
+ * @param {Phaser.Point} margins (values from 0.0f to 1.0f) margin from one side
  * (percent). e,g 0.2 means (0.2*appW) from the left and (0.2*appW) from the
  * right
- * @param {float} marginH
- * @return {number[]} dimensions of the game area. null for wrong args.
+ * @return {Phaser.Point} dimensions of the game area. null for wrong args.
  */
-export function getGameAreaSize([appW, appH] = [0, 0], [marginX, marginY] = [0, 0]) {
+export function getGameAreaSize(appRes, margins) {
+  checkArgs('getGameAreaSize', arguments, ['point', 'point']);
   const wrongArg = a => a < 0;
-  if ([appW, appH, marginX, marginY].find(wrongArg)) {
+  if ([appRes.x, appRes.y, margins.x, margins.y].find(wrongArg)) {
     return null;
   }
-  return [appW - (appW * marginX * 2), appH - (appH * marginY * 2)];
+  return new Phaser.Point(
+    appRes.x - (appRes.x * margins.x * 2),
+    appRes.y - (appRes.y * margins.y * 2),
+  );
 }
 
 /**
- * @param {number} appW app's width
- * @param {number} gameAreaW game's area width
- * @return {number[]} x, y of the centered game area. null for wrong args.
+ * Get the position of the game area for the given app and game resolution.
+ * @param {Phaser.Point} appRes
+ * @param {Phaser.Point} gameRes
+ * @return {Phaser.Point}
  */
-export function getGamePos([appW, appH] = [0, 0], [gameW, gameH] = [0, 0]) {
+export function getGamePos(appRes, gameRes) {
+  checkArgs('getGamePos', arguments, ['point', 'point']);
   const wrongArg = a => a < 0;
-  if ([appW, appH, gameW, gameH].find(wrongArg) ||
-      appW < gameW || appH < gameH) {
+  if ([appRes.x, appRes.y, gameRes.x, gameRes.y].find(wrongArg) ||
+      appRes.x < gameRes.x || appRes.y < gameRes.y) {
     return null;
   }
-  return [Math.floor((appW - gameW) / 2), Math.floor((appH - gameH) / 2)];
+  return new Phaser.Point(
+    Math.floor((appRes.x - gameRes.x) / 2),
+    Math.floor((appRes.y - gameRes.y) / 2),
+  );
 }

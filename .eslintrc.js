@@ -13,6 +13,9 @@ module.exports = {
     'max-len': ['error', 80],
     'no-use-before-define': 'off'
   },
+  'globals': {
+    'Phaser': true
+  },
   'plugins': [
     'import'
   ]

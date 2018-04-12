@@ -1,5 +1,7 @@
 const TYPES = ['null', 'array', 'string', 'number', 'function', 'object'];
 const PHASER_TYPES = [
+  ['game', Phaser.Game],
+  ['group', Phaser.Group],
   ['point', Phaser.Point],
   ['rectangle', Phaser.Rectangle],
   ['sprite', Phaser.Sprite],

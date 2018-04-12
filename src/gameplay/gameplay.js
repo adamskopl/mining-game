@@ -1,10 +1,6 @@
-import R from 'ramda';
 import { OBJECT_TYPE } from '../consts';
 import movement from './movement';
-import { getNeighbor } from '../group-utils';
 import { checkArgs } from '../utils';
-
-const VEC_GRAVITY = new Phaser.Point(0, 1);
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
 const groupFilterTypes = (group, types) => group.children.filter(c => types.includes(c.type));
@@ -22,8 +18,6 @@ export default {
   },
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
-    const enemies = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.ENEMY]);
-    enemies[1].x += this.fieldSize / 2;
   },
   onKeyDirection(direction) {
     // const vec = new Phaser.Point();
@@ -50,17 +44,6 @@ export default {
     movement.moveObjects(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
   },
   update() {
-    if (!this.mainGroup) { return; }
 
-    // old GRAV implementation
-    // const testMovable = testedO => [R.propEq('movable', true), o => !o.isMoving()].every(f => f(testedO));
-    // const movable = groupFilter(this.mainGroup, testMovable);
-    // movable.forEach((m) => {
-    //   const neighbor = getNeighbor(this.mainGroup, m, VEC_GRAVITY);
-    //   if (!neighbor) {
-    //     // TODO: implement gravity: move when no floor
-    //     // move(GRAVITY_VEC, this.fieldSize, m);
-    //   }
-    // });
   },
 };
