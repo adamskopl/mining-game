@@ -5,13 +5,14 @@ import { OBJECT_TYPE } from '../consts';
 const Phaser = window.Phaser;
 const oKeys = Object.keys(OBJECT_TYPE).sort();
 
+// {Array<Array<OBJECT_TYPE>>}
 const fields = [
-  [[   ], [   ], [3  ], [1  ], [   ]],
-  [[2  ], [2  ], [2  ], [2  ], [2  ]],
-  [[   ], [   ], [3  ], [1  ], [   ]],
-  [[2  ], [2  ], [2  ], [2  ], [2  ]],
-  [[   ], [   ], [3  ], [   ], [1  ]],
-  [[2  ], [2  ], [2  ], [2  ], [2  ]],
+  [[  ], [3 ], [  ], [1 ], [  ]],
+  [[2 ], [  ], [2 ], [2 ], [2 ]],
+  [[  ], [  ], [3 ], [1 ], [  ]],
+  [[2 ], [2 ], [2 ], [2 ], [2 ]],
+  [[  ], [  ], [3 ], [  ], [1 ]],
+  [[2 ], [2 ], [2 ], [2 ], [2 ]],
 ].map(row => row.map(field => field.map(object => oKeys[object])));
 
 function callFieldCb(cb, x, y) {
@@ -38,7 +39,7 @@ export default {
     });
   },
   /**
-   * @return {Phaser.Point} fields number
+   * @return {Phaser.Point} XxY fields number
    */
   getDim() {
     return new Phaser.Point(fields[0].length, fields.length);

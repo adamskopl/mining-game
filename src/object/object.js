@@ -11,16 +11,20 @@ function $move(dir) {
 
 // prefixing '$' to not to overwrite Sprite's function
 const extraFuns = {
-  $init() {
+  /**
+   * @param {GameObjectType} type
+   */
+  $init(type) {
+    this.$type = type;
     this.$zeroTweenObj();
-    this.rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
-    this.gravity = false;
+    this.$rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
+    this.$gravity = false;
   },
   $enableGravity() {
-    this.gravity = true;
+    this.$gravity = true;
   },
   $gravityEnabled() {
-    return this.gravity;
+    return this.$gravity;
   },
   $alignTo(dst, vec, offsetX = 0, offsetY = 0) {
     checkArgs('$alignTo', arguments, ['sprite', 'point', 'number', 'number']);
@@ -32,7 +36,7 @@ const extraFuns = {
   $setPos(pos) {
     checkArgs('$setPos', arguments, ['point']);
     [this.x, this.y] = [pos.x, pos.y];
-    this.rec.setTo(this.x, this.y, this.width, this.height);
+    this.$rec.setTo(this.x, this.y, this.width, this.height);
   },
   $setTweenObj(tweenObj) {
     checkArgs('$setTweenObj', arguments, ['object']);
@@ -62,16 +66,17 @@ const extraFuns = {
 Phaser.Sprite.prototype = Object.assign(Phaser.Sprite.prototype, extraFuns);
 
 /**
+ * @param {GameObjectType} type
  * @param {Phaser.Point} pos
  * @param {Phaser.Group} group
  * @param {Phaser.BitmapData} bitmap
  */
-export default function createGameObject(pos, group, bitmapData) {
+export default function createGameObject(type, pos, group, bitmapData) {
   checkArgs('createGameObject', arguments, [
-    'point', 'group', 'object',
+    'string', 'point', 'group', 'object',
   ]);
   const sprite = group.create(pos.x, pos.y, bitmapData);
-  sprite.$init();
+  sprite.$init(type);
 
   return sprite;
 }

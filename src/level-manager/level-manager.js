@@ -25,6 +25,7 @@ function createGroupGameObjects(g, fieldSize, lvl) {
   lvl.forEach((objectType, pos) => {
     if (objectType) {
       createGameObject(
+        objectType,
         new Phaser.Point(fieldSize * pos.x, fieldSize * pos.y),
         group,
         bitmapsManager.getBitmapData(objectType),
@@ -55,8 +56,11 @@ function createGroupBackgroundObjects(g, fieldSize, lvl) {
 }
 
 function getLevelSize(l, fieldSize) {
+  checkArgs('getLevelSize', arguments, [
+    'object', 'number',
+  ]);
   const dim = l.getDim();
-  return new Phaser.Point(dim[0] * fieldSize, dim[1] * fieldSize);
+  return new Phaser.Point(dim.x * fieldSize, dim.y * fieldSize);
 }
 
 export default {
@@ -74,6 +78,7 @@ export default {
    * @param {Phaser.Point} gameSize
    */
   onResize(gameSize) {
+    // checkArgs('onResize', arguments, ['point']);
     this.gameSize = gameSize;
 
     const fieldSize = this.getFieldSize(this.gameSize, this.level);
@@ -85,19 +90,24 @@ export default {
       fieldSize,
       this.level,
     );
-    const gamePos = getGamePos(gameSize, getLevelSize(this.level, fieldSize));
-    [this.groupBackgroundObjects.x, this.groupBackgroundObjects.y] =
-      [gamePos.x, gamePos.y];
 
-    // // reload game objects
-    // this.groupGameObjects.removeAll();
-    // this.groupGameObjects = createGroupGameObjects(
-    //   this.g,
-    //   fieldSize,
-    //   this.level,
-    // );
-    // [this.groupGameObjects.x, this.groupGameObjects.y] =
-    //   [gamePos.x, gamePos.y];
+    const gamePos = getGamePos(gameSize, getLevelSize(this.level, fieldSize));
+    [
+      this.groupBackgroundObjects.x,
+      this.groupBackgroundObjects.y,
+    ] = [
+      gamePos.x,
+      gamePos.y,
+    ];
+
+    // reload game objects
+    this.groupGameObjects.removeAll();
+    this.groupGameObjects = createGroupGameObjects(
+      this.g,
+      fieldSize,
+      this.level,
+    );
+    [this.groupGameObjects.x, this.groupGameObjects.y] = [gamePos.x, gamePos.y];
 
     this.signalGroupReloaded.dispatch(this.groupGameObjects);
     this.signalFieldResized.dispatch(fieldSize);

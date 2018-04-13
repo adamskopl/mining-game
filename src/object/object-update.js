@@ -5,16 +5,16 @@ const Phaser = window.Phaser;
 
 function hasGround(o, objects) {
   checkArgs('hasGround', arguments, ['sprite', 'array']);
-  return objects.some(x => utils.alignedTo(o.rec, x.rec, new Phaser.Point(0, 1)));
+  return objects.some(x => utils.alignedTo(o.$rec, x.$rec, new Phaser.Point(0, 1)));
 }
 
 function getGroundObject(o, objects) {
-  return objects.find(x => utils.alignedTo(o.rec, x.rec, new Phaser.Point(0, 1)));
+  return objects.find(x => utils.alignedTo(o.$rec, x.$rec, new Phaser.Point(0, 1)));
 }
 
 function hasGroundOld(o1, o2) {
   checkArgs('hasGround', arguments, ['sprite', 'sprite']);
-  return utils.alignedTo(o1.rec, o2.rec, new Phaser.Point(0, 1));
+  return utils.alignedTo(o1.$rec, o2.$rec, new Phaser.Point(0, 1));
 }
 
 export function createTweenObj(o, vecTranslate, dur) {
@@ -35,7 +35,7 @@ export function createTweenObj(o, vecTranslate, dur) {
 function handleGravity(o, objects) {
   if (o.$isTweenRunning()) {
     const oIntersecting = objects.find(
-      x => utils.willIntersect(o.rec, x.rec, o.tweenObj.posTweened));
+      x => utils.willIntersect(o.$rec, x.$rec, o.tweenObj.posTweened));
     if (oIntersecting) {
       o.$alignTo(oIntersecting, Phaser.Point.negative(o.tweenObj.vecTweenN), 0, 0);
     } else { // update position
@@ -53,12 +53,12 @@ function handleGravity(o, objects) {
 function handleMovement(o, objects) {
   if (o.$isTweenRunning()) {
     const alignedToObjects = objects.filter(
-      x => utils.alignedTo(o.rec, x.rec, new Phaser.Point(0, 1)));
+      x => utils.alignedTo(o.$rec, x.$rec, new Phaser.Point(0, 1)));
     if (alignedToObjects.length > 0) {
       // find at least one future alignment
       const futureAlignedTo = alignedToObjects.find(
         x => utils.willBeAligned(
-          o.rec, x.rec, o.tweenObj.posTweened, new Phaser.Point(0, 1),
+          o.$rec, x.$rec, o.tweenObj.posTweened, new Phaser.Point(0, 1),
         ));
       if (futureAlignedTo) { // still aligned to at least one
         o.$setPos(o.tweenObj.posTweened); // continue the movement
