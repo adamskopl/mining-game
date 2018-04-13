@@ -15,14 +15,9 @@ export default {
   // when the main sprites group is reloaded
   onMainGroupReloaded(mainGroup) {
     this.mainGroup = mainGroup;
-    mainGroup.children.forEach((c) => {
-      // DLACZEGO WSZYSTKO '0'??
-      console.warn(c.$type);
-    });
 
     groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO, OBJECT_TYPE.ENEMY])
       .forEach((o) => {
-        console.warn('grav en');
         o.$enableGravity();
       });
   },

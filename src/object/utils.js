@@ -1,9 +1,5 @@
 import { checkArgs } from 'src/utils';
 
-const Pnt = Phaser.Point;
-const Rec = Phaser.Rectangle;
-const Line = Phaser.Line;
-
 /**
  * @param {Phaser.Rectangle} a
  * @param {Phaser.Rectangle} b
@@ -34,7 +30,7 @@ export function intersectsHorizontally(o1, o2) {
  * the @a)
  */
 export function alignedTo(a, b, vec) {
-  checkArgs('alignedTo', arguments, ['rectangle', 'rectangle', 'point']);
+  checkArgs('alignedTo', arguments, ['rectangle', 'rectangle', 'point'], true);
   if (vec.y === 1) {
     return (a.bottom === b.y) && intersectsVertically(a, b);
   }
@@ -69,20 +65,28 @@ export function getAlignedPos(a, b, vec, offsetX = 0, offsetY = 0) {
   } else {
     newY = b.y + (vec.y * (vec.y === -1 ? a.height : b.height));
   }
-  return new Pnt(newX + offsetX, newY + offsetY);
+  return new Phaser.Point(newX + offsetX, newY + offsetY);
 }
 
 /**
  * Modified code from
- * https://github.com/photonstorm/phaser-ce/blob/v2.10.1/src/geom/Rectangle.js#L1027.
+ * https://github.com/photonstorm/phaser-ce/blob/v2.10.1/
+ * src/geom/Rectangle.js#L1027.
  * Aligned rectangles are not intersected.
+
  * @param {Phaser.Rectangle} a
+
  * @param {Phaser.Rectangle} b
  * @returns {boolean} @a is intersecting @b
  */
 export function intersects(a, b) {
   checkArgs('willIntersect', arguments, ['rectangle', 'rectangle']);
-  return !(a.right <= b.x || a.bottom <= b.y || a.x >= b.right || a.y >= b.bottom);
+  return !(
+    a.right <= b.x ||
+    a.bottom <= b.y ||
+    a.x >= b.right ||
+    a.y >= b.bottom
+  );
 }
 
 /**
@@ -93,14 +97,14 @@ export function intersects(a, b) {
  */
 export function willIntersect(a, b, rec1TargetPos) {
   checkArgs('willIntersect', arguments, ['rectangle', 'rectangle', 'point']);
-  const newRec = new Rec(rec1TargetPos.x, rec1TargetPos.y, a.width,
+  const newRec = new Phaser.Rectangle(rec1TargetPos.x, rec1TargetPos.y, a.width,
     a.height);
   return intersects(b, newRec);
 }
 
 export function willBeAligned(a, b, targetPos, vec) {
   checkArgs('willBeAligned', arguments, ['rectangle', 'rectangle', 'point', 'point']);
-  const newRec = new Rec(targetPos.x, targetPos.y, a.width,
+  const newRec = new Phaser.Rectangle(targetPos.x, targetPos.y, a.width,
     a.height);
   return alignedTo(newRec, b, vec);
 }

@@ -4,7 +4,6 @@ import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
 import gameplay, { DIRECTION, DIRECTIONS } from './gameplay/gameplay';
 
-const Phaser = window.Phaser;
 let inputPolygons = null;
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
@@ -33,14 +32,12 @@ function create(g) {
 
   [
     [levelManager.signalGroupReloaded,
-      'onMainGroupReloaded',
-      [
+      'onMainGroupReloaded', [
         gameplay,
       ],
     ],
     [levelManager.signalFieldResized,
-      'onFieldResized',
-      [
+      'onFieldResized', [
         bitmapsManager,
         gameplay,
       ],

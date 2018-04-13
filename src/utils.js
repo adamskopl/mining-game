@@ -1,40 +1,34 @@
 const TYPES = ['null', 'array', 'string', 'number', 'function', 'object'];
-const PHASER_TYPES = [
-  ['game', Phaser.Game],
-  ['group', Phaser.Group],
-  ['rectangle', Phaser.Rectangle],
-  ['sprite', Phaser.Sprite],
-];
 const CUSTOM_TYPES = [
+  ['group', function checkRect(g) {
+    return g.type === Phaser.GROUP;
+  }],
   ['point', function checkPoint(p) {
-    return p.x !== undefined && p.y !== undefined;
+    return p.type === Phaser.POINT;
+  }],
+  ['rectangle', function checkRect(r) {
+    return r.type === Phaser.RECTANGLE;
+  }],
+  ['sprite', function checkRect(s) {
+    return s.type === Phaser.SPRITE;
   }],
 ];
-
-function getPhaserClass(types, type) {
-  const found = types.find(t => t[0] === type);
-  return found ? found[1] : null;
-}
 
 function getCustomCheckFun(customTypes, type) {
   const found = customTypes.find(t => t[0] === type);
   return found ? found[1] : null;
 }
 
-function isTypeOf(toCheck, type, types, phaserTypes, customTypes) {
+function isTypeOf(toCheck, type, types, customTypes, test) {
   let ret = null;
-  const phaserClass = getPhaserClass(phaserTypes, type);
   const customCheckFun = getCustomCheckFun(customTypes, type);
   if (!types.includes(type) &&
-    phaserClass === null &&
     customCheckFun === null
   ) {
     console.error(`${type} not in passed types`);
     return null;
   }
-  if (phaserClass) {
-    ret = toCheck instanceof phaserClass;
-  } else if (customCheckFun) {
+  if (customCheckFun) {
     ret = customCheckFun(toCheck);
   } else {
     switch (type) {
@@ -51,7 +45,7 @@ function isTypeOf(toCheck, type, types, phaserTypes, customTypes) {
   return ret;
 }
 
-export function checkArgs(funName, argsObject, types) {
+export function checkArgs(funName, argsObject, types, test) {
   // TODO: release? TURN OFF (so the chekArgs is not invoked so frequently!)
   const args = Array.prototype.slice.call(argsObject, 0);
   if (typeof funName !== 'string' || !Array.isArray(args) || !Array.isArray(types)) {
@@ -63,15 +57,14 @@ export function checkArgs(funName, argsObject, types) {
     return;
   }
   const foundBad = types.find(t => (!TYPES.includes(t) &&
-    !PHASER_TYPES.find(pt => pt[0] === t) &&
-    !CUSTOM_TYPES.find(pt => pt[0] === t)
+    !CUSTOM_TYPES.find(ct => ct[0] === t)
   ));
   if (foundBad) {
     console.error(`${funName}: wrong type in passed types: ${foundBad}`);
     return;
   }
   const wrongArg = args.find((a, index) => !isTypeOf(a, types[index],
-    TYPES, PHASER_TYPES, CUSTOM_TYPES));
+    TYPES, CUSTOM_TYPES, test));
   if (wrongArg) {
     console.error(`${funName}: arg of the wrong type ('${wrongArg}' declared as '${types[args.indexOf(wrongArg)]}')`);
   }

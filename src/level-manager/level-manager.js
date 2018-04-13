@@ -18,7 +18,7 @@ import level from './levels';
  */
 function createGroupGameObjects(g, fieldSize, lvl) {
   checkArgs('createGroupGameObjects', arguments, [
-    'game', 'number', 'object',
+    'object', 'number', 'object',
   ]);
   const group = g.add.group();
   // @param {OBJECT_TYPE}, @param {Phaser.Point}
@@ -43,7 +43,7 @@ function createGroupGameObjects(g, fieldSize, lvl) {
  */
 function createGroupBackgroundObjects(g, fieldSize, lvl) {
   checkArgs('createGroupBackgroundObjects', arguments, [
-    'game', 'number', 'object',
+    'object', 'number', 'object',
   ]);
   const group = g.add.group();
   lvl.forEach((objectType, pos) => {
