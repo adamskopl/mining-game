@@ -97,14 +97,22 @@ export function intersects(a, b) {
  */
 export function willIntersect(a, b, rec1TargetPos) {
   checkArgs('willIntersect', arguments, ['rectangle', 'rectangle', 'point']);
-  const newRec = new Phaser.Rectangle(rec1TargetPos.x, rec1TargetPos.y, a.width,
-    a.height);
+  const newRec = new Phaser.Rectangle(
+    rec1TargetPos.x,
+    rec1TargetPos.y,
+    a.width,
+    a.height,
+  );
   return intersects(b, newRec);
 }
 
 export function willBeAligned(a, b, targetPos, vec) {
   checkArgs('willBeAligned', arguments, ['rectangle', 'rectangle', 'point', 'point']);
-  const newRec = new Phaser.Rectangle(targetPos.x, targetPos.y, a.width,
-    a.height);
+  const newRec = new Phaser.Rectangle(
+    targetPos.x,
+    targetPos.y,
+    a.width,
+    a.height
+  );
   return alignedTo(newRec, b, vec);
 }

@@ -1,20 +1,20 @@
 import { checkArgs } from 'src/utils';
 import * as utils from './utils';
 
-const Phaser = window.Phaser;
+
+// najpier kierunek grawitacji tutaj na sztywno... a potem zmieniac.
+// powinne dzialac wszystkie.
+const GRAV_VEC = new Phaser.Point(0, -1);
+const GRAV_VEC_MULTI = new Phaser.Point(200, 200);
 
 function hasGround(o, objects) {
   checkArgs('hasGround', arguments, ['sprite', 'array']);
-  return objects.some(x => utils.alignedTo(o.$rec, x.$rec, new Phaser.Point(0, 1)));
+  return objects.some(x => utils.alignedTo(o.$rec, x.$rec, GRAV_VEC));
 }
 
 function getGroundObject(o, objects) {
-  return objects.find(x => utils.alignedTo(o.$rec, x.$rec, new Phaser.Point(0, 1)));
-}
-
-function hasGroundOld(o1, o2) {
-  checkArgs('hasGround', arguments, ['sprite', 'sprite']);
-  return utils.alignedTo(o1.$rec, o2.$rec, new Phaser.Point(0, 1));
+  checkArgs('getGroundObject', arguments, ['sprite', 'array']);
+  return objects.find(x => utils.alignedTo(o.$rec, x.$rec, GRAV_VEC));
 }
 
 export function createTweenObj(o, vecTranslate, dur) {
@@ -46,19 +46,26 @@ function handleGravity(o, objects) {
       o.$zeroTweenObj();
     }
   } else {
-    o.$setTweenObj(createTweenObj(o, new Phaser.Point(0, 200), 2000));
+    // TODO: one target of the gravity, but speed varies: smaller distance,
+    // shorter time. like ine gravity.
+    // 1. one point, out of the game area, indicating gravity
+    // 2. 
+    o.$setTweenObj(createTweenObj(
+      o,
+      Phaser.Point.multiply(GRAV_VEC, GRAV_VEC_MULTI),
+      200));
   }
 }
 
 function handleMovement(o, objects) {
   if (o.$isTweenRunning()) {
     const alignedToObjects = objects.filter(
-      x => utils.alignedTo(o.$rec, x.$rec, new Phaser.Point(0, 1)));
+      x => utils.alignedTo(o.$rec, x.$rec, GRAV_VEC));
     if (alignedToObjects.length > 0) {
       // find at least one future alignment
       const futureAlignedTo = alignedToObjects.find(
         x => utils.willBeAligned(
-          o.$rec, x.$rec, o.tweenObj.posTweened, new Phaser.Point(0, 1),
+          o.$rec, x.$rec, o.tweenObj.posTweened, GRAV_VEC,
         ));
       if (futureAlignedTo) { // still aligned to at least one
         o.$setPos(o.tweenObj.posTweened); // continue the movement

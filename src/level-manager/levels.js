@@ -7,12 +7,12 @@ const oKeys = Object.keys(OBJECT_TYPE).sort();
 
 // {Array<Array<OBJECT_TYPE>>}
 const fields = [
-  [[ ], [ ], [ ], [ ], [ ]],
-  [[ ], [ ], [3], [ ], [ ]],
-  [[ ], [ ], [ ], [ ], [ ]],
-  [[ ], [ ], [2], [ ], [ ]],
-  [[ ], [ ], [ ], [ ], [ ]],
-  [[ ], [ ], [ ], [ ], [ ]],
+  [[2], [ ], [2], [ ], [2]],
+  [[2], [2], [ ], [2], [ ]],
+  [[ ], [ ], [3], [2], [ ]],
+  [[ ], [ ], [ ], [3], [3]],
+  [[3], [ ], [ ], [ ], [3]],
+  [[ ], [ ], [ ], [3], [3]],
 ].map(row => row.map(field => field.map(object => oKeys[object])));
 
 function callFieldCb(cb, x, y) {

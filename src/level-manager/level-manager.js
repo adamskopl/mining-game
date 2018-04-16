@@ -82,6 +82,7 @@ export default {
     this.gameSize = gameSize;
 
     const fieldSize = this.getFieldSize(this.gameSize, this.level);
+    this.signalFieldResized.dispatch(fieldSize);
 
     // reload background objects
     this.groupBackgroundObjects.removeAll();
@@ -110,7 +111,6 @@ export default {
     [this.groupGameObjects.x, this.groupGameObjects.y] = [gamePos.x, gamePos.y];
 
     this.signalGroupReloaded.dispatch(this.groupGameObjects);
-    this.signalFieldResized.dispatch(fieldSize);
   },
   /**
    * @param {Array<int>} gameSize

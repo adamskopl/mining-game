@@ -16,11 +16,15 @@ export default {
   onMainGroupReloaded(mainGroup) {
     this.mainGroup = mainGroup;
 
+    // enable gravity for some types
     groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO, OBJECT_TYPE.ENEMY])
       .forEach((o) => {
         o.$enableGravity();
       });
   },
+  /**
+   * @param {number} fieldSize
+   */
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
   },
