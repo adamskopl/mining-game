@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { OBJECT_TYPE } from '../consts';
 
 const MOVE_DUR = 500;

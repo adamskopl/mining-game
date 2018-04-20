@@ -1,50 +1,71 @@
-// TODO: introduce 'point' type (check for x, y)
-const TYPES = ['null', 'array', 'point', 'string', 'number', 'function', 'object'];
+const TYPES = ['null', 'array', 'string', 'number', 'function', 'object'];
+const CUSTOM_TYPES = [
+  ['group', function checkRect(g) {
+    return g.type === Phaser.GROUP;
+  }],
+  ['point', function checkPoint(p) {
+    return p.type === Phaser.POINT;
+  }],
+  ['rectangle', function checkRect(r) {
+    return r.type === Phaser.RECTANGLE;
+  }],
+  ['sprite', function checkRect(s) {
+    return s.type === Phaser.SPRITE;
+  }],
+];
 
-/**
- * @param [String] toCheck
- * @param [Array] args
- * @param [Array] types
- */
-function isTypeOf(toCheck, type, types) {
+function getCustomCheckFun(customTypes, type) {
+  const found = customTypes.find(t => t[0] === type);
+  return found ? found[1] : null;
+}
+
+function isTypeOf(toCheck, type, types, customTypes, test) {
   let ret = null;
-  if (!types.includes(type)) {
+  const customCheckFun = getCustomCheckFun(customTypes, type);
+  if (!types.includes(type) &&
+    customCheckFun === null
+  ) {
     console.error(`${type} not in passed types`);
     return null;
   }
-  switch (type) {
-    case 'null':
-      ret = toCheck === null;
-      break;
-    case 'array':
-      ret = Array.isArray(toCheck);
-      break;
-    case 'point':
-      ret = toCheck instanceof Phaser.Point;
-      break;
-    default:
-      ret = typeof toCheck === type;
+  if (customCheckFun) {
+    ret = customCheckFun(toCheck);
+  } else {
+    switch (type) {
+      case 'null':
+        ret = toCheck === null;
+        break;
+      case 'array':
+        ret = Array.isArray(toCheck);
+        break;
+      default:
+        ret = typeof toCheck === type;
+    }
   }
   return ret;
 }
 
-export function checkArgs(funName, argsObject, types) {
+export function checkArgs(funName, argsObject, types, test) {
+  // TODO: release? TURN OFF (so the chekArgs is not invoked so frequently!)
   const args = Array.prototype.slice.call(argsObject, 0);
   if (typeof funName !== 'string' || !Array.isArray(args) || !Array.isArray(types)) {
-    console.error('wrong argument');
+    console.error(`${funName}: wrong argument`);
     return;
   }
   if (args.length !== types.length) {
-    console.error('args and types arrays have different lengths');
+    console.error(`${funName}: args and types arrays have different lengths`);
     return;
   }
-  const foundBad = types.find(t => !TYPES.includes(t));
+  const foundBad = types.find(t => (!TYPES.includes(t) &&
+    !CUSTOM_TYPES.find(ct => ct[0] === t)
+  ));
   if (foundBad) {
-    console.error(`${funName} - wrong type in passed types: ${foundBad}`);
+    console.error(`${funName}: wrong type in passed types: ${foundBad}`);
     return;
   }
-  const wrongArg = args.find((a, index) => !isTypeOf(a, types[index], TYPES));
+  const wrongArg = args.find((a, index) => !isTypeOf(a, types[index],
+    TYPES, CUSTOM_TYPES, test));
   if (wrongArg) {
-    console.error(`${funName} - arg of the wrong type ('${wrongArg}' declared as '${types[args.indexOf(wrongArg)]}')`);
+    console.error(`${funName}: arg of the wrong type ('${wrongArg}' declared as '${types[args.indexOf(wrongArg)]}')`);
   }
 }

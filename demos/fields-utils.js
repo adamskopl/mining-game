@@ -1,4 +1,3 @@
-import Phaser from 'phaser-ce';
 import R from 'ramda';
 import { checkArgs } from './utils';
 

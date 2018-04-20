@@ -10,11 +10,3 @@ gulp.task('babel', () => {
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(paths.distSrc));
 });
-
-gulp.task('babel-test', () => {
-  return gulp.src(paths.test)
-    .pipe(sourcemaps.init())
-    .pipe(babel())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.distTest));
-});
