@@ -83,10 +83,16 @@ const extraFuns = {
 Phaser.Sprite.prototype = Object.assign(Phaser.Sprite.prototype, extraFuns);
 
 /**
+ * GameObject: hero/enemy...
+ * @typedef {object} GameObject
+ */
+
+/**
  * @param {GameObjectType} type
  * @param {Phaser.Point} pos
  * @param {Phaser.Group} group
  * @param {Phaser.BitmapData} bitmap
+ * @return {GameObject}
  */
 function createGameObject(type, pos, group, bitmapData) {
   checkArgs('createGameObject', arguments, [

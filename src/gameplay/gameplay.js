@@ -10,7 +10,7 @@ export default {
   init(g) {
     this.g = g;
     this.mainGroup = null;
-    this.gameSize = null;
+    this.fieldSize = null;
   },
   // when the main sprites group is reloaded
   onMainGroupReloaded(mainGroup) {
@@ -23,41 +23,18 @@ export default {
       });
   },
   onKeyDirection(direction) {
-    // const vec = new Phaser.Point();
-    // switch (direction) {
-    //   case DIRECTION.UP:
-    //     vec.set(0, -1);
-    //     break;
-    //   case DIRECTION.RIGHT:
-    //     vec.set(1, 0);
-    //     break;
-    //   case DIRECTION.DOWN:
-    //     vec.set(0, 1);
-    //     break;
-    //   case DIRECTION.LEFT:
-    //     vec.set(-1, 0);
-    //     break;
-    //   default:
-    // },
-    // this.move(vec, VEC_GRAVITY);
-  },
-  /**
-   * @param {Phaer.Point} gameSize
-   */
-  onResize(gameSize) {
-    this.gameSize = gameSize;
   },
   move(vec, vecGravity) {
-    // checkArgs('move', arguments, ['object', 'object']);
-    // const heroes = groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO]);
-    // movement.moveObjects(vec, vecGravity, this.fieldSize, heroes, this.mainGroup);
+  },
+  onFieldResized(fieldSize) {
+    this.fieldSize = fieldSize;
   },
   update() {
-    if (!this.gameSize || !this.mainGroup) {
+    if (!this.mainGroup) {
       return;
     }
     this.mainGroup.children.forEach((o) => {
-      o.$update(this.mainGroup.children.filter(x => x !== o), this.gameSize);
+      o.$update(this.mainGroup.children.filter(x => x !== o), this.fieldSize);
     });
   },
 };

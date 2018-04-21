@@ -39,6 +39,7 @@ function create(g) {
     [levelManager.signalFieldResized,
       'onFieldResized', [
         bitmapsManager,
+        gameplay,
       ],
     ],
   ].forEach((signalGroup) => {
@@ -57,7 +58,6 @@ function render(g) {
 
 function resize(w, h) {
   levelManager.onResize(new Phaser.Point(w, h));
-  gameplay.onResize(new Phaser.Point(w, h));
   const p = [
     new Phaser.Point(0, 0), // 0
     new Phaser.Point(w, 0), // 1

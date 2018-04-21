@@ -71,7 +71,9 @@ export default {
     this.groupGameObjects = this.g.add.group();
     this.groupBackgroundObjects = this.g.add.group();
     this.level = level;
+    // Signal<>
     this.signalGroupReloaded = new Phaser.Signal();
+    // Signal<number>
     this.signalFieldResized = new Phaser.Signal();
   },
   /**
@@ -114,7 +116,7 @@ export default {
   },
   /**
    * @param {Array<int>} gameSize
-   * @return
+   * @return {number}
    */
   getFieldSize(gameSize, lvl) {
     return getFieldSize(gameSize, lvl.getDim());
