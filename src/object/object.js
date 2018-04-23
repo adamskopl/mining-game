@@ -1,15 +1,8 @@
 import { checkArgs } from 'src/utils';
 import * as updateUtils from './object-update';
 import * as utils from './utils';
-
+import moveObject from './object-move';
 export { createGameObject, createGameObjectTween };
-
-function $move(dir) {
-  checkArgs('$move', arguments, ['point']);
-  if (!this.$isTweenRunning()) {
-    this.vecMoveN = dir;
-  }
-}
 
 /**
  * @typedef {GameObjectTween}
@@ -32,6 +25,8 @@ const extraFuns = {
     this.$zeroTweenObj();
     this.$rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
     this.$gravity = false;
+
+    this.$initMov();
   },
   $enableGravity() {
     this.$gravity = true;
@@ -55,10 +50,9 @@ const extraFuns = {
     checkArgs('$setTweenObj', arguments, ['object']);
     this.tweenObj = tweenObj;
   },
-  $move,
   $zeroTweenObj() {
     if (this.tweenObj && this.tweenObj.tween) {
-      this.tweenObj.tween.stop();
+      this.tweenObj.tween.stop(true); // fire onComplete
     }
     this.$setTweenObj(createGameObjectTween(
       null,
@@ -80,10 +74,10 @@ const extraFuns = {
   },
 };
 
-Phaser.Sprite.prototype = Object.assign(Phaser.Sprite.prototype, extraFuns);
+Phaser.Sprite.prototype = Object.assign(Phaser.Sprite.prototype, extraFuns, moveObject);
 
 /**
- * GameObject: hero/enemy...
+ * Game object: hero/enemy...
  * @typedef {object} GameObject
  */
 

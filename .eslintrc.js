@@ -14,6 +14,7 @@ module.exports = {
     'max-len': ['error', 80],
     'no-use-before-define': 'off',
     'no-console': 'off',
+    'prefer-arrow-callback': 'off'
   },
   'globals': {
     'Phaser': true

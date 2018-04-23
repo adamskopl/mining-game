@@ -7,7 +7,7 @@ export { update };
 const GRAV = {
   vec: new Phaser.Point(0, 1),
 };
-const GRAV_TIME = 2000;
+const GRAV_TIME = 1200;
 const FIELDS_GRAVITY_NUMBER = 50; // arbitrary
 
 function hasGround(o, objects) {
@@ -24,27 +24,27 @@ function getGroundObject(o, objects) {
  * @param {GameObject} o
  * @param {number} fieldSize
  */
-function createTweenObjNew(o, fiedSize) {
+function createTweenObj(o, fieldSize, direction, fieldsNumber, easingFunction, duration) {
   const posTweened = new Phaser.Point(o.x, o.y);
   // gravity speed should be the same for every game's resolution: it should
   // depend on the field size
   const toObj = Object.assign(
     {},
-    GRAV.vec.x ? {
-      x: o.x + (FIELDS_GRAVITY_NUMBER * fiedSize * GRAV.vec.x),
+    direction.x ? {
+      x: o.x + (fieldsNumber * fieldSize * direction.x),
     } : {},
-    GRAV.vec.y ? {
-      y: o.y + (FIELDS_GRAVITY_NUMBER * fiedSize * GRAV.vec.y),
+    direction.y ? {
+      y: o.y + (fieldsNumber * fieldSize * direction.y),
     } : {},
   );
   const tween = o.game.add.tween(posTweened)
     .to(
       toObj,
-      GRAV_TIME,
-      Phaser.Easing.Cubic.In,
+      duration,
+      easingFunction,
       true,
     );
-  return createGameObjectTween(posTweened, tween, GRAV.vec);
+  return createGameObjectTween(posTweened, tween, direction);
 }
 
 /**
@@ -72,11 +72,18 @@ function handleGravity(o, objects, fieldSize) {
       o.$zeroTweenObj();
     }
   } else {
-    o.$setTweenObj(createTweenObjNew(o, fieldSize));
+    o.$setTweenObj(createTweenObj(
+      o,
+      fieldSize,
+      GRAV.vec,
+      FIELDS_GRAVITY_NUMBER,
+      Phaser.Easing.Cubic.In,
+      GRAV_TIME,
+    ));
   }
 }
 
-function handleMovement(o, objects) {
+function handleMovement(o, objects, fieldSize) {
   if (o.$isTweenRunning()) {
     const alignedToObjects = objects.filter(x => utils.alignedTo(
       o.$rec,
@@ -107,10 +114,20 @@ function handleMovement(o, objects) {
     } else {
       console.error('handleMovement() should not happen: no alignment');
     }
-  } else if (o.vecMoveN) {
-    // o.$setTweenObj(createTweenObj(o,
-    // o.vecMoveN.clone().multiply(200, 200), 2000));
-    // o.vecMoveN = null;
+  } else if (o.$getMoveVec()) {
+    const tweenObj = createTweenObj(
+      o,
+      fieldSize,
+      o.$getMoveVec(),
+      1,
+      Phaser.Easing.Linear.None,
+      250,
+    );
+    tweenObj.tween.onComplete.add(function onComplete(posTweened) {
+      o.$setPos(posTweened); // make final alignment
+    });
+    o.$setTweenObj(tweenObj);
+    o.$zeroMoveVec();
   }
 }
 
@@ -118,6 +135,6 @@ function update(o1, objects, fieldSize) {
   if (!hasGround(o1, objects)) {
     handleGravity(o1, objects, fieldSize);
   } else {
-    handleMovement(o1, objects);
+    handleMovement(o1, objects, fieldSize);
   }
 }
