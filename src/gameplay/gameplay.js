@@ -1,5 +1,4 @@
 import { OBJECT_TYPE } from '../consts';
-import movement from './movement';
 import { checkArgs } from '../utils';
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
@@ -17,14 +16,18 @@ export default {
     this.mainGroup = mainGroup;
 
     // enable gravity for some types
-    groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO, OBJECT_TYPE.ENEMY])
-      .forEach((o) => {
+    groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO, OBJECT_TYPE.FRIEND])
+      .forEach(function (o) {
         o.$enableGravity();
       });
   },
   onKeyDirection(direction) {
-  },
-  move(vec, vecGravity) {
+    groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO])
+      .forEach(function (o) {
+        if (!o.$isTweenRunning()) {
+          o.$setMoveVec(direction);
+        }
+      });
   },
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;

@@ -12,15 +12,17 @@ export default {
   $getMoveVec() {
     return this.vecMoveN;
   },
+  /**
+   * @param {Phaser.Point} vec
+   */
+  $setMoveVec(vec) {
+    this.vecMoveN = vec;
+  },
   $zeroMoveVec() {
     this.vecMoveN = null;
   },
   $initMov() {
     this.$zeroMoveVec();
-
-    this.vecMoveN = new Phaser.Point(1, 0);
-
-
   },
   $move,
 };

@@ -1,10 +1,16 @@
+import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
 import R from 'ramda';
 import displayManager from './display-manager';
-import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
 import levelManager from './level-manager/level-manager';
-import gameplay, { DIRECTION, DIRECTIONS } from './gameplay/gameplay';
+import gameplay from './gameplay/gameplay';
 
 let inputPolygons = null;
+const DIRECTION_VECS = [
+  new Phaser.Point(0, -1),
+  new Phaser.Point(1, 0),
+  new Phaser.Point(0, 1),
+  new Phaser.Point(-1, 0),
+];
 
 const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
   create,
@@ -17,7 +23,7 @@ const game = new Phaser.Game('100%', '100%', Phaser.CANVAS, 'gameArea', {
 function create(g) {
   g.input.keyboard.addCallbacks(this, R.partial(onDown, [game]));
 
-  // g.input.onDown.add(onMouseDown, this);
+  g.input.onDown.add(onMouseDown, this);
 
   g.stage.backgroundColor = '#555555';
   g.scale.pageAlignHorizontally = true;
@@ -75,11 +81,13 @@ function resize(w, h) {
 
 
 function onMouseDown(pointer) {
+  // TODO: implement swipe
+
   const getFloor = (pntr, prop) => Math.floor(pntr.positionDown[prop]);
   const findFun = p =>
     p.contains(getFloor(pointer, 'x'), getFloor(pointer, 'y'));
   const polyIndex = inputPolygons.findIndex(findFun);
-  gameplay.onKeyDirection(DIRECTIONS[polyIndex]);
+  gameplay.onKeyDirection(DIRECTION_VECS[polyIndex]);
 }
 
 function update(g) {
@@ -90,19 +98,19 @@ function onDown(g, e) {
   switch (e.keyCode) {
     case 38: // up
     case 87: // w
-      gameplay.onKeyDirection(DIRECTION.UP);
+      gameplay.onKeyDirection(new Phaser.Point(0, -1));
       break;
     case 39: // right
     case 68: // d
-      gameplay.onKeyDirection(DIRECTION.RIGHT);
+      gameplay.onKeyDirection(new Phaser.Point(1, 0));
       break;
     case 40: // down
     case 83: // s
-      gameplay.onKeyDirection(DIRECTION.DOWN);
+      gameplay.onKeyDirection(new Phaser.Point(0, 1));
       break;
     case 37: // left
     case 65: // a
-      gameplay.onKeyDirection(DIRECTION.LEFT);
+      gameplay.onKeyDirection(new Phaser.Point(-1, 0));
       break;
     case 70: // f
       displayManager.goFullScreen(g);
@@ -110,3 +118,4 @@ function onDown(g, e) {
     default:
   }
 }
+

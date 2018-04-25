@@ -1,5 +1,5 @@
 import { checkArgs } from 'src/utils';
-import * as updateUtils from './object-update';
+import * as updateUtils from './update/object-update';
 import * as utils from './utils';
 import moveObject from './object-move';
 export { createGameObject, createGameObjectTween };
