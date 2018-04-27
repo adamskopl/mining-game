@@ -68,9 +68,11 @@ const extraFuns = {
    * @param {Phaser.Point} gameSize
    */
   $update(objects, gameSize) {
+    let updateRes = null;
     if (this.$gravityEnabled()) {
-      updateUtils.update(this, objects, gameSize);
+      updateRes = updateUtils.update(this, objects, gameSize);
     }
+    return updateRes;
   },
 };
 

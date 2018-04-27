@@ -37,7 +37,10 @@ export default {
       return;
     }
     this.mainGroup.children.forEach((o) => {
-      o.$update(this.mainGroup.children.filter(x => x !== o), this.fieldSize);
+      const effect = o.$update(this.mainGroup.children.filter(x => x !== o), this.fieldSize);
+      if (effect) {
+        console.warn(effect);
+      }
     });
   },
 };

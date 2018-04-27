@@ -12,7 +12,7 @@ function handleMovement(o, objects, fieldSize) {
       GRAV.vec,
     ));
     if (gravAlignedToObjects.length > 0) {
-      // find at least one future alignment
+      // find at least one future alignment to the ground
       const futureAlignedTo = gravAlignedToObjects.find(
         x => utils.willBeAligned(
           o.$rec,
@@ -20,15 +20,32 @@ function handleMovement(o, objects, fieldSize) {
           o.tweenObj.posTweened,
           GRAV.vec,
         ));
-      if (futureAlignedTo) { // still aligned to at least one
-        o.$setPos(o.tweenObj.posTweened); // continue the movement
-      } else { // will go off the ground
+      if (futureAlignedTo) {
+        // update will keep the ground alignment
+
+        // check intersection
+
+        const oIntersecting = objects.find(x => utils.willIntersect(
+          o.$rec,
+          x.$rec,
+          o.tweenObj.posTweened,
+        ));
+        if (oIntersecting) {
+          // console.warn('INTERS', oIntersecting.$type);
+        }
+        // continue the movement (SOMETIMES)
+        o.$setPos(o.tweenObj.posTweened);
+
+
+
+      } else { // update will cause go off the ground
         if (gravAlignedToObjects.length > 1) {
           console.error('handleMovement() should not happen:' +
             'losing alignment with more than 1 object');
         }
         o.$alignTo(gravAlignedToObjects[0], new Phaser.Point(
-          o.tweenObj.vecTweenN.x, -1,
+          o.tweenObj.vecTweenN.x,
+          -1,
         ), 0, 0);
         o.$zeroTweenObj();
       }
@@ -42,7 +59,7 @@ function handleMovement(o, objects, fieldSize) {
       o.$getMoveVec(),
       1,
       Phaser.Easing.Linear.None,
-      250,
+      1000,
     );
     tweenObj.tween.onComplete.add(function onComplete(posTweened) {
       o.$setPos(posTweened); // make final alignment

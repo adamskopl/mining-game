@@ -26,6 +26,7 @@ function handleGravity(o, objects, fieldSize) {
         0,
         0,
       );
+      console.warn('COL', o.$type, oIntersecting.$type);
     } else { // update position
       o.$setPos(o.tweenObj.posTweened);
     }
