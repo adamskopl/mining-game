@@ -1,4 +1,4 @@
-import { OBJECT_TYPE } from '../consts';
+import { GAME_OBJECT_TYPE } from '../consts';
 import { checkArgs } from '../utils';
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a group.
@@ -16,13 +16,13 @@ export default {
     this.mainGroup = mainGroup;
 
     // enable gravity for some types
-    groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO, OBJECT_TYPE.FRIEND])
+    groupFilterTypes(this.mainGroup, [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.FRIEND])
       .forEach(function (o) {
         o.$enableGravity();
       });
   },
   onKeyDirection(direction) {
-    groupFilterTypes(this.mainGroup, [OBJECT_TYPE.HERO])
+    groupFilterTypes(this.mainGroup, [GAME_OBJECT_TYPE.HERO])
       .forEach(function (o) {
         if (!o.$isTweenRunning()) {
           o.$setMoveVec(direction);
@@ -36,11 +36,17 @@ export default {
     if (!this.mainGroup) {
       return;
     }
-    this.mainGroup.children.forEach((o) => {
-      const effect = o.$update(this.mainGroup.children.filter(x => x !== o), this.fieldSize);
-      if (effect) {
-        console.warn(effect);
-      }
-    });
+
+    function nameMe(others, fieldSize, o) {
+      return o.$update(
+        others.filter(x => x !== o),
+        fieldSize,
+      );
+    }
+
+    // Array<Array<GameObjectEvent>>
+    const objectsEventsCollection = this.mainGroup.children.map(
+      nameMe.bind(null, this.mainGroup.children, this.fieldSize),
+    );
   },
 };

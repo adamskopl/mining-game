@@ -5,7 +5,10 @@ import moveObject from './object-move';
 export { createGameObject, createGameObjectTween };
 
 /**
- * @typedef {GameObjectTween}
+ * @typedef {object} GameObjectTween
+ * @property {?} posTweened
+ * @property {?} tween
+ * @property {Phaser.Vector} vecTweenN
  */
 function createGameObjectTween(posTweened, tween, vecTweenN) {
   return {
@@ -66,13 +69,14 @@ const extraFuns = {
   /**
    * @param {Array<object>} objects
    * @param {Phaser.Point} gameSize
+   * @return {Array<GameObjectEvent>}
    */
   $update(objects, gameSize) {
-    let updateRes = null;
+    let objectsEvents = null;
     if (this.$gravityEnabled()) {
-      updateRes = updateUtils.update(this, objects, gameSize);
+      objectsEvents = updateUtils.update(this, objects, gameSize);
     }
-    return updateRes;
+    return objectsEvents;
   },
 };
 

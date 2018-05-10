@@ -22,8 +22,8 @@ export default {
     this.vecMoveN = null;
   },
   $initMov() {
-    this.$setMoveVec(new Phaser.Point(1, 0));
-    // this.$zeroMoveVec();
+    // this.$setMoveVec(new Phaser.Point(1, 0));
+    this.$zeroMoveVec();
   },
   $move,
 };

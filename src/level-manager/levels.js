@@ -1,11 +1,11 @@
 import R from 'ramda';
-import { OBJECT_TYPE } from '../consts';
+import { GAME_OBJECT_TYPE } from '../consts';
 
 // temporary sort solution: in the end Tiled will be used
 const Phaser = window.Phaser;
-const oKeys = Object.keys(OBJECT_TYPE).sort();
+const oKeys = Object.keys(GAME_OBJECT_TYPE).sort();
 
-// {Array<Array<OBJECT_TYPE>>}
+// {Array<Array<GAME_OBJECT_TYPE>>}
 const fields = [
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
@@ -14,7 +14,7 @@ const fields = [
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
-  [[3], [3], [3], [3], [ ], [ ], [ ]],
+  [[ ], [3], [ ], [1], [ ], [ ], [ ]],
   [[1], [1], [1], [1], [1], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
@@ -33,7 +33,7 @@ function callFieldCb(cb, x, y) {
 
 export default {
   /**
-   * @param {function} cb to be called with ({OBJECT_TYPE}, {Phaser.Point}) for
+   * @param {function} cb to be called with ({GAME_OBJECT_TYPE}, {Phaser.Point}) for
    * every field
    */
   forEach(cb) {
