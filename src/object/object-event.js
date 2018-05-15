@@ -4,6 +4,7 @@
  */
 const GAME_OBJECT_EVENT_TYPE = {
   DESTROY: 'DESTROY', // destroy given object
+  MOVE: 'MOVE',
 };
 
 export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
@@ -11,16 +12,17 @@ export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
 /**
  * Data about game object event.
  * @typedef {object} GameObjectEvent
- * @property {GameObjectEventType} eventType
+ * @property {GameObjectEventType} type
  * @property {GameObject} object
  *
- * @param {GameObjectEventType} eventType
+ * @param {GameObjectEventType} type
  * @param {GameObject} object
  * @return {GameObjectEvent}
  */
-function createGameObjectEvent(eventType, object) {
+function createGameObjectEvent(type, object) {
+  // USE COMPOSITION: different types of events
   return {
-    eventType,
+    type,
     object,
   };
 }

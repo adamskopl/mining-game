@@ -13,6 +13,7 @@ export { GRAV, handleGravity };
  * @param {number} fieldSize
  */
 function handleGravity(o, otherObjects, fieldSize) {
+  let objectsEvents = null;
   if (o.$isTweenRunning()) {
     const oIntersecting = otherObjects.find(x => utils.willIntersect(
       o.$rec,
@@ -44,4 +45,5 @@ function handleGravity(o, otherObjects, fieldSize) {
       GRAV.time,
     ));
   }
+  return objectsEvents;
 }

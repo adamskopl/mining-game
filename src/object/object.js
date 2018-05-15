@@ -69,7 +69,7 @@ const extraFuns = {
   /**
    * @param {Array<object>} objects
    * @param {Phaser.Point} gameSize
-   * @return {Array<GameObjectEvent>}
+   * @return {Array<GameObjectEvent>} || null
    */
   $update(objects, gameSize) {
     let objectsEvents = null;

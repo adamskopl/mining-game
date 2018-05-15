@@ -15,7 +15,7 @@ const HANDLERS = [{
         [hero, filled] = [objects[1], objects[0]];
       }
       // should return an array of the GAME_OBJECT_EFFECT
-      return createGameObjectEvent(GAME_OBJECT_EVENT_TYPE.DESTROY, filled);
+      // return createGameObjectEvent(GAME_OBJECT_EVENT_TYPE.DESTROY, filled);
     },
   },
   {
@@ -60,6 +60,6 @@ function getGameObjectEvent(handlers, mainObject, otherObject) {
 function handlerMatches(objectA, objectB, h) {
   return (
     h.objects.includes(objectA.$type) &&
-      h.objects.includes(objectB.$type)
+    h.objects.includes(objectB.$type)
   );
 }

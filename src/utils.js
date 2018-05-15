@@ -14,6 +14,10 @@ const CUSTOM_TYPES = [
   }],
 ];
 
+const idsUsed = [];
+
+export { checkArgs };
+
 function getCustomCheckFun(customTypes, type) {
   const found = customTypes.find(t => t[0] === type);
   return found ? found[1] : null;
@@ -45,7 +49,7 @@ function isTypeOf(toCheck, type, types, customTypes, test) {
   return ret;
 }
 
-export function checkArgs(funName, argsObject, types, test) {
+function checkArgs(funName, argsObject, types, test) {
   // TODO: release? TURN OFF (so the chekArgs is not invoked so frequently!)
   const args = Array.prototype.slice.call(argsObject, 0);
   if (typeof funName !== 'string' || !Array.isArray(args) || !Array.isArray(types)) {
