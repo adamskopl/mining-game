@@ -1,5 +1,6 @@
 import * as utils from '../utils';
 import { createTweenObj, getGroundObject } from './utils';
+import { getGameObjectEventsForCollision } from './collision/collision';
 
 const GRAV = {
   vec: new Phaser.Point(0, 1),
@@ -15,17 +16,20 @@ export { GRAV, handleGravity };
 function handleGravity(o, otherObjects, fieldSize) {
   let objectsEvents = [];
   if (o.$isTweenRunning()) {
-    const oIntersecting = otherObjects.find(x => utils.willIntersect(
+    const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
       o.$rec,
       x.$rec,
       o.tweenObj.posTweened,
     ));
-    if (oIntersecting) {
+    if (objectsIntersecting.length > 0) {
       o.$alignTo(
-        oIntersecting,
+        objectsIntersecting[0],
         Phaser.Point.negative(o.tweenObj.vecTweenN),
         0,
         0,
+      );
+      objectsEvents = objectsEvents.concat(
+        getGameObjectEventsForCollision(o, objectsIntersecting),
       );
     } else { // update position
       o.$setPos(o.tweenObj.posTweened);

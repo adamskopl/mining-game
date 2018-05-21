@@ -36,7 +36,9 @@ function handleMovementForTween(o, otherObjects) {
       // TODO: EVERY OBJECT INTERSECTING + TEST!
 
       if (oIntersecting) {
-        objectsEvents = getGameObjectEventsForCollision(o, [oIntersecting]);
+        objectsEvents = objectsEvents.concat(
+          getGameObjectEventsForCollision(o, [oIntersecting]),
+        );
       }
       // continue the movement (SOMETIMES)
       o.$setPos(o.tweenObj.posTweened);
