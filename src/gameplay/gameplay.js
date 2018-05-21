@@ -1,16 +1,11 @@
+import { GRAV } from 'src/object/update/gravity';
 import { GAME_OBJECT_TYPE } from '../consts';
-import * as objectUtils from 'src/object/utils';
-import {
-  GAME_OBJECT_EVENT_TYPE,
-} from 'src/object/object-event';
 import { getObjectsEventsForKeyDirection } from './gameplay-hero';
-
 
 // TODO: move to the phaser group? e.g. group.filter(). Array methods in a
 // group.
 const objectsFilterTypes = (objects, types) =>
   objects.filter(c => types.includes(c.$type));
-const objectsFilter = (group, test) => group.children.filter(test);
 
 export default {
   init(g) {
@@ -38,6 +33,7 @@ export default {
         this.mainGroup.children, [GAME_OBJECT_TYPE.FILLED],
       ),
       direction,
+      GRAV.vec,
       this.mainGroup,
     );
     const gameObjectsEvents =

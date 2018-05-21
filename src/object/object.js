@@ -27,15 +27,15 @@ const extraFuns = {
     this.$type = type;
     this.$zeroTweenObj();
     this.$rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
-    this.$gravity = false;
+    this.$gravityEnabled = false;
 
     this.$initMov();
   },
   $enableGravity() {
-    this.$gravity = true;
+    this.$gravityEnabled = true;
   },
-  $gravityEnabled() {
-    return this.$gravity;
+  $isGravityEnabled() {
+    return this.$gravityEnabled;
   },
   $alignTo(dst, vec, offsetX = 0, offsetY = 0) {
     checkArgs('$alignTo', arguments, ['sprite', 'point', 'number', 'number']);
@@ -73,7 +73,7 @@ const extraFuns = {
    */
   $update(objects, gameSize) {
     let objectsEvents = null;
-    if (this.$gravityEnabled()) {
+    if (this.$isGravityEnabled()) {
       objectsEvents = updateUtils.update(this, objects, gameSize);
     }
     return objectsEvents;

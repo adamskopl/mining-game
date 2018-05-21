@@ -9,9 +9,11 @@ export { getObjectsEventsForKeyDirection };
 /**
  * @return {Array<GameObjectEvent>}
  */
-function getObjectsEventsForKeyDirection(objectsFilled, dir, group, hero) {
+function getObjectsEventsForKeyDirection(
+  objectsFilled, dir, gravVec, group, hero,
+) {
   let gameObjectEvents = [];
-  if (!hero.$isTweenRunning()) {
+  if (!hero.$isTweenRunning() && !Phaser.Point.negative(gravVec).equals(dir)) {
     gameObjectEvents = objectsFilled
       .map(forEveryFilled.bind(null, hero, dir, group))
       .filter(x => x !== null);

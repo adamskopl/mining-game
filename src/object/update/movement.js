@@ -23,7 +23,8 @@ function handleMovementForTween(o, otherObjects) {
         x.$rec,
         o.tweenObj.posTweened,
         GRAV.vec,
-      ));
+      ),
+    );
     if (futureAlignedTo) {
       // when update will keep the ground alignment
       const oIntersecting = otherObjects.find(x => utils.willIntersect(
