@@ -15,7 +15,7 @@ module.exports = {
     'no-use-before-define': 'off',
     'no-console': 'off',
     'prefer-arrow-callback': 'off',
-    'function-paren-newline': ['error', 'multiline'],
+    'function-paren-newline': ['error', 'consistent'],
   },
   'globals': {
     'Phaser': true
