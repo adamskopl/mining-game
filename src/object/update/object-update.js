@@ -1,14 +1,21 @@
-import * as utils from '../utils';
 import { GRAV, handleGravity } from './gravity';
 import { handleMovement } from './movement';
-import { createTweenObj, hasGround } from './utils';
+import { hasGround } from './utils';
 
 export { update };
 
-function update(o1, objects, fieldSize) {
-  if (!hasGround(o1, objects, GRAV.vec)) {
-    handleGravity(o1, objects, fieldSize);
+/**
+ * @param {GameObject} o1
+ * @param {Array<GameObject>} otherObjects
+ * @param {number} fieldSize
+ * @return {Array<GameObjectEvent>}
+ */
+function update(o1, otherObjects, fieldSize) {
+  let objectsEvents = [];
+  if (!hasGround(o1, otherObjects, GRAV.vec)) {
+    objectsEvents = handleGravity(o1, otherObjects, fieldSize);
   } else {
-    handleMovement(o1, objects, fieldSize);
+    objectsEvents = handleMovement(o1, otherObjects, fieldSize);
   }
+  return objectsEvents;
 }

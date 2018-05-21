@@ -12,9 +12,10 @@ export { GRAV, handleGravity };
 /**
  * @param {number} fieldSize
  */
-function handleGravity(o, objects, fieldSize) {
+function handleGravity(o, otherObjects, fieldSize) {
+  let objectsEvents = [];
   if (o.$isTweenRunning()) {
-    const oIntersecting = objects.find(x => utils.willIntersect(
+    const oIntersecting = otherObjects.find(x => utils.willIntersect(
       o.$rec,
       x.$rec,
       o.tweenObj.posTweened,
@@ -26,11 +27,10 @@ function handleGravity(o, objects, fieldSize) {
         0,
         0,
       );
-      console.warn('COL', o.$type, oIntersecting.$type);
     } else { // update position
       o.$setPos(o.tweenObj.posTweened);
     }
-    const groundObject = getGroundObject(o, objects, GRAV.vec);
+    const groundObject = getGroundObject(o, otherObjects, GRAV.vec);
     if (groundObject) {
       o.$zeroTweenObj();
     }
@@ -44,4 +44,5 @@ function handleGravity(o, objects, fieldSize) {
       GRAV.time,
     ));
   }
+  return objectsEvents;
 }

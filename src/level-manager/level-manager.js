@@ -1,7 +1,7 @@
 import { createGameObject } from 'src/object/object';
 import bitmapsManager from 'src/bitmaps-manager/bitmaps-manager';
 import { checkArgs } from 'src/utils';
-import { OBJECT_TYPE } from 'src/consts';
+import { GAME_OBJECT_TYPE } from 'src/consts';
 import { getGamePos } from '../display-utils';
 import { getFieldSize } from '../level-utils';
 import level from './levels';
@@ -21,7 +21,7 @@ function createGroupGameObjects(g, fieldSize, lvl) {
     'object', 'number', 'object',
   ]);
   const group = g.add.group();
-  // @param {OBJECT_TYPE}, @param {Phaser.Point}
+  // @param {GAME_OBJECT_TYPE}, @param {Phaser.Point}
   lvl.forEach((objectType, pos) => {
     if (objectType) {
       createGameObject(
@@ -49,7 +49,7 @@ function createGroupBackgroundObjects(g, fieldSize, lvl) {
   lvl.forEach((objectType, pos) => {
     group.create(
       fieldSize * pos.x, fieldSize * pos.y,
-      bitmapsManager.getBitmapData(OBJECT_TYPE.EMPTY),
+      bitmapsManager.getBitmapData(GAME_OBJECT_TYPE.EMPTY),
     );
   });
   return group;

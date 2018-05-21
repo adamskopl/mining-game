@@ -1,10 +1,15 @@
 import * as utils from '../utils';
 import { GRAV } from './gravity';
 import { createTweenObj } from './utils';
+import { getGameObjectEventsForCollision } from './collision/collision';
 
 export { handleMovement };
 
+/**
+ * @return {Array<GameObjectEvent>}
+ */
 function handleMovementForTween(o, otherObjects) {
+  let objectsEvents = [];
   const gravAlignedToObjects = otherObjects.filter(x => utils.alignedTo(
     o.$rec,
     x.$rec,
@@ -20,17 +25,17 @@ function handleMovementForTween(o, otherObjects) {
         GRAV.vec,
       ));
     if (futureAlignedTo) {
-      // update will keep the ground alignment
-
-      // check intersection
-
+      // when update will keep the ground alignment
       const oIntersecting = otherObjects.find(x => utils.willIntersect(
         o.$rec,
         x.$rec,
         o.tweenObj.posTweened,
       ));
+
+      // TODO: EVERY OBJECT INTERSECTING + TEST!
+
       if (oIntersecting) {
-        // console.warn('INTERS', oIntersecting.$type);
+        objectsEvents = getGameObjectEventsForCollision(o, [oIntersecting]);
       }
       // continue the movement (SOMETIMES)
       o.$setPos(o.tweenObj.posTweened);
@@ -40,13 +45,15 @@ function handleMovementForTween(o, otherObjects) {
           'losing alignment with more than 1 object');
       }
       o.$alignTo(gravAlignedToObjects[0], new Phaser.Point(
-        o.tweenObj.vecTweenN.x, -1,
+        o.tweenObj.vecTweenN.x,
+        -1,
       ), 0, 0);
       o.$zeroTweenObj();
     }
   } else {
     console.error('handleMovement() should not happen: no alignment');
   }
+  return objectsEvents;
 }
 
 function startTween(o, fieldSize) {
@@ -56,7 +63,7 @@ function startTween(o, fieldSize) {
     o.$getMoveVec(),
     1,
     Phaser.Easing.Linear.None,
-    1000,
+    200,
   );
   tweenObj.tween.onComplete.add(function onComplete(posTweened) {
     o.$setPos(posTweened); // make final alignment
@@ -66,12 +73,14 @@ function startTween(o, fieldSize) {
 }
 
 /**
- * @return {GameObjectUpdateRes}
+ * @return {Array<GameObjectEvent>}
  */
 function handleMovement(o, otherObjects, fieldSize) {
+  let objectsEvents = [];
   if (o.$isTweenRunning()) {
-    handleMovementForTween(o, otherObjects);
+    objectsEvents = handleMovementForTween(o, otherObjects);
   } else if (o.$getMoveVec()) {
     startTween(o, fieldSize);
   }
+  return objectsEvents;
 }

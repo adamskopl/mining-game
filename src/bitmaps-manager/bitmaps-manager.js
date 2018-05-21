@@ -1,4 +1,4 @@
-import { OBJECT_TYPE, BITMAPS } from '../consts';
+import { GAME_OBJECT_TYPE, BITMAPS } from '../consts';
 
 const DOT_SIZE = 3;
 let game = null;
@@ -31,7 +31,7 @@ export default {
     game = g;
     // initialize bitmaps, add them to cache
     this.bitmaps = {};
-    Object.keys(OBJECT_TYPE).reduce((arr, key) => {
+    Object.keys(GAME_OBJECT_TYPE).reduce((arr, key) => {
       // bitmap will be resized later
       arr.push([key, g.add.bitmapData(1, 1)]);
       return arr;
@@ -47,7 +47,7 @@ export default {
     reloadBitmaps(this.bitmaps, fieldSize);
   },
   /**
-   * @param {OBJECT_TYPE} objectType
+   * @param {GAME_OBJECT_TYPE} objectType
    * @return {Phaser.BitmapData}
    */
   getBitmapData(objectType) {

@@ -2,7 +2,11 @@ import { checkArgs } from 'src/utils';
 import { createGameObjectTween } from '../object';
 import * as objectUtils from '../utils';
 
-export { hasGround, getGroundObject, createTweenObj };
+export {
+  hasGround,
+  getGroundObject,
+  createTweenObj,
+};
 
 function hasGround(o, objects, gravVec) {
   checkArgs('hasGround', arguments, ['sprite', 'array', 'point']);
