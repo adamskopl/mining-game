@@ -2,7 +2,6 @@ import { checkArgs } from 'src/utils';
 
 function $move(dir) {
   checkArgs('$move', arguments, ['point']);
-  console.warn('move!');
   if (!this.$isTweenRunning()) {
     this.vecMoveN = dir;
   }

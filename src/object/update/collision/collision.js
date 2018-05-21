@@ -9,23 +9,28 @@ export { getGameObjectEventsForCollision };
 const HANDLERS = [{
     objects: [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.FILLED],
     f(objects) {
-      let [hero, filled] = objects;
+      let [hero, filled] = objects,
+      res = null;
       // TODO: args swap function
       if (hero.type === GAME_OBJECT_TYPE.FILLED) {
         [hero, filled] = [objects[1], objects[0]];
       }
       // should return an array of the GAME_OBJECT_EFFECT
       // return createGameObjectEvent(GAME_OBJECT_EVENT_TYPE.DESTROY, filled);
+
+      return res;
     },
   },
   {
     objects: [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.EMPTY],
     f(objects) {
-      let [hero, empty] = objects;
+      let [hero, empty] = objects,
+      res = null;
       // TODO: args swap function
       if (hero.type === GAME_OBJECT_TYPE.EMPTY) {
         [hero, empty] = [objects[1], objects[0]];
       }
+      return res;
     },
   },
 ];
@@ -36,7 +41,8 @@ const HANDLERS = [{
  * @return {Array<GameObjectEvent>}
  */
 function getGameObjectEventsForCollision(o, objects) {
-  return objects.map(getGameObjectEvent.bind(null, HANDLERS, o));
+  return objects.map(getGameObjectEvent.bind(null, HANDLERS, o))
+    .filter(x => x !== null);
 }
 
 /**
@@ -52,7 +58,7 @@ function getGameObjectEvent(handlers, mainObject, otherObject) {
   if (handler) {
     res = handler.f([mainObject, otherObject]);
   } else {
-    console.warn('no handler for ', mainObject.$type, otherObject.$type);
+    console.error('no handler for ', mainObject.$type, otherObject.$type);
   }
   return res;
 }

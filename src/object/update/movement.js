@@ -9,7 +9,7 @@ export { handleMovement };
  * @return {Array<GameObjectEvent>}
  */
 function handleMovementForTween(o, otherObjects) {
-  let objectsEvents = null;
+  let objectsEvents = [];
   const gravAlignedToObjects = otherObjects.filter(x => utils.alignedTo(
     o.$rec,
     x.$rec,
@@ -76,7 +76,7 @@ function startTween(o, fieldSize) {
  * @return {Array<GameObjectEvent>}
  */
 function handleMovement(o, otherObjects, fieldSize) {
-  let objectsEvents = null;
+  let objectsEvents = [];
   if (o.$isTweenRunning()) {
     objectsEvents = handleMovementForTween(o, otherObjects);
   } else if (o.$getMoveVec()) {

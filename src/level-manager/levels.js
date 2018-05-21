@@ -10,26 +10,16 @@ const fields = [
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
+  [[ ], [1], [1], [1], [1], [ ], [ ]],
+  [[ ], [1], [1], [1], [1], [ ], [ ]],
+  [[ ], [1], [3], [1], [1], [ ], [ ]],
+  [[ ], [1], [1], [1], [1], [ ], [ ]],
+  [[ ], [1], [ ], [1], [1], [ ], [ ]],
+  [[1], [1], [ ], [1], [1], [1], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
-  [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
-  [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
-  [[ ], [2], [ ], [ ], [ ], [ ], [ ]],
-  [[ ], [3], [ ], [ ], [ ], [ ], [ ]],
-  [[1], [1], [1], [1], [1], [1], [ ]],
-  [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
-  [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
+  [[ ], [ ], [1], [ ], [ ], [ ], [ ]],
   [[ ], [ ], [ ], [ ], [ ], [ ], [ ]],
 ].map(row => row.map(field => field.map(object => oKeys[object])));
-
-function callFieldCb(cb, x, y) {
-  const field = fields[y][x];
-  if (field.length === 0) {
-    cb(null, new Phaser.Point(x, y));
-  }
-  field.forEach((objectType) => {
-    cb(objectType, new Phaser.Point(x, y));
-  });
-}
 
 export default {
   /**
@@ -51,3 +41,13 @@ export default {
     return new Phaser.Point(fields[0].length, fields.length);
   },
 };
+
+function callFieldCb(cb, x, y) {
+  const field = fields[y][x];
+  if (field.length === 0) {
+    cb(null, new Phaser.Point(x, y));
+  }
+  field.forEach((objectType) => {
+    cb(objectType, new Phaser.Point(x, y));
+  });
+}

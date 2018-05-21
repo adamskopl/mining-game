@@ -11,7 +11,7 @@ export { update };
  * @return {Array<GameObjectEvent>}
  */
 function update(o1, otherObjects, fieldSize) {
-  let objectsEvents = null;
+  let objectsEvents = [];
   if (!hasGround(o1, otherObjects, GRAV.vec)) {
     objectsEvents = handleGravity(o1, otherObjects, fieldSize);
   } else {

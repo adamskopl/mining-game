@@ -31,31 +31,38 @@ export default {
       o.$enableGravity();
     });
   },
-    onKeyDirection(direction) {
-    const test = objectsFilterTypes(this.mainGroup.children, [GAME_OBJECT_TYPE.HERO])
-      .map(getObjectsEventsForKeyDirection.bind(
-        null,
-        objectsFilterTypes(this.mainGroup.children, [GAME_OBJECT_TYPE.FILLED]),
-        direction,
-      ))
-              .reduce((acc, val) => acc.concat(val), []);
+  onKeyDirection(direction) {
+    const mapHeroEvent = getObjectsEventsForKeyDirection.bind(
+      null,
+      objectsFilterTypes(
+        this.mainGroup.children, [GAME_OBJECT_TYPE.FILLED],
+      ),
+      direction,
+      this.mainGroup,
+    );
+    const gameObjectsEvents =
+      objectsFilterTypes(this.mainGroup.children, [GAME_OBJECT_TYPE.HERO])
+        .map(mapHeroEvent)
+        .reduce((acc, val) => acc.concat(val), []);
+    this.pushGameObjectsEventsToHandle(gameObjectsEvents);
   },
   onFieldResized(fieldSize) {
     this.fieldSize = fieldSize;
   },
   /**
-   * @param {GameObjectEvent} objectEvent
+   * @param {Array<GameObjectEvent>} objectEvent
    */
-    pushObjectEventToHandle(objectEvent) {
-        CONCAAATTT???
-    this.gameObjectsEventsToHandle.push(objectEvent);
+  pushGameObjectsEventsToHandle(gameObjectEvents) {
+    this.gameObjectsEventsToHandle =
+      this.gameObjectsEventsToHandle.concat(gameObjectEvents);
   },
   update() {
     if (!this.mainGroup) {
       return;
     }
     // 1. handle collected events
-
+    this.gameObjectsEventsToHandle.forEach(e => e.resolve());
+    this.gameObjectsEventsToHandle = [];
 
     // 2. update objects, handle update events
     // Array<GameObjectEvent>
@@ -65,18 +72,9 @@ export default {
       .filter(x => x !== null);
 
     // TODO: merge objectsEventsToHandle
-    objectsEvents.forEach(handleObjectEvent.bind(null, this.mainGroup));
+    objectsEvents.forEach(e => e.resolve());
   },
 };
-
-function handleObjectEvent(group, event) {
-  switch (event.type) {
-    case GAME_OBJECT_EVENT_TYPE.DESTROY:
-      group.remove(event.object);
-      break;
-    default:
-  }
-}
 
 function runObjectUpdate(others, fieldSize, o) {
   return o.$update(
