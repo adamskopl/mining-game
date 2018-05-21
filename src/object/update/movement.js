@@ -27,17 +27,14 @@ function handleMovementForTween(o, otherObjects) {
     );
     if (futureAlignedTo) {
       // when update will keep the ground alignment
-      const oIntersecting = otherObjects.find(x => utils.willIntersect(
+      const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
         o.$rec,
         x.$rec,
         o.tweenObj.posTweened,
       ));
-
-      // TODO: EVERY OBJECT INTERSECTING + TEST!
-
-      if (oIntersecting) {
+      if (objectsIntersecting.length > 0) {
         objectsEvents = objectsEvents.concat(
-          getGameObjectEventsForCollision(o, [oIntersecting]),
+          getGameObjectEventsForCollision(o, objectsIntersecting),
         );
       }
       // continue the movement (SOMETIMES)
