@@ -17,11 +17,13 @@ function getObjectsEventsForKeyDirection(
     gameObjectEvents = objectsFilled
       .map(forEveryFilled.bind(null, hero, dir, group))
       .filter(x => x !== null);
-    gameObjectEvents.push(createGameObjectEvent(
-      GAME_OBJECT_EVENT_TYPE.MOVE,
-      hero,
-      dir,
-    ));
+    if (!gravVec.equals(dir)) {
+      gameObjectEvents.push(createGameObjectEvent(
+        GAME_OBJECT_EVENT_TYPE.MOVE,
+        hero,
+        dir,
+      ));
+    }
   }
   return gameObjectEvents;
 }
