@@ -22,14 +22,13 @@ function handleGravity(o, otherObjects, fieldSize) {
       o.tweenObj.posTweened,
     ));
     if (objectsIntersecting.length > 0) {
-      o.$alignTo(
-        objectsIntersecting[0],
-        Phaser.Point.negative(o.tweenObj.vecTweenN),
-        0,
-        0,
-      );
       objectsEvents = objectsEvents.concat(
-        getGameObjectEventsForCollision(o, objectsIntersecting),
+        getGameObjectEventsForCollision(
+          o,
+          GRAV.vec,
+          GRAV.vec,
+          objectsIntersecting,
+        ),
       );
     } else { // update position
       o.$setPos(o.tweenObj.posTweened);

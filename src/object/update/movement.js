@@ -34,7 +34,12 @@ function handleMovementForTween(o, otherObjects) {
       ));
       if (objectsIntersecting.length > 0) {
         objectsEvents = objectsEvents.concat(
-          getGameObjectEventsForCollision(o, objectsIntersecting),
+          getGameObjectEventsForCollision(
+            o,
+            o.tweenObj.vecTweenN,
+            GRAV.vec,
+            objectsIntersecting,
+          ),
         );
       }
       // continue the movement (SOMETIMES)

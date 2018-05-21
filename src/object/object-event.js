@@ -5,6 +5,7 @@
 const GAME_OBJECT_EVENT_TYPE = {
   DESTROY: 'DESTROY', // destroy given object
   MOVE: 'MOVE',
+  ALIGN: 'ALIGN', // align to the other game object
 };
 
 export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
@@ -12,6 +13,7 @@ export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
 const FACTORIES = new Map([
   [GAME_OBJECT_EVENT_TYPE.DESTROY, createGameObjectEventDestroy],
   [GAME_OBJECT_EVENT_TYPE.MOVE, createGameObjectEventMove],
+  [GAME_OBJECT_EVENT_TYPE.ALIGN, createGameObjectEventAlign],
 ]);
 
 const base = {
@@ -52,6 +54,26 @@ const move = Object.assign(
   },
 );
 
+const align = Object.assign(
+  {},
+  base,
+  {
+    init(type, object, alignTo, alignVec) {
+      this.initBase(type, object);
+      this.alignTo = alignTo;
+      this.alignVec = alignVec;
+    },
+    resolve() {
+      this.object.$alignTo(
+        this.alignTo,
+        this.alignVec,
+        0,
+        0,
+      );
+    },
+  },
+);
+
 /**
  * Data about game object event.
  * @typedef {object} GameObjectEvent
@@ -75,6 +97,12 @@ function createGameObjectEventDestroy(type, o, ...extra) {
 
 function createGameObjectEventMove(type, o, ...extra) {
   const ret = Object.create(move);
+  ret.init(type, o, ...extra);
+  return ret;
+}
+
+function createGameObjectEventAlign(type, o, ...extra) {
+  const ret = Object.create(align);
   ret.init(type, o, ...extra);
   return ret;
 }

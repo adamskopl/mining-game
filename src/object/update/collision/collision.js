@@ -3,22 +3,34 @@ import { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent } from '../../object-even
 
 export { getGameObjectEventsForCollision };
 
+function makeSwap(a, b, firstType) {
+  let ret = [a, b];
+  if (b.type === firstType) {
+    ret = [b, a];
+  }
+  return ret;
+}
+
 /*
  TODO: need factory of handlers.. too much duplication
  */
 const HANDLERS = [
   {
     objects: [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.FILLED],
-    f(objects) {
-      let [hero, filled] = objects;
-      let res = null;
+    f(objects, vecMoveN, vecGravN) {
+      let [hero, filled] =
+            makeSwap(objects[0], objects[1], GAME_OBJECT_TYPE.HERO);
+      let res = [];
       // TODO: args swap function
       if (hero.type === GAME_OBJECT_TYPE.FILLED) {
         [hero, filled] = [objects[1], objects[0]];
       }
-      // should return an array of the GAME_OBJECT_EFFECT
-      // return createGameObjectEvent(GAME_OBJECT_EVENT_TYPE.DESTROY, filled);
-
+      res.push(createGameObjectEvent(
+        GAME_OBJECT_EVENT_TYPE.ALIGN,
+        hero,
+        filled,
+        Phaser.Point.negative(vecMoveN),
+      ));
       return res;
     },
   },
@@ -27,25 +39,34 @@ const HANDLERS = [
 /**
  * @param {GameObject} object colliding
  * @param {Array<GameObject>} objects colliding with the object
+ * @param {Phaser.Point} vecMoveN move normalized vector for colliding object
+ * @param {Phaser.Point} vecGravN gravity normalized vector during collision
  * @return {Array<GameObjectEvent>}
  */
-function getGameObjectEventsForCollision(o, objects) {
-  return objects.map(getGameObjectEvent.bind(null, HANDLERS, o))
-    .filter(x => x !== null);
+function getGameObjectEventsForCollision(o, vecMoveN, vecGravN, objects) {
+  return objects
+    .map(getGameObjectEvent.bind(null, o, vecMoveN, vecGravN, HANDLERS))
+    .reduce((acc, val) => acc.concat(val), []);
 }
 
 /**
- * @return {GameObjectEvent}
+ * @return Array<GameObjectEvent>
  */
-function getGameObjectEvent(handlers, mainObject, otherObject) {
-  let res = null;
+function getGameObjectEvent(
+  mainObject,
+  vecMoveN,
+  vecGravN,
+  handlers,
+  otherObject,
+) {
+  let res = [];
   const handler = handlers.find(handlerMatches.bind(
     null,
     mainObject,
     otherObject,
   ));
   if (handler) {
-    res = handler.f([mainObject, otherObject]);
+    res = handler.f([mainObject, otherObject], vecMoveN, vecGravN);
   } else {
     console.error('no handler for ', mainObject.$type, otherObject.$type);
   }
