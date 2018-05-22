@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 import { GRAV } from './gravity';
-import { createTweenObj } from './utils';
+import { createTweenObj, getAlignVecWhenGoingOff } from './utils';
 import { getGameObjectEventsForCollision } from './collision/collision';
 
 export { handleMovement };
@@ -54,10 +54,12 @@ function handleMovementForTween(o, otherObjects) {
         console.error('handleMovement() should not happen:' +
           'losing alignment with more than 1 object');
       }
-      o.$alignTo(gravAlignedToObjects[0], new Phaser.Point(
-        o.tweenObj.vecTweenN.x,
-        -1,
-      ), 0, 0);
+      o.$alignTo(
+        gravAlignedToObjects[0],
+        getAlignVecWhenGoingOff(o.tweenObj.vecTweenN, GRAV.vec),
+        0,
+        0,
+      );
       o.$zeroTweenObj();
     }
   } else {
