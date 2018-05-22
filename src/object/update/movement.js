@@ -5,6 +5,11 @@ import { getGameObjectEventsForCollision } from './collision/collision';
 
 export { handleMovement };
 
+const MOV = {
+  time: 10000,
+  fieldsNumber: 50,
+};
+
 /**
  * @return {Array<GameObjectEvent>}
  */
@@ -66,9 +71,9 @@ function startTween(o, fieldSize) {
     o,
     fieldSize,
     o.$getMovement().vecMoveN,
-    1,
+    MOV.fieldsNumber,
     Phaser.Easing.Linear.None,
-    200,
+    MOV.time,
   );
   tweenObj.tween.onComplete.add(function onComplete(posTweened) {
     o.$setPos(posTweened); // make final alignment

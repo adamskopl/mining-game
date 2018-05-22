@@ -5,7 +5,7 @@
 const GAME_OBJECT_EVENT_TYPE = {
   DESTROY: 'DESTROY', // destroy given object
   MOVE: 'MOVE',
-  ALIGN: 'ALIGN', // align to the other game object
+  ALIGN: 'ALIGN', // align to the other game object, stop the movement
 };
 
 export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };

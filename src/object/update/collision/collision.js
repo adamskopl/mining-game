@@ -1,5 +1,8 @@
 import { GAME_OBJECT_TYPE } from 'src/consts';
-import { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent } from '../../object-event';
+import {
+  GAME_OBJECT_EVENT_TYPE,
+  createGameObjectEvent
+} from '../../object-event';
 
 export { getGameObjectEventsForCollision };
 
