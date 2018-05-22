@@ -1,28 +1,44 @@
 import { checkArgs } from 'src/utils';
 
+const MOVEMENT_TYPE = {
+  UNTIL_OBSTACLE: 'UNTIL_OBSTACLE',
+  UNTIL_LEAVES_FIELD: 'UNTIL_LEAVES_FIELD',
+};
+
 function $move(dir) {
   checkArgs('$move', arguments, ['point']);
   if (!this.$isTweenRunning()) {
-    this.vecMoveN = dir;
+    this.movement = createGameObjectMovement(dir);
   }
 }
 
-export default {
-  $getMoveVec() {
-    return this.vecMoveN;
+/**
+ * @typedef {object} GameObjectMovement
+ * @property {Phaser.Point} vecMoveN normalized
+ */
+function createGameObjectMovement(vecMoveN) {
+  return {
+    vecMoveN,
+  };
+}
+
+const moveObject = {
+  $getMovement() {
+    return this.movement;
   },
   /**
    * @param {Phaser.Point} vec
    */
-  $setMoveVec(vec) {
-    this.vecMoveN = vec;
+  $setMovement(vec) {
+    this.movement.vecMoveN = vec;
   },
   $zeroMoveVec() {
-    this.vecMoveN = null;
+    this.movement = createGameObjectMovement(null);
   },
   $initMov() {
-    // this.$setMoveVec(new Phaser.Point(1, 0));
     this.$zeroMoveVec();
   },
   $move,
 };
+
+export { MOVEMENT_TYPE, moveObject };

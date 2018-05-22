@@ -65,7 +65,7 @@ function startTween(o, fieldSize) {
   const tweenObj = createTweenObj(
     o,
     fieldSize,
-    o.$getMoveVec(),
+    o.$getMovement().vecMoveN,
     1,
     Phaser.Easing.Linear.None,
     200,
@@ -84,7 +84,7 @@ function handleMovement(o, otherObjects, fieldSize) {
   let objectsEvents = [];
   if (o.$isTweenRunning()) {
     objectsEvents = handleMovementForTween(o, otherObjects);
-  } else if (o.$getMoveVec()) {
+  } else if (o.$getMovement().vecMoveN) {
     startTween(o, fieldSize);
   }
   return objectsEvents;

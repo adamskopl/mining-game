@@ -49,7 +49,7 @@ const move = Object.assign(
       this.vec = vec;
     },
     resolve() {
-      this.object.$setMoveVec(this.vec);
+      this.object.$setMovement(this.vec);
     },
   },
 );
