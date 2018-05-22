@@ -30,13 +30,9 @@ function handleGravity(o, otherObjects, fieldSize) {
           objectsIntersecting,
         ),
       );
-    } else { // update position
-      o.$setPos(o.tweenObj.posTweened);
     }
-    const groundObject = getGroundObject(o, otherObjects, GRAV.vec);
-    if (groundObject) {
-      o.$zeroTweenObj();
-    }
+    // continue the movement (object may be realigned during events resolve)
+    o.$setPos(o.tweenObj.posTweened);
   } else {
     o.$setTweenObj(createTweenObj(
       o,

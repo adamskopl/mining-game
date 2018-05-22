@@ -70,6 +70,7 @@ const align = Object.assign(
         0,
         0,
       );
+      this.object.$zeroTweenObj();
     },
   },
 );

@@ -47,7 +47,7 @@ function handleMovementForTween(o, otherObjects) {
           ),
         );
       }
-      // continue the movement (SOMETIMES)
+      // continue the movement (object may be realigned during events resolve)
       o.$setPos(o.tweenObj.posTweened);
     } else { // update will cause go off the ground
       if (gravAlignedToObjects.length > 1) {
@@ -75,9 +75,7 @@ function startTween(o, fieldSize) {
     Phaser.Easing.Linear.None,
     MOV.time,
   );
-  tweenObj.tween.onComplete.add(function onComplete(posTweened) {
-    o.$setPos(posTweened); // make final alignment
-  });
+  tweenObj.tween.onComplete.add(function onComplete(posTweened) {});
   o.$setTweenObj(tweenObj);
   o.$zeroMoveVec();
 }
