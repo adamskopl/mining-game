@@ -79,7 +79,6 @@ function startTween(o, fieldSize) {
   );
   tweenObj.tween.onComplete.add(function onComplete(posTweened) {});
   o.$setTweenObj(tweenObj);
-  o.$zeroMoveVec();
 }
 
 /**

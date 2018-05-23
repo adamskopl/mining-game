@@ -3,21 +3,7 @@ import * as updateUtils from './update/object-update';
 import * as utils from './utils';
 import { moveObject } from './object-move';
 
-export { createGameObject, createGameObjectTween };
-
-/**
- * @typedef {object} GameObjectTween
- * @property {?} posTweened
- * @property {?} tween
- * @property {Phaser.Vector} vecTweenN
- */
-function createGameObjectTween(posTweened, tween, vecTweenN) {
-  return {
-    posTweened,
-    tween,
-    vecTweenN,
-  };
-}
+export { createGameObject };
 
 // prefixing '$' to not to overwrite Sprite's function
 const extraFuns = {
@@ -26,7 +12,6 @@ const extraFuns = {
    */
   $init(type) {
     this.$type = type;
-    this.$zeroTweenObj();
     this.$rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
     this.$gravityEnabled = false;
 
@@ -49,23 +34,6 @@ const extraFuns = {
     checkArgs('$setPos', arguments, ['point']);
     [this.x, this.y] = [pos.x, pos.y];
     this.$rec.setTo(this.x, this.y, this.width, this.height);
-  },
-  $setTweenObj(tweenObj) {
-    checkArgs('$setTweenObj', arguments, ['object']);
-    this.tweenObj = tweenObj;
-  },
-  $zeroTweenObj() {
-    if (this.tweenObj && this.tweenObj.tween) {
-      this.tweenObj.tween.stop(true); // fire onComplete
-    }
-    this.$setTweenObj(createGameObjectTween(
-      null,
-      null,
-      null,
-    ));
-  },
-  $isTweenRunning() {
-    return this.tweenObj.tween && this.tweenObj.tween.isRunning;
   },
   /**
    * @param {Array<object>} objects

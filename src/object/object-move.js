@@ -23,6 +23,9 @@ function createGameObjectMovement(vecMoveN) {
 }
 
 const moveObject = {
+  $initMov() {
+    this.$zeroTweenObj();
+  },
   $getMovement() {
     return this.movement;
   },
@@ -32,13 +35,39 @@ const moveObject = {
   $setMovement(vec) {
     this.movement.vecMoveN = vec;
   },
-  $zeroMoveVec() {
+  $setTweenObj(tweenObj) {
+    checkArgs('$setTweenObj', arguments, ['object']);
+    this.tweenObj = tweenObj;
+  },
+  $zeroTweenObj() {
+    if (this.tweenObj && this.tweenObj.tween) {
+      this.tweenObj.tween.stop(true); // fire onComplete
+    }
+    this.$setTweenObj(createGameObjectTween(
+      null,
+      null,
+      null,
+    ));
     this.movement = createGameObjectMovement(null);
   },
-  $initMov() {
-    this.$zeroMoveVec();
+  $isTweenRunning() {
+    return this.tweenObj.tween && this.tweenObj.tween.isRunning;
   },
   $move,
 };
 
-export { MOVEMENT_TYPE, moveObject };
+/**
+ * @typedef {object} GameObjectTween
+ * @property {?} posTweened
+ * @property {?} tween
+ * @property {Phaser.Vector} vecTweenN
+ */
+function createGameObjectTween(posTweened, tween, vecTweenN) {
+  return {
+    posTweened,
+    tween,
+    vecTweenN,
+  };
+}
+
+export { MOVEMENT_TYPE, moveObject, createGameObjectTween };
