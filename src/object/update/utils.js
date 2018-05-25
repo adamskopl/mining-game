@@ -5,7 +5,7 @@ import * as objectUtils from '../utils';
 export {
   hasGround,
   getGroundObject,
-  getAlignVecWhenGoingOff,
+  getAlignVecWhenLeavingObject,
   createTweenObj,
 };
 
@@ -20,15 +20,13 @@ function getGroundObject(o, objects, gravVec) {
 }
 
 /**
- * Get alignment vector for object loosing ground when moving by @vecMov and
- * when gravity is @vecGrav. E.g. object A goes right, looses ground, when
- * leaving object B, gravity is down. object A should be aligned to B by the
- * vector [1, -1].
- * @param {Phaser.Point} vecMov
- * @param {Phaser.Point} vecGrav
+ * Get alignment vector for object leaving other object when moving by @vecMov
+ * and when gravity is @vecGrav. E.g. object A goes right, leaves object B,
+ * gravity is down. object A should be aligned to B with the vector [1, -1].
+ * @param {Phaser.Point} vecMov @param {Phaser.Point} vecGrav
  * @return {Phaser.Point}
  */
-function getAlignVecWhenGoingOff(vecMov, vecGrav) {
+function getAlignVecWhenLeavingObject(vecMov, vecGrav) {
   // take non-zero vecMove coord
   // take negative non-zero vecGrav coord
   return new Phaser.Point(

@@ -1,10 +1,13 @@
+// Determining {GameObjectEvent} when intersection with other objects occur
+// during the movement.
+
 import { GAME_OBJECT_TYPE } from 'src/consts';
 import {
   GAME_OBJECT_EVENT_TYPE,
   createGameObjectEvent
 } from '../../object-event';
 
-export { getGameObjectEventsForCollision };
+export { getGameObjectEventsForIntersection };
 
 function makeSwap(a, b, firstType) {
   let ret = [a, b];
@@ -23,7 +26,7 @@ const HANDLERS = [
     f(objects, vecMoveN, vecGravN) {
       let [hero, filled] =
             makeSwap(objects[0], objects[1], GAME_OBJECT_TYPE.HERO);
-      let res = [];
+      const res = [];
       // TODO: args swap function
       if (hero.type === GAME_OBJECT_TYPE.FILLED) {
         [hero, filled] = [objects[1], objects[0]];
@@ -40,13 +43,13 @@ const HANDLERS = [
 ];
 
 /**
- * @param {GameObject} object colliding
- * @param {Array<GameObject>} objects colliding with the object
- * @param {Phaser.Point} vecMoveN move normalized vector for colliding object
- * @param {Phaser.Point} vecGravN gravity normalized vector during collision
+ * @param {GameObject} object intersecting
+ * @param {Array<GameObject>} objects intersecting with the object
+ * @param {Phaser.Point} vecMoveN move normalized vector for intersecting object
+ * @param {Phaser.Point} vecGravN gravity normalized vector during intersection
  * @return {Array<GameObjectEvent>}
  */
-function getGameObjectEventsForCollision(o, vecMoveN, vecGravN, objects) {
+function getGameObjectEventsForIntersection(o, vecMoveN, vecGravN, objects) {
   return objects
     .map(getGameObjectEvent.bind(null, o, vecMoveN, vecGravN, HANDLERS))
     .reduce((acc, val) => acc.concat(val), []);

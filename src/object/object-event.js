@@ -44,12 +44,15 @@ const move = Object.assign(
   {},
   base,
   {
-    init(type, object, vec) {
+    /**
+     * @param {GameObjectMovement} movementObject
+     */
+    init(type, object, movementObject) {
       this.initBase(type, object);
-      this.vec = vec;
+      this.movementObject = movementObject;
     },
     resolve() {
-      this.object.$setMovement(this.vec);
+      this.object.$setMovement(this.movementObject);
     },
   },
 );

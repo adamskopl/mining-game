@@ -3,6 +3,10 @@ import {
   GAME_OBJECT_EVENT_TYPE,
   createGameObjectEvent,
 } from 'src/object/object-event';
+import {
+  createGameObjectMovement,
+  MOVEMENT_TYPE,
+} from 'src/object/object-move';
 
 export { getObjectsEventsForKeyDirection };
 
@@ -21,7 +25,7 @@ function getObjectsEventsForKeyDirection(
       gameObjectEvents.push(createGameObjectEvent(
         GAME_OBJECT_EVENT_TYPE.MOVE,
         hero,
-        dir,
+        createGameObjectMovement(dir, MOVEMENT_TYPE.ONE),
       ));
     }
   }

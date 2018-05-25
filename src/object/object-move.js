@@ -1,8 +1,11 @@
 import { checkArgs } from 'src/utils';
 
+/**
+ * @typedef {object} MovementType
+ */
 const MOVEMENT_TYPE = {
-  UNTIL_OBSTACLE: 'UNTIL_OBSTACLE',
-  UNTIL_LEAVES_FIELD: 'UNTIL_LEAVES_FIELD',
+  ONE: 'MOVEMENT_ONE', // move one field
+  CONSTANT: 'MOVEMENT_CONSTANT', // keep moving
 };
 
 function $move(dir) {
@@ -12,28 +15,21 @@ function $move(dir) {
   }
 }
 
-/**
- * @typedef {object} GameObjectMovement
- * @property {Phaser.Point} vecMoveN normalized
- */
-function createGameObjectMovement(vecMoveN) {
-  return {
-    vecMoveN,
-  };
-}
-
 const moveObject = {
   $initMov() {
     this.$zeroTweenObj();
   },
+  /**
+   * @return {GameObjectMovement}
+   */
   $getMovement() {
     return this.movement;
   },
   /**
    * @param {Phaser.Point} vec
    */
-  $setMovement(vec) {
-    this.movement.vecMoveN = vec;
+  $setMovement(gameObjectMovement) {
+    this.movement = gameObjectMovement;
   },
   $setTweenObj(tweenObj) {
     checkArgs('$setTweenObj', arguments, ['object']);
@@ -48,7 +44,7 @@ const moveObject = {
       null,
       null,
     ));
-    this.movement = createGameObjectMovement(null);
+    this.$setMovement(createGameObjectMovement(null));
   },
   $isTweenRunning() {
     return this.tweenObj.tween && this.tweenObj.tween.isRunning;
@@ -70,4 +66,21 @@ function createGameObjectTween(posTweened, tween, vecTweenN) {
   };
 }
 
-export { MOVEMENT_TYPE, moveObject, createGameObjectTween };
+/**
+ * @typedef {object} GameObjectMovement
+ * @property {Phaser.Point} vecMoveN normalized
+ * @property {MovementType} type
+ */
+function createGameObjectMovement(vecMoveN, type) {
+  return {
+    vecMoveN,
+    type,
+  };
+}
+
+export {
+  MOVEMENT_TYPE,
+  moveObject,
+  createGameObjectMovement,
+  createGameObjectTween,
+};

@@ -1,6 +1,8 @@
 import * as utils from '../utils';
-import { createTweenObj, getGroundObject } from './utils';
-import { getGameObjectEventsForCollision } from './collision/collision';
+import { createTweenObj } from './utils';
+import {
+  getGameObjectEventsForIntersection,
+} from './eventsDeterminants/intersection';
 
 const GRAV = {
   vec: new Phaser.Point(0, 1),
@@ -23,7 +25,7 @@ function handleGravity(o, otherObjects, fieldSize) {
     ));
     if (objectsIntersecting.length > 0) {
       objectsEvents = objectsEvents.concat(
-        getGameObjectEventsForCollision(
+        getGameObjectEventsForIntersection(
           o,
           GRAV.vec,
           GRAV.vec,

@@ -1,7 +1,12 @@
 import * as utils from '../utils';
 import { GRAV } from './gravity';
-import { createTweenObj, getAlignVecWhenGoingOff } from './utils';
-import { getGameObjectEventsForCollision } from './collision/collision';
+import { createTweenObj, getAlignVecWhenLeavingObject } from './utils';
+import {
+  getGameObjectEventsForIntersection,
+} from './eventsDeterminants/intersection';
+import {
+  getGameObjectEventsForLeave,
+} from './eventsDeterminants/leave';
 
 export { handleMovement };
 
@@ -21,8 +26,9 @@ function handleMovementForTween(o, otherObjects) {
     GRAV.vec,
   ));
   if (gravAlignedToObjects.length > 0) {
-    // find at least one future alignment to the ground
-    const futureAlignedTo = gravAlignedToObjects.find(
+    // find at least one alignment to the *current* ground objects after the
+    // movement
+    const gravAlignedToObjectsAfter = gravAlignedToObjects.filter(
       x => utils.willBeAligned(
         o.$rec,
         x.$rec,
@@ -30,7 +36,23 @@ function handleMovementForTween(o, otherObjects) {
         GRAV.vec,
       ),
     );
-    if (futureAlignedTo) {
+    if (gravAlignedToObjectsAfter.length > 0) {
+
+      // TODO: FUNCTION!
+      // ***** LEAVE RESOLUTION *****
+      if (gravAlignedToObjects.length > gravAlignedToObjectsAfter.length) {
+        objectsEvents = objectsEvents.concat(
+          getGameObjectEventsForLeave(
+            o,
+            gravAlignedToObjects.find(x => x !== gravAlignedToObjectsAfter[0]),
+            o.tweenObj.vecTweenN,
+            GRAV.vec,
+          ),
+        );
+      }
+
+      // TODO: FUNCTION!
+      // ***** INTERSECTION RESOLUTION *****
       // when update will keep the ground alignment
       const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
         o.$rec,
@@ -39,7 +61,7 @@ function handleMovementForTween(o, otherObjects) {
       ));
       if (objectsIntersecting.length > 0) {
         objectsEvents = objectsEvents.concat(
-          getGameObjectEventsForCollision(
+          getGameObjectEventsForIntersection(
             o,
             o.tweenObj.vecTweenN,
             GRAV.vec,
@@ -49,14 +71,17 @@ function handleMovementForTween(o, otherObjects) {
       }
       // continue the movement (object may be realigned during events resolve)
       o.$setPos(o.tweenObj.posTweened);
-    } else { // update will cause go off the ground
+    } else {
+      // update will cause go off the ground
+      // TODO: should be done in leaving.js?
+
       if (gravAlignedToObjects.length > 1) {
         console.error('handleMovement() should not happen:' +
           'losing alignment with more than 1 object');
       }
       o.$alignTo(
         gravAlignedToObjects[0],
-        getAlignVecWhenGoingOff(o.tweenObj.vecTweenN, GRAV.vec),
+        getAlignVecWhenLeavingObject(o.tweenObj.vecTweenN, GRAV.vec),
         0,
         0,
       );
