@@ -36,7 +36,7 @@ function handleGravity(o, otherObjects, fieldSize) {
     // continue the movement (object may be realigned during events resolve)
     o.$setPos(o.tweenObj.posTweened);
   } else {
-    o.$setTweenObj(createTweenObj(
+    o.$startMovement(createTweenObj(
       o,
       fieldSize,
       GRAV.vec,

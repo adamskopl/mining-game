@@ -17,7 +17,7 @@ function $move(dir) {
 
 const moveObject = {
   $initMov() {
-    this.$zeroTweenObj();
+    this.$stopMovement();
   },
   /**
    * @return {GameObjectMovement}
@@ -31,15 +31,15 @@ const moveObject = {
   $setMovement(gameObjectMovement) {
     this.movement = gameObjectMovement;
   },
-  $setTweenObj(tweenObj) {
-    checkArgs('$setTweenObj', arguments, ['object']);
+  $startMovement(tweenObj) {
+    checkArgs('$startMovement', arguments, ['object']);
     this.tweenObj = tweenObj;
   },
-  $zeroTweenObj() {
+  $stopMovement() {
     if (this.tweenObj && this.tweenObj.tween) {
       this.tweenObj.tween.stop(true); // fire onComplete
     }
-    this.$setTweenObj(createGameObjectTween(
+    this.$startMovement(createGameObjectTween(
       null,
       null,
       null,

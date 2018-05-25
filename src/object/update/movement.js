@@ -85,7 +85,7 @@ function handleMovementForTween(o, otherObjects) {
         0,
         0,
       );
-      o.$zeroTweenObj();
+      o.$stopMovement();
     }
   } else {
     console.error('handleMovement() should not happen: no alignment');
@@ -103,7 +103,7 @@ function startTween(o, fieldSize) {
     MOV.time,
   );
   tweenObj.tween.onComplete.add(function onComplete(posTweened) {});
-  o.$setTweenObj(tweenObj);
+  o.$startMovement(tweenObj);
 }
 
 /**
