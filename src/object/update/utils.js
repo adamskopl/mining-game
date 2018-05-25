@@ -1,4 +1,4 @@
-import { checkArgs } from 'src/utils';
+import { checkArgs, debugError } from 'src/utils';
 import { createGameObjectTween } from '../object-move';
 import * as objectUtils from '../utils';
 
@@ -39,7 +39,7 @@ function getAlignVecWhenLeavingObject(vecMov, vecGrav) {
     } else if (vGrav[coord] !== 0) {
       return -vGrav[coord];
     }
-    console.error(`none of the vecs have non-zero ${coord} coord`);
+    debugError(`none of the vecs have non-zero ${coord} coord`);
     return null;
   }
 }

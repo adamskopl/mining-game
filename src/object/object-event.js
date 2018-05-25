@@ -1,3 +1,5 @@
+import { debugError } from 'src/utils';
+
 /**
  * Describing what can happen with an object. E.g. it can be destroyed.
  * @typedef {object} GameObjectEventType
@@ -22,7 +24,7 @@ const base = {
     this.object = object;
   },
   resolve() {
-    console.error('not implemented');
+    debugError('not implemented');
   },
 };
 

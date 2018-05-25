@@ -1,4 +1,4 @@
-import { checkArgs } from 'src/utils';
+import { checkArgs, debugError } from 'src/utils';
 
 /**
  * @param {Phaser.Rectangle} a
@@ -43,7 +43,7 @@ export function alignedTo(a, b, vec) {
   if (vec.x === -1) {
     return (a.x === b.right) && intersectsHorizontally(a, b);
   }
-  console.error('$alignedTo wrong vec');
+  debugError('$alignedTo wrong vec');
   return false;
 }
 

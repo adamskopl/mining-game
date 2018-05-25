@@ -1,4 +1,5 @@
 import * as utils from '../utils';
+import { debugError } from 'src/utils';
 import { GRAV } from './gravity';
 import { createTweenObj, getAlignVecWhenLeavingObject } from './utils';
 import {
@@ -76,7 +77,7 @@ function handleMovementForTween(o, otherObjects) {
       // TODO: should be done in leaving.js?
 
       if (gravAlignedToObjects.length > 1) {
-        console.error('handleMovement() should not happen:' +
+        debugError('handleMovement() should not happen:' +
           'losing alignment with more than 1 object');
       }
       o.$alignTo(
@@ -88,7 +89,7 @@ function handleMovementForTween(o, otherObjects) {
       o.$stopMovement();
     }
   } else {
-    console.error('handleMovement() should not happen: no alignment');
+    debugError('handleMovement() should not happen: no alignment');
   }
   return objectsEvents;
 }

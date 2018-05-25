@@ -14,22 +14,25 @@ const CUSTOM_TYPES = [
   }],
 ];
 
-const idsUsed = [];
+export { checkArgs, debugError };
 
-export { checkArgs };
+function debugError(e) {
+  console.error(e);
+  debugger;
+}
 
 function getCustomCheckFun(customTypes, type) {
   const found = customTypes.find(t => t[0] === type);
   return found ? found[1] : null;
 }
 
-function isTypeOf(toCheck, type, types, customTypes, test) {
+function isTypeOf(toCheck, type, types, customTypes) {
   let ret = null;
   const customCheckFun = getCustomCheckFun(customTypes, type);
   if (!types.includes(type) &&
     customCheckFun === null
   ) {
-    console.error(`${type} not in passed types`);
+    debugError(`${type} not in passed types`);
     return null;
   }
   if (customCheckFun) {
@@ -53,23 +56,23 @@ function checkArgs(funName, argsObject, types, test) {
   // TODO: release? TURN OFF (so the chekArgs is not invoked so frequently!)
   const args = Array.prototype.slice.call(argsObject, 0);
   if (typeof funName !== 'string' || !Array.isArray(args) || !Array.isArray(types)) {
-    console.error(`${funName}: wrong argument`);
+    debugError(`${funName}: wrong argument`);
     return;
   }
   if (args.length !== types.length) {
-    console.error(`${funName}: args and types arrays have different lengths`);
+    debugError(`${funName}: args and types arrays have different lengths`);
     return;
   }
   const foundBad = types.find(t => (!TYPES.includes(t) &&
     !CUSTOM_TYPES.find(ct => ct[0] === t)
   ));
   if (foundBad) {
-    console.error(`${funName}: wrong type in passed types: ${foundBad}`);
+    debugError(`${funName}: wrong type in passed types: ${foundBad}`);
     return;
   }
   const wrongArg = args.find((a, index) => !isTypeOf(a, types[index],
     TYPES, CUSTOM_TYPES, test));
   if (wrongArg) {
-    console.error(`${funName}: arg of the wrong type ('${wrongArg}' declared as '${types[args.indexOf(wrongArg)]}')`);
+    debugError(`${funName}: arg of the wrong type ('${wrongArg}' declared as '${types[args.indexOf(wrongArg)]}')`);
   }
 }

@@ -2,6 +2,8 @@
 // during the movement.
 
 import { GAME_OBJECT_TYPE } from 'src/consts';
+import { debugError } from 'src/utils';
+
 import {
   GAME_OBJECT_EVENT_TYPE,
   createGameObjectEvent
@@ -74,7 +76,7 @@ function getGameObjectEvent(
   if (handler) {
     res = handler.f([mainObject, otherObject], vecMoveN, vecGravN);
   } else {
-    console.error('no handler for ', mainObject.$type, otherObject.$type);
+    debugError('no handler for ', mainObject.$type, otherObject.$type);
   }
   return res;
 }
