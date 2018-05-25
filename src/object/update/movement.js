@@ -1,5 +1,5 @@
+import { checkArgs, debugError } from 'src/utils';
 import * as utils from '../utils';
-import { debugError } from 'src/utils';
 import { GRAV } from './gravity';
 import { createTweenObj, getAlignVecWhenLeavingObject } from './utils';
 import {
@@ -15,6 +15,60 @@ const MOV = {
   time: 10000,
   fieldsNumber: 50,
 };
+
+/**
+ * @param {GameObject} o
+ * @param {Array<GameObject>} gravAlignedToObjs
+ * @param {Array<GameObject>} gravAlignedToObjsAfter
+ * @return {Array<GameObjectEvent>}
+ */
+function getEventsForLeave(
+  o,
+  gravAlignedToObjs,
+  gravAlignedToObjsAfter,
+  gravVec,
+) {
+  checkArgs('getEventsForLeave', arguments, [
+    'object',
+    'array',
+    'array',
+    'point',
+  ]);
+  let res = [];
+  if (gravAlignedToObjs.length > gravAlignedToObjsAfter.length) {
+    const objectsLeft = gravAlignedToObjs.find(
+      x => x !== gravAlignedToObjsAfter[0],
+    );
+    res = getGameObjectEventsForLeave(
+      o,
+      objectsLeft,
+      o.tweenObj.vecTweenN,
+      gravVec,
+    );
+  }
+  return res;
+}
+
+function getEventsForIntersection(o, otherObjects) {
+  checkArgs('getEventsForIntersection', arguments, [
+    'object',
+    'array',
+  ]);
+  let res = [];
+  const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
+    o.$rec,
+    x.$rec,
+    o.tweenObj.posTweened,
+  ));
+  if (objectsIntersecting.length > 0) {
+    res = getGameObjectEventsForIntersection(
+      o,
+      o.tweenObj.vecTweenN,
+      objectsIntersecting,
+    );
+  }
+  return res;
+}
 
 /**
  * @return {Array<GameObjectEvent>}
@@ -38,38 +92,16 @@ function handleMovementForTween(o, otherObjects) {
       ),
     );
     if (gravAlignedToObjectsAfter.length > 0) {
-
-      // TODO: FUNCTION!
-      // ***** LEAVE RESOLUTION *****
-      if (gravAlignedToObjects.length > gravAlignedToObjectsAfter.length) {
-        objectsEvents = objectsEvents.concat(
-          getGameObjectEventsForLeave(
-            o,
-            gravAlignedToObjects.find(x => x !== gravAlignedToObjectsAfter[0]),
-            o.tweenObj.vecTweenN,
-            GRAV.vec,
-          ),
-        );
-      }
-
-      // TODO: FUNCTION!
-      // ***** INTERSECTION RESOLUTION *****
-      // when update will keep the ground alignment
-      const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
-        o.$rec,
-        x.$rec,
-        o.tweenObj.posTweened,
+      objectsEvents = objectsEvents.concat(getEventsForLeave(
+        o,
+        gravAlignedToObjects,
+        gravAlignedToObjectsAfter,
+        GRAV.vec,
       ));
-      if (objectsIntersecting.length > 0) {
-        objectsEvents = objectsEvents.concat(
-          getGameObjectEventsForIntersection(
-            o,
-            o.tweenObj.vecTweenN,
-            GRAV.vec,
-            objectsIntersecting,
-          ),
-        );
-      }
+      objectsEvents = objectsEvents.concat(getEventsForIntersection(
+        o,
+        otherObjects,
+      ));
       // continue the movement (object may be realigned during events resolve)
       o.$setPos(o.tweenObj.posTweened);
     } else {
@@ -103,7 +135,7 @@ function startTween(o, fieldSize) {
     Phaser.Easing.Linear.None,
     MOV.time,
   );
-  tweenObj.tween.onComplete.add(function onComplete(posTweened) {});
+  // tweenObj.tween.onComplete.add(function onComplete(posTweened) {});
   o.$startMovement(tweenObj);
 }
 

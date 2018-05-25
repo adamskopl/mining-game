@@ -28,7 +28,6 @@ function handleGravity(o, otherObjects, fieldSize) {
         getGameObjectEventsForIntersection(
           o,
           GRAV.vec,
-          GRAV.vec,
           objectsIntersecting,
         ),
       );

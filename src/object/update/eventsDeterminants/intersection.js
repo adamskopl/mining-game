@@ -1,12 +1,12 @@
 // Determining {GameObjectEvent} when intersection with other objects occur
 // during the movement.
-
+import { checkArgs } from 'src/utils';
 import { GAME_OBJECT_TYPE } from 'src/consts';
 import { debugError } from 'src/utils';
 
 import {
   GAME_OBJECT_EVENT_TYPE,
-  createGameObjectEvent
+  createGameObjectEvent,
 } from '../../object-event';
 
 export { getGameObjectEventsForIntersection };
@@ -25,7 +25,7 @@ function makeSwap(a, b, firstType) {
 const HANDLERS = [
   {
     objects: [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.FILLED],
-    f(objects, vecMoveN, vecGravN) {
+    f(objects, vecMoveN) {
       let [hero, filled] =
             makeSwap(objects[0], objects[1], GAME_OBJECT_TYPE.HERO);
       const res = [];
@@ -48,12 +48,16 @@ const HANDLERS = [
  * @param {GameObject} object intersecting
  * @param {Array<GameObject>} objects intersecting with the object
  * @param {Phaser.Point} vecMoveN move normalized vector for intersecting object
- * @param {Phaser.Point} vecGravN gravity normalized vector during intersection
  * @return {Array<GameObjectEvent>}
  */
-function getGameObjectEventsForIntersection(o, vecMoveN, vecGravN, objects) {
+function getGameObjectEventsForIntersection(o, vecMoveN, objects) {
+  checkArgs('getGameObjectEventsForIntersection', arguments, [
+    'object',
+    'point',
+    'array',
+  ]);
   return objects
-    .map(getGameObjectEvent.bind(null, o, vecMoveN, vecGravN, HANDLERS))
+    .map(getGameObjectEvent.bind(null, o, vecMoveN, HANDLERS))
     .reduce((acc, val) => acc.concat(val), []);
 }
 
@@ -63,7 +67,6 @@ function getGameObjectEventsForIntersection(o, vecMoveN, vecGravN, objects) {
 function getGameObjectEvent(
   mainObject,
   vecMoveN,
-  vecGravN,
   handlers,
   otherObject,
 ) {
@@ -74,7 +77,7 @@ function getGameObjectEvent(
     otherObject,
   ));
   if (handler) {
-    res = handler.f([mainObject, otherObject], vecMoveN, vecGravN);
+    res = handler.f([mainObject, otherObject], vecMoveN);
   } else {
     debugError('no handler for ', mainObject.$type, otherObject.$type);
   }
