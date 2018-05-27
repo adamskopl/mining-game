@@ -8,13 +8,6 @@ const MOVEMENT_TYPE = {
   CONSTANT: 'MOVEMENT_CONSTANT', // keep moving
 };
 
-function $move(dir) {
-  checkArgs('$move', arguments, ['point']);
-  if (!this.$isMoving()) {
-    this.movement = createGameObjectMovement(dir);
-  }
-}
-
 const moveObject = {
   $initMov() {
     this.$stopMovement();
@@ -49,7 +42,6 @@ const moveObject = {
   $isMoving() {
     return this.tweenObj.tween && this.tweenObj.tween.isRunning;
   },
-  $move,
 };
 
 /**
