@@ -49,7 +49,7 @@ function startTween(o, fieldSize) {
  */
 function handleGravity(o, otherObjects, fieldSize) {
   let objectsEvents = [];
-  if (o.$isTweenRunning()) {
+  if (o.$isMoving()) {
     objectsEvents = handleGravityForTween(o, otherObjects);
   } else {
     startTween(o, fieldSize);

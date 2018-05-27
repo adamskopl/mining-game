@@ -10,7 +10,7 @@ const MOVEMENT_TYPE = {
 
 function $move(dir) {
   checkArgs('$move', arguments, ['point']);
-  if (!this.$isTweenRunning()) {
+  if (!this.$isMoving()) {
     this.movement = createGameObjectMovement(dir);
   }
 }
@@ -46,7 +46,7 @@ const moveObject = {
     ));
     this.$setMovement(createGameObjectMovement(null));
   },
-  $isTweenRunning() {
+  $isMoving() {
     return this.tweenObj.tween && this.tweenObj.tween.isRunning;
   },
   $move,

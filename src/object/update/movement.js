@@ -131,7 +131,7 @@ function startTween(o, fieldSize) {
  */
 function handleMovement(o, otherObjects, fieldSize) {
   let objectsEvents = [];
-  if (o.$isTweenRunning()) {
+  if (o.$isMoving()) {
     objectsEvents = handleMovementForTween(o, otherObjects);
   } else if (o.$getMovement().vecMoveN) {
     startTween(o, fieldSize);
