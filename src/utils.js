@@ -35,7 +35,11 @@ function isTypeOf(toCheck, type, types, customTypes) {
     debugError(`${type} not in passed types`);
     return null;
   }
-  if (customCheckFun) {
+  if (toCheck === null) {
+    // assumption: passing null is intentional as an alternative to the declared
+    // value
+    ret = true;
+  } else if (customCheckFun) {
     ret = customCheckFun(toCheck);
   } else {
     switch (type) {
@@ -52,7 +56,7 @@ function isTypeOf(toCheck, type, types, customTypes) {
   return ret;
 }
 
-function checkArgs(funName, argsObject, types, test) {
+function checkArgs(funName, argsObject, types) {
   // TODO: release? TURN OFF (so the chekArgs is not invoked so frequently!)
   const args = Array.prototype.slice.call(argsObject, 0);
   if (typeof funName !== 'string' || !Array.isArray(args) || !Array.isArray(types)) {
@@ -70,9 +74,11 @@ function checkArgs(funName, argsObject, types, test) {
     debugError(`${funName}: wrong type in passed types: ${foundBad}`);
     return;
   }
-  const wrongArg = args.find((a, index) => !isTypeOf(a, types[index],
-    TYPES, CUSTOM_TYPES, test));
-  if (wrongArg) {
-    debugError(`${funName}: arg of the wrong type ('${wrongArg}' declared as '${types[args.indexOf(wrongArg)]}')`);
+  const wrongArgIndex = args.findIndex((a, index) => {
+    const res = isTypeOf(a, types[index], TYPES, CUSTOM_TYPES);
+    return !res;
+  });
+  if (wrongArgIndex !== -1) {
+    debugError(`${funName}: arg of the wrong type ('${args[wrongArgIndex]}' declared as '${types[wrongArgIndex]}')`);
   }
 }

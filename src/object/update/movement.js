@@ -12,20 +12,20 @@ import {
 export { handleMovement };
 
 const MOV = {
-  time: 10000,
+  time: 4000,
   fieldsNumber: 50,
 };
 
 /**
  * @param {GameObject} o
  * @param {Array<GameObject>} gravAlignedToObjs
- * @param {Array<GameObject>} gravAlignedToObjsAfter
+ * @param {Array<GameObject>} gravAlignedToObjsAfterMov
  * @return {Array<GameObjectEvent>}
  */
 function getEventsForLeave(
   o,
   gravAlignedToObjs,
-  gravAlignedToObjsAfter,
+  gravAlignedToObjsAfterMov,
   gravVec,
 ) {
   checkArgs('getEventsForLeave', arguments, [
@@ -35,13 +35,16 @@ function getEventsForLeave(
     'point',
   ]);
   let res = [];
-  if (gravAlignedToObjs.length > gravAlignedToObjsAfter.length) {
-    const objectsLeft = gravAlignedToObjs.find(
-      x => x !== gravAlignedToObjsAfter[0],
+  if (gravAlignedToObjs.length > gravAlignedToObjsAfterMov.length) {
+    // a) leaving object (2 aligned), there's another ground object (1 aligned)
+    // b) leaving object (1 aligned), there are no ground objects (0 aligned)
+    const objectLeft = gravAlignedToObjs.find(
+      x => x !== gravAlignedToObjsAfterMov[0],
     );
     res = getGameObjectEventsForLeave(
       o,
-      objectsLeft,
+      objectLeft,
+      gravAlignedToObjsAfterMov[0] || null,
       o.tweenObj.vecTweenN,
       gravVec,
     );
@@ -83,7 +86,7 @@ function handleMovementForTween(o, otherObjects) {
   if (gravAlignedToObjects.length > 0) {
     // find at least one alignment to the *current* ground objects after the
     // movement
-    const gravAlignedToObjectsAfter = gravAlignedToObjects.filter(
+    const gravAlignedToObjectsAfterMov = gravAlignedToObjects.filter(
       x => utils.willBeAligned(
         o.$rec,
         x.$rec,
@@ -91,35 +94,19 @@ function handleMovementForTween(o, otherObjects) {
         GRAV.vec,
       ),
     );
-    if (gravAlignedToObjectsAfter.length > 0) {
-      objectsEvents = objectsEvents.concat(getEventsForLeave(
-        o,
-        gravAlignedToObjects,
-        gravAlignedToObjectsAfter,
-        GRAV.vec,
-      ));
-      objectsEvents = objectsEvents.concat(getEventsForIntersection(
-        o,
-        otherObjects,
-      ));
-      // continue the movement (object may be realigned during events resolve)
-      o.$setPos(o.tweenObj.posTweened);
-    } else {
-      // update will cause go off the ground
-      // TODO: should be done in leaving.js?
-
-      if (gravAlignedToObjects.length > 1) {
-        debugError('handleMovement() should not happen:' +
-          'losing alignment with more than 1 object');
-      }
-      o.$alignTo(
-        gravAlignedToObjects[0],
-        getAlignVecWhenLeavingObject(o.tweenObj.vecTweenN, GRAV.vec),
-        0,
-        0,
-      );
-      o.$stopMovement();
-    }
+    // if (gravAlignedToObjectsAfterMov.length > 0) {
+    objectsEvents = objectsEvents.concat(getEventsForLeave(
+      o,
+      gravAlignedToObjects,
+      gravAlignedToObjectsAfterMov,
+      GRAV.vec,
+    ));
+    objectsEvents = objectsEvents.concat(getEventsForIntersection(
+      o,
+      otherObjects,
+    ));
+    // continue the movement (object may be realigned during events resolve)
+    o.$setPos(o.tweenObj.posTweened);
   } else {
     debugError('handleMovement() should not happen: no alignment');
   }

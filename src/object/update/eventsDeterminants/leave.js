@@ -9,17 +9,25 @@ import { getAlignVecWhenLeavingObject } from '../utils';
 
 export { getGameObjectEventsForLeave };
 
+/**
+ * @param {GameObject|null} objectGravAligned object aligned to the @objectLeaving in
+ * the direction of the the gravity (or no object)
+ */
 function getGameObjectEventsForLeave(
-  objectLeaving, objectLeft, vecMoveN, vecGravN,
+  objectLeaving, objectLeft, objectGravAligned, vecMoveN, vecGravN,
 ) {
   checkArgs('getGameObjectEventsForLeave', arguments, [
+    'object',
     'object',
     'object',
     'point',
     'point',
   ]);
   const res = [];
-  if (objectLeaving.$getMovement().type === MOVEMENT_TYPE.ONE) {
+  if (
+    objectGravAligned === null || // no ground, movement type does not matter
+    objectLeaving.$getMovement().type === MOVEMENT_TYPE.ONE
+  ) {
     res.push(createGameObjectEvent(
       GAME_OBJECT_EVENT_TYPE.ALIGN,
       objectLeaving,
