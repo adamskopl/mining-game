@@ -113,17 +113,15 @@ function handleMovementForTween(o, otherObjects) {
   return objectsEvents;
 }
 
-function startTween(o, fieldSize) {
-  const tweenObj = createTweenObj(
+function startTween(o, fieldSize, fieldsNumber, easing, time) {
+  o.$startMovement(createTweenObj(
     o,
     fieldSize,
     o.$getMovement().vecMoveN,
-    MOV.fieldsNumber,
-    Phaser.Easing.Linear.None,
-    MOV.time,
-  );
-  // tweenObj.tween.onComplete.add(function onComplete(posTweened) {});
-  o.$startMovement(tweenObj);
+    fieldsNumber,
+    easing,
+    time,
+  ));
 }
 
 /**
@@ -134,7 +132,13 @@ function handleMovement(o, otherObjects, fieldSize) {
   if (o.$isMoving()) {
     objectsEvents = handleMovementForTween(o, otherObjects);
   } else if (o.$getMovement().vecMoveN) {
-    startTween(o, fieldSize);
+    startTween(
+      o,
+      fieldSize,
+      MOV.fieldsNumber,
+      Phaser.Easing.Linear.None,
+      MOV.time,
+    );
   }
   return objectsEvents;
 }

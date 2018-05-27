@@ -33,14 +33,14 @@ function handleGravityForTween(o, otherObjects) {
   return objectsEvents;
 }
 
-function startTween(o, fieldSize) {
+function startTween(o, fieldSize, fieldsNumber, easing, time) {
   o.$startMovement(createTweenObj(
     o,
     fieldSize,
     GRAV.vec,
-    GRAV.fieldsNumber,
-    Phaser.Easing.Cubic.In,
-    GRAV.time,
+    fieldsNumber,
+    easing,
+    time,
   ));
 }
 
@@ -52,7 +52,13 @@ function handleGravity(o, otherObjects, fieldSize) {
   if (o.$isMoving()) {
     objectsEvents = handleGravityForTween(o, otherObjects);
   } else {
-    startTween(o, fieldSize);
+    startTween(
+      o,
+      fieldSize,
+      GRAV.fieldsNumber,
+      Phaser.Easing.Cubic.In,
+      GRAV.time,
+    );
   }
   return objectsEvents;
 }
