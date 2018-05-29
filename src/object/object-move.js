@@ -1,4 +1,4 @@
-import { checkArgs, debugError } from 'src/utils';
+import { debugError } from 'src/utils';
 
 /**
  * @typedef {object} MovementType
@@ -6,11 +6,11 @@ import { checkArgs, debugError } from 'src/utils';
 const MOVEMENT_TYPE = {
   ONE: 'MOVEMENT_ONE', // move one field
 };
+const MOVEMENT_TYPE_KEYS = Object.keys(MOVEMENT_TYPE);
 
 const moveObject = {
   $initMov() {
-    this.$movement = createGameObjectMovement(null, null);
-    this.$stopMovement();
+    this.$movement = null;
   },
   /**
    * @return {GameObjectMovement}
@@ -18,14 +18,25 @@ const moveObject = {
   $getMovement() {
     return this.$movement;
   },
-  /**
-   * @param {GameObjectMovement} gameObjectMovement
-   */
-  $setMovement(gameObjectMovement) {
-    if (!gameObjectMovement.isNull() && !this.$getMovement().isNull()) {
+  $setMovement(
+    vecMoveN,
+    type,
+    tween = null,
+  ) {
+    if (vecMoveN !== null && this.$getMovement() !== null) {
       debugError('setting movement when it\'s already set');
     }
-    this.$movement = gameObjectMovement;
+    if (!MOVEMENT_TYPE_KEYS.find(k => MOVEMENT_TYPE[k] === type)) {
+      debugError(`no "${type}" movement type`);
+    }
+    this.$movement = {
+      vecMoveN,
+      type,
+      tween,
+    };
+  },
+  $isMovementSet() {
+    return this.$movement !== null;
   },
   $startMovement(
     fieldSize,
@@ -33,9 +44,9 @@ const moveObject = {
     easingFunction,
     duration,
   ) {
-    const { vecMoveN } = this.$movement;
-    const posTweened = new Phaser.Point(this.x, this.y);
-
+    const {
+      vecMoveN,
+    } = this.$movement;
     const toObj = Object.assign(
       {},
       vecMoveN.x ? {
@@ -45,63 +56,31 @@ const moveObject = {
         y: this.y + (fieldsNumber * fieldSize * vecMoveN.y),
       } : {},
     );
-    const tween = this.game.add.tween(posTweened)
+    const tween = this.game.add.tween(new Phaser.Point(this.x, this.y))
       .to(
         toObj,
         duration,
         easingFunction,
         true,
       );
-    this.tweenObj = createGameObjectTween(posTweened, tween, vecMoveN);
+    Object.assign(this.$movement, {
+      tween,
+    });
   },
   $stopMovement() {
-    if (this.tweenObj && this.tweenObj.tween) {
-      this.tweenObj.tween.stop(true); // fire onComplete
+    if (this.$movement) {
+      // allow multiple $stopMovement, e.g. for simultaneous stop for
+      // intersection and alignment
+      this.$movement.tween.stop(true); // fire onComplete
     }
-    this.tweenObj = null;
-    this.$setMovement(createGameObjectMovement(null, null));
+    this.$movement = null;
   },
   $isMoving() {
-    return this.tweenObj !== null;
+    return this.$isMovementSet() && this.$getMovement().tween;
   },
 };
-
-/**
- * @typedef {object} GameObjectTween
- * @property {?} posTweened
- * @property {?} tween
- * @property {Phaser.Vector} vecTweenN
- */
-function createGameObjectTween(posTweened, tween, vecTweenN) {
-  return {
-    posTweened,
-    tween,
-    vecTweenN,
-  };
-}
-
-const GameObjectMovementProto = {
-  isNull() {
-    return this.vecMoveN === null && this.type === null;
-  },
-};
-
-/**
- * @typedef {object} GameObjectMovement
- * @property {Phaser.Point} vecMoveN normalized
- * @property {MovementType} type
- */
-function createGameObjectMovement(vecMoveN, type) {
-  return Object.assign(
-    Object.create(GameObjectMovementProto), {
-      vecMoveN,
-      type,
-    },
-  );
-}
 
 export {
   MOVEMENT_TYPE,
   moveObject,
-  createGameObjectMovement,
 };

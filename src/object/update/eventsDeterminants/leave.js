@@ -10,8 +10,8 @@ import { getAlignVecWhenLeavingObject } from '../utils';
 export { getGameObjectEventsForLeave };
 
 /**
- * @param {GameObject|null} objectGravAligned object aligned to the @objectLeaving in
- * the direction of the the gravity (or no object)
+ * @param {GameObject|null} objectGravAligned object aligned to the
+ * @objectLeaving in the direction of the the gravity (or no object)
  */
 function getGameObjectEventsForLeave(
   objectLeaving, objectLeft, objectGravAligned, vecMoveN, vecGravN,

@@ -19,8 +19,7 @@ const FACTORIES = new Map([
 ]);
 
 const base = {
-  initBase(type, object) {
-    this.type = type;
+  initBase(object) {
     this.object = object;
   },
   resolve() {
@@ -32,8 +31,8 @@ const destroy = Object.assign(
   {},
   base,
   {
-    init(type, object, group) {
-      this.initBase(type, object);
+    init(object, group) {
+      this.initBase(object);
       this.group = group;
     },
     resolve() {
@@ -49,12 +48,12 @@ const move = Object.assign(
     /**
      * @param {GameObjectMovement} movementObject
      */
-    init(type, object, movementObject) {
-      this.initBase(type, object);
-      this.movementObject = movementObject;
+    init(object, dir, movType) {
+      this.initBase(object);
+      [this.dir, this.movType] = [dir, movType];
     },
     resolve() {
-      this.object.$setMovement(this.movementObject);
+      this.object.$setMovement(this.dir, this.movType);
     },
   },
 );
@@ -63,8 +62,8 @@ const align = Object.assign(
   {},
   base,
   {
-    init(type, object, alignTo, alignVec) {
-      this.initBase(type, object);
+    init(object, alignTo, alignVec) {
+      this.initBase(object);
       this.alignTo = alignTo;
       this.alignVec = alignVec;
     },
@@ -92,23 +91,23 @@ const align = Object.assign(
  */
 function createGameObjectEvent(type, object, ...extra) {
   // MAP OF FUNCTIONS: <type, function>
-  return FACTORIES.get(type)(type, object, ...extra);
+  return FACTORIES.get(type)(object, ...extra);
 }
 
-function createGameObjectEventDestroy(type, o, ...extra) {
+function createGameObjectEventDestroy(o, ...extra) {
   const ret = Object.create(destroy);
-  ret.init(type, o, ...extra);
+  ret.init(o, ...extra);
   return ret;
 }
 
-function createGameObjectEventMove(type, o, ...extra) {
+function createGameObjectEventMove(o, ...extra) {
   const ret = Object.create(move);
-  ret.init(type, o, ...extra);
+  ret.init(o, ...extra);
   return ret;
 }
 
-function createGameObjectEventAlign(type, o, ...extra) {
+function createGameObjectEventAlign(o, ...extra) {
   const ret = Object.create(align);
-  ret.init(type, o, ...extra);
+  ret.init(o, ...extra);
   return ret;
 }

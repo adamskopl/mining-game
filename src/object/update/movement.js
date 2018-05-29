@@ -1,7 +1,6 @@
 import { checkArgs, debugError } from 'src/utils';
 import * as utils from '../utils';
 import { GRAV } from './gravity';
-import { createTweenObj, getAlignVecWhenLeavingObject } from './utils';
 import {
   getGameObjectEventsForIntersection,
 } from './eventsDeterminants/intersection';
@@ -45,7 +44,7 @@ function getEventsForLeave(
       o,
       objectLeft,
       gravAlignedToObjsAfterMov[0] || null,
-      o.tweenObj.vecTweenN,
+      o.$getMovement().vecMoveN,
       gravVec,
     );
   }
@@ -61,12 +60,12 @@ function getEventsForIntersection(o, otherObjects) {
   const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
     o.$rec,
     x.$rec,
-    o.tweenObj.posTweened,
+    o.$getMovement().tween.target,
   ));
   if (objectsIntersecting.length > 0) {
     res = getGameObjectEventsForIntersection(
       o,
-      o.tweenObj.vecTweenN,
+      o.$getMovement().vecMoveN,
       objectsIntersecting,
     );
   }
@@ -90,11 +89,10 @@ function handleMovementForTween(o, otherObjects) {
       x => utils.willBeAligned(
         o.$rec,
         x.$rec,
-        o.tweenObj.posTweened,
+        o.$getMovement().tween.target,
         GRAV.vec,
       ),
     );
-    // if (gravAlignedToObjectsAfterMov.length > 0) {
     objectsEvents = objectsEvents.concat(getEventsForLeave(
       o,
       gravAlignedToObjects,
@@ -106,7 +104,7 @@ function handleMovementForTween(o, otherObjects) {
       otherObjects,
     ));
     // continue the movement (object may be realigned during events resolve)
-    o.$setPos(o.tweenObj.posTweened);
+    o.$setPos(o.$getMovement().tween.target);
   } else {
     debugError('handleMovement() should not happen: no alignment');
   }
@@ -120,7 +118,7 @@ function handleMovement(o, otherObjects, fieldSize) {
   let objectsEvents = [];
   if (o.$isMoving()) {
     objectsEvents = handleMovementForTween(o, otherObjects);
-  } else if (o.$getMovement().vecMoveN) {
+  } else if (o.$isMovementSet()) {
     o.$startMovement(
       fieldSize,
       MOV.fieldsNumber,
