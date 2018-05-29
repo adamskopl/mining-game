@@ -2,6 +2,7 @@ import { GRAV, handleGravity } from './gravity';
 import { handleMovement } from './movement';
 import { hasGround } from './utils';
 
+
 export { update };
 
 /**
@@ -10,12 +11,12 @@ export { update };
  * @param {number} fieldSize
  * @return {Array<GameObjectEvent>}
  */
-function update(o1, otherObjects, fieldSize) {
+function update(o, otherObjects, fieldSize) {
   let objectsEvents = [];
-  if (!hasGround(o1, otherObjects, GRAV.vec)) {
-    objectsEvents = handleGravity(o1, otherObjects, fieldSize);
+  if (!hasGround(o, otherObjects, GRAV.vec)) {
+    objectsEvents = handleGravity(o, otherObjects, fieldSize);
   } else {
-    objectsEvents = handleMovement(o1, otherObjects, fieldSize);
+    objectsEvents = handleMovement(o, otherObjects, fieldSize);
   }
   return objectsEvents;
 }

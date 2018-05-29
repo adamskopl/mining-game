@@ -113,17 +113,6 @@ function handleMovementForTween(o, otherObjects) {
   return objectsEvents;
 }
 
-function startTween(o, fieldSize, fieldsNumber, easing, time) {
-  o.$startMovement(createTweenObj(
-    o,
-    fieldSize,
-    o.$getMovement().vecMoveN,
-    fieldsNumber,
-    easing,
-    time,
-  ));
-}
-
 /**
  * @return {Array<GameObjectEvent>}
  */
@@ -132,8 +121,7 @@ function handleMovement(o, otherObjects, fieldSize) {
   if (o.$isMoving()) {
     objectsEvents = handleMovementForTween(o, otherObjects);
   } else if (o.$getMovement().vecMoveN) {
-    startTween(
-      o,
+    o.$startMovement(
       fieldSize,
       MOV.fieldsNumber,
       Phaser.Easing.Linear.None,

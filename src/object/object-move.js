@@ -5,7 +5,6 @@ import { checkArgs, debugError } from 'src/utils';
  */
 const MOVEMENT_TYPE = {
   ONE: 'MOVEMENT_ONE', // move one field
-  CONSTANT: 'MOVEMENT_CONSTANT', // keep moving
 };
 
 const moveObject = {
@@ -20,7 +19,7 @@ const moveObject = {
     return this.$movement;
   },
   /**
-   * @param {Phaser.Point} vec
+   * @param {GameObjectMovement} gameObjectMovement
    */
   $setMovement(gameObjectMovement) {
     if (!gameObjectMovement.isNull() && !this.$getMovement().isNull()) {
@@ -28,23 +27,42 @@ const moveObject = {
     }
     this.$movement = gameObjectMovement;
   },
-  $startMovement(tweenObj) {
-    checkArgs('$startMovement', arguments, ['object']);
-    this.tweenObj = tweenObj;
+  $startMovement(
+    fieldSize,
+    fieldsNumber,
+    easingFunction,
+    duration,
+  ) {
+    const { vecMoveN } = this.$movement;
+    const posTweened = new Phaser.Point(this.x, this.y);
+
+    const toObj = Object.assign(
+      {},
+      vecMoveN.x ? {
+        x: vecMoveN.x + (fieldsNumber * fieldSize * vecMoveN.x),
+      } : {},
+      vecMoveN.y ? {
+        y: this.y + (fieldsNumber * fieldSize * vecMoveN.y),
+      } : {},
+    );
+    const tween = this.game.add.tween(posTweened)
+      .to(
+        toObj,
+        duration,
+        easingFunction,
+        true,
+      );
+    this.tweenObj = createGameObjectTween(posTweened, tween, vecMoveN);
   },
   $stopMovement() {
     if (this.tweenObj && this.tweenObj.tween) {
       this.tweenObj.tween.stop(true); // fire onComplete
     }
-    this.$startMovement(createGameObjectTween(
-      null,
-      null,
-      null,
-    ));
+    this.tweenObj = null;
     this.$setMovement(createGameObjectMovement(null, null));
   },
   $isMoving() {
-    return this.tweenObj.tween && this.tweenObj.tween.isRunning;
+    return this.tweenObj !== null;
   },
 };
 
@@ -75,8 +93,7 @@ const GameObjectMovementProto = {
  */
 function createGameObjectMovement(vecMoveN, type) {
   return Object.assign(
-    Object.create(GameObjectMovementProto),
-    {
+    Object.create(GameObjectMovementProto), {
       vecMoveN,
       type,
     },
@@ -87,5 +104,4 @@ export {
   MOVEMENT_TYPE,
   moveObject,
   createGameObjectMovement,
-  createGameObjectTween,
 };

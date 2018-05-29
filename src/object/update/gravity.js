@@ -4,6 +4,11 @@ import {
   getGameObjectEventsForIntersection,
 } from './eventsDeterminants/intersection';
 
+import {
+  createGameObjectMovement,
+  MOVEMENT_TYPE,
+} from 'src/object/object-move';
+
 const GRAV = {
   vec: new Phaser.Point(0, 1),
   time: 600,
@@ -33,17 +38,6 @@ function handleGravityForTween(o, otherObjects) {
   return objectsEvents;
 }
 
-function startTween(o, fieldSize, fieldsNumber, easing, time) {
-  o.$startMovement(createTweenObj(
-    o,
-    fieldSize,
-    GRAV.vec,
-    fieldsNumber,
-    easing,
-    time,
-  ));
-}
-
 /**
  * @param {number} fieldSize
  */
@@ -52,8 +46,10 @@ function handleGravity(o, otherObjects, fieldSize) {
   if (o.$isMoving()) {
     objectsEvents = handleGravityForTween(o, otherObjects);
   } else {
-    startTween(
-      o,
+    o.$setMovement(
+      createGameObjectMovement(GRAV.vec, MOVEMENT_TYPE.ONE),
+    );
+    o.$startMovement(
       fieldSize,
       GRAV.fieldsNumber,
       Phaser.Easing.Cubic.In,
