@@ -19,20 +19,22 @@ function makeSwap(a, b, firstType) {
   return ret;
 }
 
-/*
- TODO: need factory of handlers.. too much duplication
- */
+function createHandler(typeA, typeB, foo) {
+  return {
+    types: [typeA, typeB],
+    handle(oA, oB, vecMoveN) {
+      const [a, b] = makeSwap(oA, oB, oA.$type);
+      return foo(a, b, vecMoveN);
+    },
+  };
+}
+
 const HANDLERS = [
-  {
-    objects: [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.FILLED],
-    f(objects, vecMoveN) {
-      let [hero, filled] =
-            makeSwap(objects[0], objects[1], GAME_OBJECT_TYPE.HERO);
+  createHandler(
+    GAME_OBJECT_TYPE.HERO,
+    GAME_OBJECT_TYPE.FILLED,
+    function foo(hero, filled, vecMoveN) {
       const res = [];
-      // TODO: args swap function
-      if (hero.type === GAME_OBJECT_TYPE.FILLED) {
-        [hero, filled] = [objects[1], objects[0]];
-      }
       res.push(createGameObjectEvent(
         GAME_OBJECT_EVENT_TYPE.ALIGN,
         hero,
@@ -41,7 +43,7 @@ const HANDLERS = [
       ));
       return res;
     },
-  },
+  ),
 ];
 
 /**
@@ -77,16 +79,16 @@ function getGameObjectEvent(
     otherObject,
   ));
   if (handler) {
-    res = handler.f([mainObject, otherObject], vecMoveN);
+    res = handler.handle(mainObject, otherObject, vecMoveN);
   } else {
-    debugError('no handler for ', mainObject.$type, otherObject.$type);
+    debugError(`no handler for ${mainObject.$type}, ${otherObject.$type}`);
   }
   return res;
 }
 
 function handlerMatches(objectA, objectB, h) {
   return (
-    h.objects.includes(objectA.$type) &&
-    h.objects.includes(objectB.$type)
+    h.types.includes(objectA.$type) &&
+    h.types.includes(objectB.$type)
   );
 }
