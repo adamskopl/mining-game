@@ -1,9 +1,7 @@
 import { checkArgs, debugError } from 'src/utils';
-import * as utils from '../utils';
+import * as objectUtils from '../utils';
 import { GRAV } from './gravity';
-import {
-  getGameObjectEventsForIntersection,
-} from './eventsDeterminants/intersection';
+import { getEventsForIntersection } from './utils';
 import {
   getGameObjectEventsForLeave,
 } from './eventsDeterminants/leave';
@@ -51,63 +49,41 @@ function getEventsForLeave(
   return res;
 }
 
-function getEventsForIntersection(o, otherObjects) {
-  checkArgs('getEventsForIntersection', arguments, [
-    'object',
-    'array',
-  ]);
-  let res = [];
-  const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
-    o.$rec,
-    x.$rec,
-    o.$getMovement().tween.target,
-  ));
-  if (objectsIntersecting.length > 0) {
-    res = getGameObjectEventsForIntersection(
-      o,
-      o.$getMovement().vecMoveN,
-      objectsIntersecting,
-    );
-  }
-  return res;
-}
-
 /**
  * @return {Array<GameObjectEvent>}
  */
 function handleMovementForTween(o, otherObjects) {
   let objectsEvents = [];
-  const gravAlignedToObjects = otherObjects.filter(x => utils.alignedTo(
+  const gravAlignedToObjects = otherObjects.filter(x => objectUtils.alignedTo(
     o.$rec,
     x.$rec,
     GRAV.vec,
   ));
-  if (gravAlignedToObjects.length > 0) {
-    // find at least one alignment to the *current* ground objects after the
-    // movement
-    const gravAlignedToObjectsAfterMov = gravAlignedToObjects.filter(
-      x => utils.willBeAligned(
-        o.$rec,
-        x.$rec,
-        o.$getMovement().tween.target,
-        GRAV.vec,
-      ),
-    );
-    objectsEvents = objectsEvents.concat(getEventsForLeave(
-      o,
-      gravAlignedToObjects,
-      gravAlignedToObjectsAfterMov,
-      GRAV.vec,
-    ));
-    objectsEvents = objectsEvents.concat(getEventsForIntersection(
-      o,
-      otherObjects,
-    ));
-    // continue the movement (object may be realigned during events resolve)
-    o.$setPos(o.$getMovement().tween.target);
-  } else {
+  if (gravAlignedToObjects === 0) {
     debugError('handleMovement() should not happen: no alignment');
   }
+  // find at least one alignment to the *current* ground objects after the
+  // movement
+  const gravAlignedToObjectsAfterMov = gravAlignedToObjects.filter(
+    x => objectUtils.willBeAligned(
+      o.$rec,
+      x.$rec,
+      o.$getMovement().tween.target,
+      GRAV.vec,
+    ),
+  );
+  objectsEvents = objectsEvents.concat(getEventsForLeave(
+    o,
+    gravAlignedToObjects,
+    gravAlignedToObjectsAfterMov,
+    GRAV.vec,
+  ));
+  objectsEvents = objectsEvents.concat(getEventsForIntersection(
+    o,
+    otherObjects,
+  ));
+  // continue the movement (object may be realigned during events resolve)
+  o.$setPos(o.$getMovement().tween.target);
   return objectsEvents;
 }
 

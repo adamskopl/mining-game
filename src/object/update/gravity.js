@@ -1,8 +1,5 @@
 import { MOVEMENT_TYPE } from 'src/object/object-move';
-import * as utils from '../utils';
-import {
-  getGameObjectEventsForIntersection,
-} from './eventsDeterminants/intersection';
+import { getEventsForIntersection } from './utils';
 
 const GRAV = {
   vec: new Phaser.Point(0, 1),
@@ -14,20 +11,10 @@ export { GRAV, handleGravity };
 
 function handleGravityForTween(o, otherObjects) {
   let objectsEvents = [];
-  const objectsIntersecting = otherObjects.filter(x => utils.willIntersect(
-    o.$rec,
-    x.$rec,
-    o.$getMovement().tween.target,
+  objectsEvents = objectsEvents.concat(getEventsForIntersection(
+    o,
+    otherObjects,
   ));
-  if (objectsIntersecting.length > 0) {
-    objectsEvents = objectsEvents.concat(
-      getGameObjectEventsForIntersection(
-        o,
-        GRAV.vec,
-        objectsIntersecting,
-      ),
-    );
-  }
   // continue the movement (object may be realigned during events resolve)
   o.$setPos(o.$getMovement().tween.target);
   return objectsEvents;

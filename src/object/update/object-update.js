@@ -2,7 +2,6 @@ import { GRAV, handleGravity } from './gravity';
 import { handleMovement } from './movement';
 import { hasGround } from './utils';
 
-
 export { update };
 
 /**

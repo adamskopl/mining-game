@@ -1,10 +1,14 @@
 import { checkArgs, debugError } from 'src/utils';
 import * as objectUtils from '../utils';
+import {
+  getGameObjectEventsForIntersection,
+} from './eventsDeterminants/intersection';
 
 export {
   hasGround,
   getGroundObject,
   getAlignVecWhenLeavingObject,
+  getEventsForIntersection,
 };
 
 function hasGround(o, objects, gravVec) {
@@ -31,6 +35,7 @@ function getAlignVecWhenLeavingObject(vecMov, vecGrav) {
     getCoord('x', vecMov, vecGrav),
     getCoord('y', vecMov, vecGrav),
   );
+
   function getCoord(coord, vMov, vGrav) {
     if (vMov[coord] !== 0) {
       return vMov[coord];
@@ -40,4 +45,26 @@ function getAlignVecWhenLeavingObject(vecMov, vecGrav) {
     debugError(`none of the vecs have non-zero ${coord} coord`);
     return null;
   }
+}
+
+function getEventsForIntersection(o, otherObjects) {
+  checkArgs('getEventsForIntersection', arguments, [
+    'object',
+    'array',
+  ]);
+  let res = [];
+  const objectsIntersecting = otherObjects
+    .filter(x => objectUtils.willIntersect(
+      o.$rec,
+      x.$rec,
+      o.$getMovement().tween.target,
+    ));
+  if (objectsIntersecting.length > 0) {
+    res = getGameObjectEventsForIntersection(
+      o,
+      o.$getMovement().vecMoveN,
+      objectsIntersecting,
+    );
+  }
+  return res;
 }
