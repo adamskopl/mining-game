@@ -15,10 +15,12 @@ function getObjectsEventsForKeyDirection(
 ) {
   let gameObjectEvents = [];
   if (!hero.$isMoving() && !Phaser.Point.negative(gravVec).equals(dir)) {
-    gameObjectEvents = objectsFilled
-      .map(forEveryFilled.bind(null, hero, dir, group))
-      .filter(x => x !== null);
-    if (!gravVec.equals(dir)) {
+    gameObjectEvents = gameObjectEvents.concat(
+      objectsFilled.map(
+        forEveryFilled.bind(null, hero, dir, group),
+      ).filter(x => x !== null),
+    );
+    if (gameObjectEvents.length === 0 && !gravVec.equals(dir)) {
       gameObjectEvents.push(createGameObjectEvent(
         GAME_OBJECT_EVENT_TYPE.MOVE,
         hero,
