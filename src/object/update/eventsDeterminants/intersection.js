@@ -29,18 +29,39 @@ function createHandler(typeA, typeB, foo) {
   };
 }
 
+function handlerDefault(objA, objB, vecMoveN) {
+  const res = [];
+  res.push(createGameObjectEvent(
+    GAME_OBJECT_EVENT_TYPE.ALIGN,
+    objA,
+    objB,
+    Phaser.Point.negative(vecMoveN),
+  ));
+  return res;
+}
+
 const HANDLERS = [
   createHandler(
     GAME_OBJECT_TYPE.HERO,
     GAME_OBJECT_TYPE.FILLED,
     function foo(hero, filled, vecMoveN) {
       const res = [];
-      res.push(createGameObjectEvent(
-        GAME_OBJECT_EVENT_TYPE.ALIGN,
-        hero,
-        filled,
-        Phaser.Point.negative(vecMoveN),
-      ));
+      return res;
+    },
+  ),
+  createHandler(
+    GAME_OBJECT_TYPE.FRIEND,
+    GAME_OBJECT_TYPE.FILLED,
+    function foo(friend, filled, vecMoveN) {
+      const res = [];
+      return res;
+    },
+  ),
+  createHandler(
+    GAME_OBJECT_TYPE.HERO,
+    GAME_OBJECT_TYPE.FRIEND,
+    function foo(hero, friend, vecMoveN) {
+      const res = [];
       return res;
     },
   ),
@@ -79,10 +100,11 @@ function getGameObjectEvent(
     otherObject,
   ));
   if (handler) {
-    res = handler.handle(mainObject, otherObject, vecMoveN);
+    res = res.concat(handler.handle(mainObject, otherObject, vecMoveN));
   } else {
     debugError(`no handler for ${mainObject.$type}, ${otherObject.$type}`);
   }
+  res = res.concat(handlerDefault(mainObject, otherObject, vecMoveN));
   return res;
 }
 
