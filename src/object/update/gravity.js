@@ -14,6 +14,7 @@ function handleGravityForTween(o, otherObjects) {
   objectsEvents = objectsEvents.concat(getEventsForIntersection(
     o,
     otherObjects,
+    GRAV.vec,
   ));
   // continue the movement (object may be realigned during events resolve)
   o.$setPos(o.$getMovement().tween.target);
@@ -28,10 +29,8 @@ function handleGravity(o, otherObjects, fieldSize) {
   if (o.$isMoving()) {
     objectsEvents = handleGravityForTween(o, otherObjects);
   } else {
-    o.$setMovement(
-      GRAV.vec,
-      MOVEMENT_TYPE.ONE,
-    );
+    o.$stopMovement();
+    o.$enableGravity(GRAV.vec);
     o.$startMovement(
       fieldSize,
       GRAV.fieldsNumber,

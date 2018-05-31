@@ -47,10 +47,11 @@ function getAlignVecWhenLeavingObject(vecMov, vecGrav) {
   }
 }
 
-function getEventsForIntersection(o, otherObjects) {
+function getEventsForIntersection(o, otherObjects, vecGrav) {
   checkArgs('getEventsForIntersection', arguments, [
     'object',
     'array',
+    'point',
   ]);
   let res = [];
   const objectsIntersecting = otherObjects
@@ -62,8 +63,8 @@ function getEventsForIntersection(o, otherObjects) {
   if (objectsIntersecting.length > 0) {
     res = getGameObjectEventsForIntersection(
       o,
-      o.$getMovement().vecMoveN,
       objectsIntersecting,
+      vecGrav,
     );
   }
   return res;

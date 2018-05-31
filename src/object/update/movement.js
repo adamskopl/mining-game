@@ -9,7 +9,7 @@ import {
 export { handleMovement };
 
 const MOV = {
-  time: 4000,
+  time: 7000,
   fieldsNumber: 50,
 };
 
@@ -81,6 +81,7 @@ function handleMovementForTween(o, otherObjects) {
   objectsEvents = objectsEvents.concat(getEventsForIntersection(
     o,
     otherObjects,
+    GRAV.vec,
   ));
   // continue the movement (object may be realigned during events resolve)
   o.$setPos(o.$getMovement().tween.target);

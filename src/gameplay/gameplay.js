@@ -2,8 +2,6 @@ import { GRAV } from 'src/object/update/gravity';
 import { GAME_OBJECT_TYPE } from '../consts';
 import { getObjectsEventsForKeyDirection } from './gameplay-hero';
 
-// TODO: move to the phaser group? e.g. group.filter(). Array methods in a
-// group.
 const objectsFilterTypes = (objects, types) =>
   objects.filter(c => types.includes(c.$type));
 
@@ -14,16 +12,19 @@ export default {
     this.fieldSize = null;
     // To first cache object events and then handle them in one place.
     this.gameObjectsEventsToHandle = [];
+
+    this.started = false;
   },
   // when the main sprites group is reloaded
   onMainGroupReloaded(mainGroup) {
     this.mainGroup = mainGroup;
+    this.started = false;
 
     // enable gravity for some types
     objectsFilterTypes(
       this.mainGroup.children, [GAME_OBJECT_TYPE.HERO, GAME_OBJECT_TYPE.FRIEND],
-    ).forEach(function (o) {
-      o.$enableGravity();
+    ).forEach((o) => {
+      o.$enableGravity(GRAV.vec);
     });
   },
   onKeyDirection(direction) {
@@ -40,6 +41,11 @@ export default {
       objectsFilterTypes(this.mainGroup.children, [GAME_OBJECT_TYPE.HERO])
         .map(mapHeroEvent)
         .reduce((acc, val) => acc.concat(val), []);
+
+    if (!this.started) {
+      this.started = true;
+    }
+
     this.pushGameObjectsEventsToHandle(gameObjectsEvents);
   },
   onFieldResized(fieldSize) {
@@ -53,7 +59,7 @@ export default {
       this.gameObjectsEventsToHandle.concat(gameObjectEvents);
   },
   update() {
-    if (!this.mainGroup) {
+    if (!this.mainGroup || !this.started) {
       return;
     }
     // 1. handle collected events

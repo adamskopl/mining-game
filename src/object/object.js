@@ -13,15 +13,7 @@ const extraFuns = {
   $init(type) {
     this.$type = type;
     this.$rec = new Phaser.Rectangle(this.x, this.y, this.width, this.height);
-    this.$gravityEnabled = false;
-
     this.$initMov();
-  },
-  $enableGravity() {
-    this.$gravityEnabled = true;
-  },
-  $isGravityEnabled() {
-    return this.$gravityEnabled;
   },
   $alignTo(dst, vec, offsetX = 0, offsetY = 0) {
     checkArgs('$alignTo', arguments, ['sprite', 'point', 'number', 'number']);

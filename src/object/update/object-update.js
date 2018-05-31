@@ -12,7 +12,9 @@ export { update };
  */
 function update(o, otherObjects, fieldSize) {
   let objectsEvents = [];
-  if (!hasGround(o, otherObjects, GRAV.vec)) {
+  if (!hasGround(o, otherObjects, GRAV.vec) ||
+      (o.$isMovementSet() && o.$getMovement().vecMoveN.equals(GRAV.vec))
+  ) {
     objectsEvents = handleGravity(o, otherObjects, fieldSize);
   } else {
     objectsEvents = handleMovement(o, otherObjects, fieldSize);

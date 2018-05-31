@@ -1,8 +1,7 @@
 // Determining {GameObjectEvent} when intersection with other objects occur
 // during the movement.
-import { checkArgs } from 'src/utils';
+import { checkArgs, debugError } from 'src/utils';
 import { GAME_OBJECT_TYPE } from 'src/consts';
-import { debugError } from 'src/utils';
 
 import {
   GAME_OBJECT_EVENT_TYPE,
@@ -22,21 +21,24 @@ function makeSwap(a, b, firstType) {
 function createHandler(typeA, typeB, foo) {
   return {
     types: [typeA, typeB],
-    handle(oA, oB, vecMoveN) {
+
+    handle(oA, oB, vecGrav) {
       const [a, b] = makeSwap(oA, oB, oA.$type);
-      return foo(a, b, vecMoveN);
+      return foo(a, b, vecGrav);
     },
   };
 }
 
-function handlerDefault(objA, objB, vecMoveN) {
+function handlerDefault(objA, objB, vecGrav) {
   const res = [];
+  const { vecMoveN } = objA.$getMovement();
   res.push(createGameObjectEvent(
     GAME_OBJECT_EVENT_TYPE.ALIGN,
     objA,
     objB,
     Phaser.Point.negative(vecMoveN),
   ));
+  if (vecMoveN.equals(vecGrav)) {}
   return res;
 }
 
@@ -44,7 +46,7 @@ const HANDLERS = [
   createHandler(
     GAME_OBJECT_TYPE.HERO,
     GAME_OBJECT_TYPE.FILLED,
-    function foo(hero, filled, vecMoveN) {
+    function foo(hero, filled, vecGrav) {
       const res = [];
       return res;
     },
@@ -52,7 +54,7 @@ const HANDLERS = [
   createHandler(
     GAME_OBJECT_TYPE.FRIEND,
     GAME_OBJECT_TYPE.FILLED,
-    function foo(friend, filled, vecMoveN) {
+    function foo(friend, filled, vecGrav) {
       const res = [];
       return res;
     },
@@ -60,7 +62,7 @@ const HANDLERS = [
   createHandler(
     GAME_OBJECT_TYPE.HERO,
     GAME_OBJECT_TYPE.FRIEND,
-    function foo(hero, friend, vecMoveN) {
+    function foo(hero, friend, vecGrav) {
       const res = [];
       return res;
     },
@@ -70,17 +72,16 @@ const HANDLERS = [
 /**
  * @param {GameObject} object intersecting
  * @param {Array<GameObject>} objects intersecting with the object
- * @param {Phaser.Point} vecMoveN move normalized vector for intersecting object
  * @return {Array<GameObjectEvent>}
  */
-function getGameObjectEventsForIntersection(o, vecMoveN, objects) {
+function getGameObjectEventsForIntersection(o, objects, vecGrav) {
   checkArgs('getGameObjectEventsForIntersection', arguments, [
     'object',
-    'point',
     'array',
+    'point',
   ]);
   return objects
-    .map(getGameObjectEvent.bind(null, o, vecMoveN, HANDLERS))
+    .map(getGameObjectEvent.bind(null, o, vecGrav, HANDLERS))
     .reduce((acc, val) => acc.concat(val), []);
 }
 
@@ -89,7 +90,7 @@ function getGameObjectEventsForIntersection(o, vecMoveN, objects) {
  */
 function getGameObjectEvent(
   mainObject,
-  vecMoveN,
+  vecGrav,
   handlers,
   otherObject,
 ) {
@@ -100,11 +101,19 @@ function getGameObjectEvent(
     otherObject,
   ));
   if (handler) {
-    res = res.concat(handler.handle(mainObject, otherObject, vecMoveN));
+    res = res.concat(handler.handle(
+      mainObject,
+      otherObject,
+      vecGrav,
+    ));
   } else {
     debugError(`no handler for ${mainObject.$type}, ${otherObject.$type}`);
   }
-  res = res.concat(handlerDefault(mainObject, otherObject, vecMoveN));
+  res = res.concat(handlerDefault(
+    mainObject,
+    otherObject,
+    vecGrav,
+  ));
   return res;
 }
 

@@ -5,12 +5,21 @@ import { debugError } from 'src/utils';
  */
 const MOVEMENT_TYPE = {
   ONE: 'MOVEMENT_ONE', // move one field
+  CONST: 'MOVEMENT_CONST', // just move
 };
 const MOVEMENT_TYPE_KEYS = Object.keys(MOVEMENT_TYPE);
 
 const moveObject = {
   $initMov() {
     this.$movement = null;
+    this.$gravityEnabled = false;
+  },
+  $enableGravity(vecGrav) {
+    this.$gravityEnabled = true;
+    this.$setMovement(vecGrav, MOVEMENT_TYPE.CONST);
+  },
+  $isGravityEnabled() {
+    return this.$gravityEnabled;
   },
   /**
    * @return {GameObjectMovement}
@@ -68,7 +77,7 @@ const moveObject = {
     });
   },
   $stopMovement() {
-    if (this.$movement) {
+    if (this.$movement && this.$movement.tween) {
       // allow multiple $stopMovement, e.g. for simultaneous stop for
       // intersection and alignment
       this.$movement.tween.stop(true); // fire onComplete
