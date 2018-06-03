@@ -8,15 +8,12 @@ const GAME_OBJECT_EVENT_TYPE = {
   DESTROY: 'DESTROY', // destroy given object
   MOVE: 'MOVE',
   ALIGN: 'ALIGN', // align to the other game object, stop the movement
+  STOP: 'STOP', // stop the movement
 };
 
-export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
+const GAME_OBJECT_EVENT_TYPE_KEYS = Object.keys(GAME_OBJECT_EVENT_TYPE);
 
-const FACTORIES = new Map([
-  [GAME_OBJECT_EVENT_TYPE.DESTROY, createGameObjectEventDestroy],
-  [GAME_OBJECT_EVENT_TYPE.MOVE, createGameObjectEventMove],
-  [GAME_OBJECT_EVENT_TYPE.ALIGN, createGameObjectEventAlign],
-]);
+export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
 
 const base = {
   initBase(object) {
@@ -27,10 +24,8 @@ const base = {
   },
 };
 
-const destroy = Object.assign(
-  {},
-  base,
-  {
+const destroy = Object.assign({},
+  base, {
     init(object, group) {
       this.initBase(object);
       this.group = group;
@@ -38,13 +33,10 @@ const destroy = Object.assign(
     resolve() {
       this.group.remove(this.object);
     },
-  },
-);
+  });
 
-const move = Object.assign(
-  {},
-  base,
-  {
+const move = Object.assign({},
+  base, {
     /**
      * @param {GameObjectMovement} movementObject
      */
@@ -55,13 +47,10 @@ const move = Object.assign(
     resolve() {
       this.object.$setMovement(this.dir, this.movType);
     },
-  },
-);
+  });
 
-const align = Object.assign(
-  {},
-  base,
-  {
+const align = Object.assign({},
+  base, {
     init(object, alignTo, alignVec) {
       this.initBase(object);
       this.alignTo = alignTo;
@@ -76,8 +65,24 @@ const align = Object.assign(
       );
       this.object.$stopMovement();
     },
-  },
-);
+  });
+
+const stop = Object.assign({},
+  base, {
+    init(object) {
+      this.initBase(object);
+    },
+    resolve() {
+      this.object.$stopMovement();
+    },
+  });
+
+const TYPE_TO_OBJECT = new Map([
+  [GAME_OBJECT_EVENT_TYPE.DESTROY, destroy],
+  [GAME_OBJECT_EVENT_TYPE.MOVE, move],
+  [GAME_OBJECT_EVENT_TYPE.ALIGN, align],
+  [GAME_OBJECT_EVENT_TYPE.STOP, stop],
+]);
 
 /**
  * Data about game object event.
@@ -90,24 +95,11 @@ const align = Object.assign(
  * @return {GameObjectEvent}
  */
 function createGameObjectEvent(type, object, ...extra) {
-  // MAP OF FUNCTIONS: <type, function>
-  return FACTORIES.get(type)(object, ...extra);
-}
-
-function createGameObjectEventDestroy(o, ...extra) {
-  const ret = Object.create(destroy);
-  ret.init(o, ...extra);
-  return ret;
-}
-
-function createGameObjectEventMove(o, ...extra) {
-  const ret = Object.create(move);
-  ret.init(o, ...extra);
-  return ret;
-}
-
-function createGameObjectEventAlign(o, ...extra) {
-  const ret = Object.create(align);
-  ret.init(o, ...extra);
+  if (!GAME_OBJECT_EVENT_TYPE_KEYS
+    .find(k => GAME_OBJECT_EVENT_TYPE[k] === type)) {
+    debugError(`no "${type}" game object event type`);
+  }
+  const ret = Object.create(TYPE_TO_OBJECT.get(type));
+  ret.init(object, ...extra);
   return ret;
 }

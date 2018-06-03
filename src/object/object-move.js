@@ -5,6 +5,7 @@ import { debugError } from 'src/utils';
  */
 const MOVEMENT_TYPE = {
   ONE: 'MOVEMENT_ONE', // move one field
+  GRAVITY: 'MOVEMENT_GRAVITY',
   CONST: 'MOVEMENT_CONST', // just move
 };
 const MOVEMENT_TYPE_KEYS = Object.keys(MOVEMENT_TYPE);
@@ -16,7 +17,7 @@ const moveObject = {
   },
   $enableGravity(vecGrav) {
     this.$gravityEnabled = true;
-    this.$setMovement(vecGrav, MOVEMENT_TYPE.CONST);
+    this.$setMovement(vecGrav, MOVEMENT_TYPE.GRAVITY);
   },
   $isGravityEnabled() {
     return this.$gravityEnabled;
