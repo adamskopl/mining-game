@@ -20,7 +20,11 @@ function getObjectsEventsForKeyDirection(
         forEveryFilled.bind(null, hero, dir, group),
       ).filter(x => x !== null),
     );
-    if (gameObjectEvents.length === 0 && !gravVec.equals(dir)) {
+    if (
+      gameObjectEvents.length === 0 &&
+      !gravVec.equals(dir) &&
+      !hero.$isMovementSet()
+    ) {
       gameObjectEvents.push(createGameObjectEvent(
         GAME_OBJECT_EVENT_TYPE.MOVE,
         hero,

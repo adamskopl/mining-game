@@ -2,6 +2,7 @@
 // during the movement.
 import { checkArgs, debugError } from 'src/utils';
 import { GAME_OBJECT_TYPE } from 'src/consts';
+import { MOVEMENT_TYPE } from 'src/object/object-move';
 
 import {
   GAME_OBJECT_EVENT_TYPE,
@@ -38,7 +39,16 @@ function handlerDefault(objA, objB, vecGrav) {
     objB,
     Phaser.Point.negative(vecMoveN),
   ));
-  if (vecMoveN.equals(vecGrav)) {}
+  if (vecMoveN.equals(vecGrav)) {
+    if (objA.$type === GAME_OBJECT_TYPE.FRIEND) {
+      res.push(createGameObjectEvent(
+        GAME_OBJECT_EVENT_TYPE.MOVE,
+        objA,
+        Phaser.Point.perp(vecGrav),
+        MOVEMENT_TYPE.CONST,
+      ));
+    }
+  }
   return res;
 }
 

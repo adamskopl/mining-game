@@ -6,6 +6,11 @@ import {
   getGameObjectEventsForLeave,
 } from './eventsDeterminants/leave';
 
+import {
+  GAME_OBJECT_EVENT_TYPE,
+  createGameObjectEvent,
+} from '../object-event';
+
 export { handleMovement };
 
 const MOV = {
@@ -62,29 +67,38 @@ function handleMovementForTween(o, otherObjects) {
   if (gravAlignedToObjects === 0) {
     debugError('handleMovement() should not happen: no alignment');
   }
-  // find at least one alignment to the *current* ground objects after the
-  // movement
-  const gravAlignedToObjectsAfterMov = gravAlignedToObjects.filter(
-    x => objectUtils.willBeAligned(
-      o.$rec,
-      x.$rec,
-      o.$getMovement().tween.target,
+  const groundMoving = gravAlignedToObjects.some(g => g.$isMoving());
+  if (groundMoving) {
+    // stop object if object beneath is moving
+    objectsEvents.push(createGameObjectEvent(
+      GAME_OBJECT_EVENT_TYPE.STOP,
+      o,
+    ));
+  } else {
+    // find at least one alignment to the *current* ground objects after the
+    // movement
+    const gravAlignedToObjectsAfterMov = gravAlignedToObjects.filter(
+      x => objectUtils.willBeAligned(
+        o.$rec,
+        x.$rec,
+        o.$getMovement().tween.target,
+        GRAV.vec,
+      ),
+    );
+    objectsEvents = objectsEvents.concat(getEventsForLeave(
+      o,
+      gravAlignedToObjects,
+      gravAlignedToObjectsAfterMov,
       GRAV.vec,
-    ),
-  );
-  objectsEvents = objectsEvents.concat(getEventsForLeave(
-    o,
-    gravAlignedToObjects,
-    gravAlignedToObjectsAfterMov,
-    GRAV.vec,
-  ));
-  objectsEvents = objectsEvents.concat(getEventsForIntersection(
-    o,
-    otherObjects,
-    GRAV.vec,
-  ));
-  // continue the movement (object may be realigned during events resolve)
-  o.$setPos(o.$getMovement().tween.target);
+    ));
+    objectsEvents = objectsEvents.concat(getEventsForIntersection(
+      o,
+      otherObjects,
+      GRAV.vec,
+    ));
+    // continue the movement (object may be realigned during events resolve)
+    o.$setPos(o.$getMovement().tween.target);
+  }
   return objectsEvents;
 }
 
