@@ -11,12 +11,23 @@ const GAME_OBJECT_EVENT_TYPE = {
   STOP: 'STOP', // stop the movement
 };
 
+// which events are stopping object
+const GAME_OBJECT_EVENT_TYPES_STOPPING = [
+  GAME_OBJECT_EVENT_TYPE.ALIGN,
+  GAME_OBJECT_EVENT_TYPE.STOP,
+];
+
 const GAME_OBJECT_EVENT_TYPE_KEYS = Object.keys(GAME_OBJECT_EVENT_TYPE);
 
-export { GAME_OBJECT_EVENT_TYPE, createGameObjectEvent };
+export {
+  GAME_OBJECT_EVENT_TYPE,
+  GAME_OBJECT_EVENT_TYPES_STOPPING,
+  createGameObjectEvent,
+};
 
 const base = {
-  initBase(object) {
+  initBase(type, object) {
+    this.type = type;
     this.object = object;
   },
   resolve() {
@@ -26,8 +37,8 @@ const base = {
 
 const destroy = Object.assign({},
   base, {
-    init(object, group) {
-      this.initBase(object);
+    init(type, object, group) {
+      this.initBase(type, object);
       this.group = group;
     },
     resolve() {
@@ -40,8 +51,8 @@ const move = Object.assign({},
     /**
      * @param {GameObjectMovement} movementObject
      */
-    init(object, dir, movType) {
-      this.initBase(object);
+    init(type, object, dir, movType) {
+      this.initBase(type, object);
       [this.dir, this.movType] = [dir, movType];
     },
     resolve() {
@@ -51,8 +62,8 @@ const move = Object.assign({},
 
 const align = Object.assign({},
   base, {
-    init(object, alignTo, alignVec) {
-      this.initBase(object);
+    init(type, object, alignTo, alignVec) {
+      this.initBase(type, object);
       this.alignTo = alignTo;
       this.alignVec = alignVec;
     },
@@ -69,8 +80,8 @@ const align = Object.assign({},
 
 const stop = Object.assign({},
   base, {
-    init(object) {
-      this.initBase(object);
+    init(type, object) {
+      this.initBase(type, object);
     },
     resolve() {
       this.object.$stopMovement();
@@ -100,6 +111,6 @@ function createGameObjectEvent(type, object, ...extra) {
     debugError(`no "${type}" game object event type`);
   }
   const ret = Object.create(TYPE_TO_OBJECT.get(type));
-  ret.init(object, ...extra);
+  ret.init(type, object, ...extra);
   return ret;
 }

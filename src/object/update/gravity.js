@@ -1,5 +1,4 @@
-import { MOVEMENT_TYPE } from 'src/object/object-move';
-import { getEventsForIntersection } from './utils';
+import { getEventsForIntersection, includesStoppingEvents } from './utils';
 
 const GRAV = {
   vec: new Phaser.Point(0, 1),
@@ -16,8 +15,9 @@ function handleGravityForTween(o, otherObjects) {
     otherObjects,
     GRAV.vec,
   ));
-  // continue the movement (object may be realigned during events resolve)
-  o.$setPos(o.$getMovement().tween.target);
+  if (!includesStoppingEvents(objectsEvents)) {
+    o.$setPos(o.$getMovement().tween.target);
+  }
   return objectsEvents;
 }
 

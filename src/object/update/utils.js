@@ -4,11 +4,14 @@ import {
   getGameObjectEventsForIntersection,
 } from './eventsDeterminants/intersection';
 
+import { GAME_OBJECT_EVENT_TYPE, GAME_OBJECT_EVENT_TYPES_STOPPING } from '../object-event';
+
 export {
   hasGround,
   getGroundObject,
   getAlignVecWhenLeavingObject,
   getEventsForIntersection,
+  includesStoppingEvents,
 };
 
 function hasGround(o, objects, gravVec) {
@@ -68,4 +71,12 @@ function getEventsForIntersection(o, otherObjects, vecGrav) {
     );
   }
   return res;
+}
+
+/**
+ * @param {Array<GameObjectEventType>} events
+ * @return {Boolean} true if at least one event is stopping object
+ */
+function includesStoppingEvents(events) {
+  return events.some(e => GAME_OBJECT_EVENT_TYPES_STOPPING.includes(e.type));
 }
